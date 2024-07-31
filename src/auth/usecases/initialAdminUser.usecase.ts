@@ -1,8 +1,10 @@
 import { SeedRepository } from '@auth/repositories/seed.repository';
 import { IBcryptService } from '@common/adapters/bcrypt.interface';
+import { LoggerService } from '@nestjs/common';
 
 export class InitialAdminUserUseCase {
   constructor(
+    private readonly logger: LoggerService,
     private readonly seedRepository: SeedRepository,
     private readonly bcryptService: IBcryptService,
   ) {}
@@ -11,6 +13,10 @@ export class InitialAdminUserUseCase {
     const username = 'admin';
     const password = 'admin1234';
     const hashedPassword = await this.bcryptService.hash(password);
-    await this.seedRepository.insertAdminUser(username, hashedPassword);
+    const response = await this.seedRepository.insertAdminUser(
+      username,
+      hashedPassword,
+    );
+    this.logger.log('InitialAdminUser', response);
   }
 }
