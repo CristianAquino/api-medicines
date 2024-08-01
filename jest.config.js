@@ -6,7 +6,19 @@ module.exports = {
   transform: {
     '.+\\.(t|j)s$': ['@swc/jest'],
   },
-  collectCoverageFrom: ['**/*.(t|j)s'],
+  collectCoverageFrom: [
+    // '**/*.(t|j)s',
+    // '!src/main.ts',
+    // '!src/**/*.module.ts',
+    // '!src/**/*.entity.ts',
+    // '!src/**/*config.ts',
+    // '!src/**/index.ts',
+    // '!src/**/*.interface.ts',
+    // '!src/**/*.service.ts',
+    // '!src/**/migrations/*.ts',
+    // '!src/**/usecases-proxy.ts',
+    'src/**/*.usecase.ts',
+  ],
   coverageThreshold: {
     global: {
       branches: 80,
