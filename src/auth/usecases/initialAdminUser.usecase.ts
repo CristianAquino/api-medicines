@@ -12,11 +12,14 @@ export class InitialAdminUserUseCase {
   async execute(): Promise<void> {
     const username = 'admin';
     const password = 'admin1234';
-    const hashedPassword = await this.bcryptService.hash(password);
-    const response = await this.seedRepository.insertAdminUser(
-      username,
-      hashedPassword,
-    );
-    this.logger.log('InitialAdminUser', response);
+    const isExist = await this.seedRepository.verifyExistingAdminUser(username);
+
+    if (isExist) {
+      this.logger.log('InitialAdminUser', 'Admin user already exists.');
+    } else {
+      const hashedPassword = await this.bcryptService.hash(password);
+      await this.seedRepository.insertAdminUser(username, hashedPassword);
+      this.logger.log('InitialAdminUser', 'Admin user created successfully.');
+    }
   }
 }

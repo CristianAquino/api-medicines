@@ -11,20 +11,18 @@ export class SeedRepository implements ISeedRepository {
     private readonly userEntityRepository: Repository<User>,
   ) {}
 
-  async insertAdminUser(username: string, password: string): Promise<string> {
+  async verifyExistingAdminUser(username: string): Promise<boolean> {
     const existAdmin = await this.userEntityRepository.findOneBy({
       username,
     });
+    return !!existAdmin;
+  }
 
-    if (!existAdmin) {
-      const admin = new User();
-      admin.username = username;
-      admin.password = password;
-      admin.role = 'admin';
-      await this.userEntityRepository.save(admin);
-      return 'Admin user created successfully.';
-    } else {
-      return 'Admin user already exists.';
-    }
+  async insertAdminUser(username: string, password: string): Promise<void> {
+    const admin = new User();
+    admin.username = username;
+    admin.password = password;
+    admin.role = 'admin';
+    await this.userEntityRepository.save(admin);
   }
 }
