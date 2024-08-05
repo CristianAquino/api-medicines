@@ -2,7 +2,7 @@ import { SeedRepository } from '@auth/repositories/seed.repository';
 import { IBcryptService } from '@common/adapters/bcrypt.interface';
 import { LoggerService } from '@nestjs/common';
 
-export class InitialAdminUserUseCase {
+export class RegisterInitialAdminUserUseCase {
   constructor(
     private readonly logger: LoggerService,
     private readonly seedRepository: SeedRepository,
@@ -15,11 +15,14 @@ export class InitialAdminUserUseCase {
     const isExist = await this.seedRepository.verifyExistingAdminUser(username);
 
     if (isExist) {
-      this.logger.log('InitialAdminUser', 'Admin user already exists.');
+      this.logger.log('RegisterInitialAdminUser', 'Admin user already exists.');
     } else {
       const hashedPassword = await this.bcryptService.hash(password);
       await this.seedRepository.insertAdminUser(username, hashedPassword);
-      this.logger.log('InitialAdminUser', 'Admin user created successfully.');
+      this.logger.log(
+        'RegisterInitialAdminUser',
+        'Admin user created successfully.',
+      );
     }
   }
 }

@@ -3,6 +3,7 @@ import { User } from '@common/entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Role } from '../controller/enum/user.enum';
 
 @Injectable()
 export class SeedRepository implements ISeedRepository {
@@ -22,7 +23,7 @@ export class SeedRepository implements ISeedRepository {
     const admin = new User();
     admin.username = username;
     admin.password = password;
-    admin.role = 'admin';
+    admin.role = Role.ADMIN;
     await this.userEntityRepository.save(admin);
   }
 }
