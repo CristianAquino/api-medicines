@@ -1,10 +1,10 @@
 import { ISeedRepository } from '../../src/auth/domain/repositories/seedRepository.interface';
-import { InitialAdminUserUseCase } from '../../src/auth/usecases/initialAdminUser.usecase';
+import { RegisterInitialAdminUserUseCase } from '../../src/auth/usecases/registerInitialAdminUser.usecase';
 import { IBcryptService } from '../../src/common/adapters/bcrypt.interface';
 import { ILogger } from '../../src/common/logger/logger.interface';
 
 describe('Test seedService', () => {
-  let initialAdminUserUseCase: InitialAdminUserUseCase;
+  let registerInitialAdminUserUseCase: RegisterInitialAdminUserUseCase;
   let logger: ILogger;
   let bcryptService: IBcryptService;
   let userRepository: ISeedRepository;
@@ -23,7 +23,7 @@ describe('Test seedService', () => {
       verifyExistingAdminUser: jest.fn(),
     } as ISeedRepository;
 
-    initialAdminUserUseCase = new InitialAdminUserUseCase(
+    registerInitialAdminUserUseCase = new RegisterInitialAdminUserUseCase(
       logger,
       userRepository,
       bcryptService,
@@ -35,7 +35,7 @@ describe('Test seedService', () => {
   });
 
   it('should be defined', () => {
-    expect(initialAdminUserUseCase).toBeDefined();
+    expect(registerInitialAdminUserUseCase).toBeDefined();
   });
 
   it('should create an admin user if not exists', async () => {
@@ -50,7 +50,7 @@ describe('Test seedService', () => {
     );
 
     // Ejecutar el caso de uso
-    await initialAdminUserUseCase.execute();
+    await registerInitialAdminUserUseCase.execute();
 
     // Verificar que las funciones hayan sido llamadas correctamente
     expect(userRepository.verifyExistingAdminUser).toHaveBeenCalledWith(
@@ -62,17 +62,18 @@ describe('Test seedService', () => {
       'admin1234',
     );
     expect(logger.log).toHaveBeenCalledWith(
-      'InitialAdminUser',
+      'RegisterInitialAdminUser',
       'Admin user created successfully.',
     );
   });
+
   it('should not create an admin user if already exists', async () => {
     (userRepository.verifyExistingAdminUser as jest.Mock).mockResolvedValue(
       true,
     );
 
     // Ejecutar el caso de uso
-    await initialAdminUserUseCase.execute();
+    await registerInitialAdminUserUseCase.execute();
 
     // Verificar que las funciones hayan sido llamadas correctamente
     expect(userRepository.verifyExistingAdminUser).toHaveBeenCalledWith(
@@ -81,7 +82,7 @@ describe('Test seedService', () => {
     expect(bcryptService.hash).not.toHaveBeenCalled();
     expect(userRepository.insertAdminUser).not.toHaveBeenCalled();
     expect(logger.log).toHaveBeenCalledWith(
-      'InitialAdminUser',
+      'RegisterInitialAdminUser',
       'Admin user already exists.',
     );
   });
