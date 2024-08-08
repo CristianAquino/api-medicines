@@ -1,7 +1,7 @@
-import { ISeedRepository } from '@auth/repositories/seedRepository.interface';
 import { User } from '@common/entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ISeedRepository } from '@user/repositories/seedRepository.interface';
 import { Repository } from 'typeorm';
 import { Role } from '../controller/enum/user.enum';
 
