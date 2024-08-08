@@ -1,4 +1,4 @@
-import { Role } from '@auth/infrastructure/controller/enum/user.enum';
+import { Role } from '@user/infrastructure/controller/enum/user.enum';
 import {
   Column,
   CreateDateColumn,
