@@ -1,9 +1,9 @@
-import { IUserRepository } from '../../src/auth/domain/repositories/userRepository.interface';
-import { Role } from '../../src/auth/infrastructure/controller/enum/user.enum';
-import { AddUserDTO } from '../../src/auth/infrastructure/controller/user.dto';
-import { AddUserUseCase } from '../../src/auth/usecases/addUser.usecase';
 import { IBcryptService } from '../../src/common/adapters/bcrypt.interface';
 import { ILogger } from '../../src/common/logger/logger.interface';
+import { IUserRepository } from '../../src/user/domain/repositories/userRepository.interface';
+import { AddUserDTO } from '../../src/user/infrastructure/controller/dto/user-in.dto';
+import { Role } from '../../src/user/infrastructure/controller/enum/user.enum';
+import { AddUserUseCase } from '../../src/user/usecases/addUser.usecase';
 
 describe('Test add user usecase', () => {
   let addUserUseCase: AddUserUseCase;
@@ -54,7 +54,7 @@ describe('Test add user usecase', () => {
     expect(bcryptService.hash).not.toHaveBeenCalled();
     expect(userRepository.insert).not.toHaveBeenCalled();
     expect(logger.warn).toHaveBeenCalledWith(
-      'addUserUseCase execute',
+      'AddUserUseCase execute',
       'User already exists',
     );
   });
@@ -73,7 +73,9 @@ describe('Test add user usecase', () => {
       Promise.resolve('hashedPassword'),
     );
 
-    await addUserUseCase.execute(addUseDTO);
+    await expect(addUserUseCase.execute(addUseDTO)).resolves.toBe(
+      'New user have been inserted',
+    );
 
     expect(userRepository.findOneByName).toHaveBeenCalledWith(
       addUseDTO.username,
@@ -84,7 +86,7 @@ describe('Test add user usecase', () => {
       password: 'hashedPassword',
     });
     expect(logger.log).toHaveBeenCalledWith(
-      'addUserUseCase execute',
+      'AddUserUseCase execute',
       'New user have been inserted',
     );
   });
