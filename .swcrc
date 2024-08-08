@@ -14,7 +14,8 @@
       "baseUrl": "./",
       "paths": {
         "@common/*": ["src/common/*"],
-        "@auth/*":["src/auth/*","src/auth/domain/*","src/auth/infrastructure/*","src/auth/usecases/*"]
+        "@auth/*":["src/auth/*","src/auth/domain/*","src/auth/infrastructure/*","src/auth/usecases/*"],
+        "@user/*":["src/user/*","src/user/domain/*","src/user/infrastructure/*","src/user/usecases/*"]
       }
     },
     "minify": false
