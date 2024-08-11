@@ -1,4 +1,4 @@
-import { ResponseDTO } from '@common/dto/response.dto';
+import { ResponseDTO } from '@common/dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ReturnUserData {
