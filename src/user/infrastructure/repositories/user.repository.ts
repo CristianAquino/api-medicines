@@ -3,16 +3,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IUserRepository } from '@user/domain/repositories/userRepository.interface';
 import { Repository } from 'typeorm';
+import { ReturnAllUserData, ReturnUserData } from '../controller/dto';
 import {
   AddUserDTO,
   FindAllUsersDTO,
   UpdateByAdminDTO,
   UpdateDataByUserDTO,
 } from '../controller/dto/user-in.dto';
-import {
-  ReturnAllUserData,
-  ReturnUserData,
-} from '../controller/dto/user-out.dto';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
