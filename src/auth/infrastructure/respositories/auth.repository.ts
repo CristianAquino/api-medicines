@@ -1,5 +1,5 @@
 import { IAuthRepository } from '@auth/domain/repositories/authRepository.interface';
-import { User } from '@common/entities/user.entity';
+import { User } from '@common/entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReturnUserData } from '@user/infrastructure/controller/dto';
 import { Repository } from 'typeorm';
