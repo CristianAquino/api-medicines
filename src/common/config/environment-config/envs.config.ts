@@ -10,6 +10,8 @@ interface EnvVars {
   DATABASE_USERNAME: string;
   DATABASE_PASSWORD: string;
   DATABASE_NAME: string;
+  JWT_SECRET: string;
+  JWT_EXPIRATION_TIME: number;
 }
 const envsSchema = joi
   .object({
@@ -21,6 +23,8 @@ const envsSchema = joi
     DATABASE_USERNAME: joi.string(),
     DATABASE_PASSWORD: joi.string(),
     DATABASE_NAME: joi.string(),
+    JWT_SECRET: joi.string().required(),
+    JWT_EXPIRATION_TIME: joi.number().required(),
   })
   .unknown(true);
 
@@ -44,4 +48,6 @@ export const envs = {
   databaseUsername: envVars.DATABASE_USERNAME,
   databasePassword: envVars.DATABASE_PASSWORD,
   databaseName: envVars.DATABASE_NAME,
+  jwtSecret: envVars.JWT_SECRET,
+  jwtExpirationTime: envVars.JWT_EXPIRATION_TIME,
 };
