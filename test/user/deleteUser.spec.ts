@@ -1,6 +1,6 @@
 import { ILogger } from '../../src/common/logger/logger.interface';
-import { IUserRepository } from '../../src/user/domain/repositories/userRepository.interface';
-import { DeleteUserUseCase } from '../../src/user/usecases/deleteUser.usecase';
+import { IUserRepository } from '../../src/user/domain/repositories';
+import { DeleteUserUseCase } from '../../src/user/usecases';
 
 describe('Test delete user usecase', () => {
   let deleteUserUseCase: DeleteUserUseCase;

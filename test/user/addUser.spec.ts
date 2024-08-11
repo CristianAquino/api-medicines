@@ -1,9 +1,9 @@
-import { IBcryptService } from '../../src/common/adapters/bcrypt.interface';
+import { IBcryptService } from '../../src/common/adapters';
 import { ILogger } from '../../src/common/logger/logger.interface';
-import { IUserRepository } from '../../src/user/domain/repositories/userRepository.interface';
-import { AddUserDTO } from '../../src/user/infrastructure/controller/dto/user-in.dto';
+import { IUserRepository } from '../../src/user/domain/repositories';
+import { AddUserDTO } from '../../src/user/infrastructure/controller/dto';
 import { Role } from '../../src/user/infrastructure/controller/enum/user.enum';
-import { AddUserUseCase } from '../../src/user/usecases/addUser.usecase';
+import { AddUserUseCase } from '../../src/user/usecases';
 
 describe('Test add user usecase', () => {
   let addUserUseCase: AddUserUseCase;

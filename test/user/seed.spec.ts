@@ -1,7 +1,7 @@
-import { IBcryptService } from '../../src/common/adapters/bcrypt.interface';
+import { IBcryptService } from '../../src/common/adapters';
 import { ILogger } from '../../src/common/logger/logger.interface';
-import { ISeedRepository } from '../../src/user/domain/repositories/seedRepository.interface';
-import { RegisterInitialAdminUserUseCase } from '../../src/user/usecases/registerInitialAdminUser.usecase';
+import { ISeedRepository } from '../../src/user/domain/repositories';
+import { RegisterInitialAdminUserUseCase } from '../../src/user/usecases';
 
 describe('Test seedService', () => {
   let registerInitialAdminUserUseCase: RegisterInitialAdminUserUseCase;

@@ -1,6 +1,6 @@
 import { ILogger } from '../../src/common/logger/logger.interface';
-import { IUserRepository } from '../../src/user/domain/repositories/userRepository.interface';
-import { FindAllUsersDTO } from '../../src/user/infrastructure/controller/dto/user-in.dto';
+import { IUserRepository } from '../../src/user/domain/repositories';
+import { FindAllUsersDTO } from '../../src/user/infrastructure/controller/dto';
 import { Role } from '../../src/user/infrastructure/controller/enum/user.enum';
 import { GetAllUsersUseCase } from '../../src/user/usecases/getAllUsers.usecase';
 
