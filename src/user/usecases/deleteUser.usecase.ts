@@ -1,5 +1,5 @@
 import { LoggerService, NotFoundException } from '@nestjs/common';
-import { UserRepository } from '@user/infrastructure/repositories/user.repository';
+import { UserRepository } from '@user/infrastructure/repositories';
 
 export class DeleteUserUseCase {
   constructor(

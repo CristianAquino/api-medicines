@@ -1,4 +1,4 @@
-import { IBcryptService } from '@common/adapters/bcrypt.interface';
+import { IBcryptService } from '@common/adapters';
 import { LoggerService } from '@nestjs/common';
 import { SeedRepository } from '@user/repositories/seed.repository';
 

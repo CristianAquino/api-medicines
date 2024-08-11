@@ -1,7 +1,9 @@
 import { LoggerService, NotFoundException } from '@nestjs/common';
-import { FindAllUsersDTO } from '@user/infrastructure/controller/dto/user-in.dto';
-import { ReturnAllUserData } from '@user/infrastructure/controller/dto/user-out.dto';
-import { UserRepository } from '@user/infrastructure/repositories/user.repository';
+import {
+  FindAllUsersDTO,
+  ReturnAllUserData,
+} from '@user/infrastructure/controller/dto';
+import { UserRepository } from '@user/infrastructure/repositories';
 
 export class GetAllUsersUseCase {
   constructor(

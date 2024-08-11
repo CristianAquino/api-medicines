@@ -1,8 +1,8 @@
-import { IBcryptService } from '@common/adapters/bcrypt.interface';
-import { User } from '@common/entities/user.entity';
+import { IBcryptService } from '@common/adapters';
+import { User } from '@common/entities';
 import { LoggerService } from '@nestjs/common';
-import { AddUserDTO } from '@user/infrastructure/controller/dto/user-in.dto';
-import { UserRepository } from '@user/infrastructure/repositories/user.repository';
+import { AddUserDTO } from '@user/infrastructure/controller/dto';
+import { UserRepository } from '@user/infrastructure/repositories';
 
 export class AddUserUseCase {
   constructor(

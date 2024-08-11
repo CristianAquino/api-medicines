@@ -1,7 +1,7 @@
-import { IBcryptService } from '@common/adapters/bcrypt.interface';
+import { IBcryptService } from '@common/adapters';
 import { LoggerService, NotFoundException } from '@nestjs/common';
-import { UpdateDataByUserDTO } from '@user/infrastructure/controller/dto/user-in.dto';
-import { UserRepository } from '@user/infrastructure/repositories/user.repository';
+import { UpdateDataByUserDTO } from '@user/infrastructure/controller/dto';
+import { UserRepository } from '@user/infrastructure/repositories';
 
 export class PutUpdateDataUserUseCase {
   constructor(

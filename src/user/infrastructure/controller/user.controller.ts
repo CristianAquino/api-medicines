@@ -1,4 +1,6 @@
-import { ResponseErrorDTO } from '@common/dto/response.dto';
+import { Roles } from '@common/decorators/roles.decorator';
+import { ResponseErrorDTO } from '@common/dto';
+import { JwtAuthGuard, RolesGuard } from '@common/guards';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
 import { UsecaseProxyModule } from '@common/usecases-proxy/usecases-proxy.module';
 import {
@@ -14,19 +16,33 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AddUserUseCase } from '@user/usecases/addUser.usecase';
-import { DeleteUserUseCase } from '@user/usecases/deleteUser.usecase';
-import { GetAllUsersUseCase } from '@user/usecases/getAllUsers.usecase';
-import { PutUpdateDataUserUseCase } from '@user/usecases/putUpdateDataUser.usecase';
+import {
+  ApiBody,
+  ApiCookieAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import {
+  AddUserUseCase,
+  DeleteUserUseCase,
+  GetAllUsersUseCase,
+  PutUpdateDataUserUseCase,
+} from '@user/usecases';
 import {
   AddUserDTO,
   FindAllUsersDTO,
+  SWGReturnAllUserData,
+  SWGReturnUserData,
   UpdateDataByUserDTO,
-} from './dto/user-in.dto';
-import { SWGReturnAllUserData, SWGReturnUserData } from './dto/user-out.dto';
+} from './dto';
+import { Role } from './enum/user.enum';
+
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('user')
+@ApiCookieAuth()
 @ApiTags('User')
 @ApiResponse({
   status: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -40,17 +56,18 @@ import { SWGReturnAllUserData, SWGReturnUserData } from './dto/user-out.dto';
 })
 export class UserController {
   constructor(
-    @Inject(UsecaseProxyModule.POST_INSERT_NEW_USER_PROXY)
+    @Inject(UsecaseProxyModule.ADD_USER_USECASE_PROXY)
     private readonly addUserUsecaseProxy: UseCaseProxy<AddUserUseCase>,
-    @Inject(UsecaseProxyModule.DELETE_USER_BY_ID_PROXY)
+    @Inject(UsecaseProxyModule.DELETE_USER_USECASE_PROXY)
     private readonly deleteUserUsecaseProxy: UseCaseProxy<DeleteUserUseCase>,
-    @Inject(UsecaseProxyModule.GET_ALL_USERS_PROXY)
+    @Inject(UsecaseProxyModule.GET_ALL_USERS_USECASE_PROXY)
     private readonly getAllUsersUsecaseProxy: UseCaseProxy<GetAllUsersUseCase>,
-    @Inject(UsecaseProxyModule.PUT_UPDATE_DATA_USER_PROXY)
+    @Inject(UsecaseProxyModule.PUT_UPDATE_DATA_USER_USECASE_PROXY)
     private readonly putUpdateDataUserUsecaseProxy: UseCaseProxy<PutUpdateDataUserUseCase>,
   ) {}
 
   @Post('/add')
+  @Roles(Role.ADMIN)
   @ApiBody({ type: AddUserDTO })
   @ApiOperation({ summary: 'Add new user' })
   @HttpCode(HttpStatus.CREATED)
@@ -62,6 +79,7 @@ export class UserController {
   }
 
   @Get('/all')
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Get all users by user name' })
   @ApiResponse({ status: HttpStatus.OK, type: SWGReturnAllUserData })
   @HttpCode(HttpStatus.OK)
@@ -84,6 +102,7 @@ export class UserController {
   }
 
   @Delete('/delete/:id')
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Delete user' })
   @HttpCode(HttpStatus.OK)
   async deleteUser(@Param('id', ParseUUIDPipe) id: string) {
