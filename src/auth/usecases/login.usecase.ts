@@ -1,9 +1,9 @@
 import { AuthRepository } from '@auth/infrastructure/respositories/auth.repository';
-import { IBcryptService } from '@common/adapters/bcrypt.interface';
 import {
+  IBcryptService,
   IJwtService,
   IJwtServicePayload,
-} from '@common/adapters/jwt.interface';
+} from '@common/adapters';
 import { envs } from '@common/config/environment-config';
 import { ILogger } from '@common/logger/logger.interface';
 
