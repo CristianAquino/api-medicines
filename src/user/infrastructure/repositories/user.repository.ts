@@ -1,15 +1,16 @@
-import { User } from '@common/entities/user.entity';
+import { User } from '@common/entities';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IUserRepository } from '@user/domain/repositories/userRepository.interface';
+import { IUserRepository } from '@user/domain/repositories';
 import { Repository } from 'typeorm';
-import { ReturnAllUserData, ReturnUserData } from '../controller/dto';
 import {
   AddUserDTO,
   FindAllUsersDTO,
+  ReturnAllUserData,
+  ReturnUserData,
   UpdateByAdminDTO,
   UpdateDataByUserDTO,
-} from '../controller/dto/user-in.dto';
+} from '../controller/dto';
 
 @Injectable()
 export class UserRepository implements IUserRepository {

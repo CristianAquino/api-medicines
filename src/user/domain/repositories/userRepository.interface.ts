@@ -1,13 +1,11 @@
 import {
-  ReturnAllUserData,
-  ReturnUserData,
-} from '@user/infrastructure/controller/dto';
-import {
   AddUserDTO,
   FindAllUsersDTO,
+  ReturnAllUserData,
+  ReturnUserData,
   UpdateByAdminDTO,
   UpdateDataByUserDTO,
-} from '@user/infrastructure/controller/dto/user-in.dto';
+} from '@user/infrastructure/controller/dto';
 
 export interface IUserRepository {
   insert(user: AddUserDTO): Promise<void>;
