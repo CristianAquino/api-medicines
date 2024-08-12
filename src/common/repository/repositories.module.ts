@@ -1,15 +1,20 @@
+import { AuthRepository } from '@auth/infrastructure/respositories/auth.repository';
 import { TypeOrmConfigModule } from '@common/config/database-config/typeorm.module';
-import { Category } from '@common/entities/category.entity';
-import { Customer } from '@common/entities/customer.entity';
-import { Order } from '@common/entities/order.entity';
-import { OrderDetail } from '@common/entities/order_details.entity';
-import { Payment } from '@common/entities/payment.entity';
-import { Product } from '@common/entities/product.entity';
-import { User } from '@common/entities/user.entity';
+import {
+  Category,
+  Customer,
+  Order,
+  OrderDetail,
+  Payment,
+  Product,
+  User,
+} from '@common/entities';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserRepository } from '@user/infrastructure/repositories/user.repository';
-import { SeedRepository } from '@user/repositories/seed.repository';
+import {
+  SeedRepository,
+  UserRepository,
+} from '@user/infrastructure/repositories';
 
 @Module({
   imports: [
@@ -24,7 +29,7 @@ import { SeedRepository } from '@user/repositories/seed.repository';
       Payment,
     ]),
   ],
-  providers: [SeedRepository, UserRepository],
-  exports: [SeedRepository, UserRepository],
+  providers: [SeedRepository, UserRepository, AuthRepository],
+  exports: [SeedRepository, UserRepository, AuthRepository],
 })
 export class RepositoriesModule {}
