@@ -11,7 +11,7 @@ export class AuthRepository implements IAuthRepository {
   ) {}
   async findOneByName(username: string): Promise<any> {
     const user = await this.userEntityRepository.findOneBy({ username });
-    if (!user) return null;
+    if (!user) return [null, null];
     return [this.toFindUser(user), user.password];
   }
 

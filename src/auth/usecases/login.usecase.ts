@@ -27,12 +27,15 @@ export class LoginUseCase {
   async validateUserForLocalStragtegy(username: string, pass: string) {
     const [user, password] = await this.authRepository.findOneByName(username);
     if (!user) {
+      this.logger.error('LoginUseCases', 'The user has not been validated');
       return null;
     }
     const match = await this.bcryptService.compare(pass, password);
     if (user && match) {
+      this.logger.log('LoginUseCases', 'The user has been validated');
       return user;
     }
+    this.logger.error('LoginUseCases', 'The user has not been validated');
     return null;
   }
 }
