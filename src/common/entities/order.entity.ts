@@ -3,8 +3,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   Relation,
@@ -16,8 +14,8 @@ import { Product } from './product.entity';
 @Entity('orders')
 @Check('quantity > 0')
 export class Order {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
   @Column({ type: 'int' })
   quantity: number;
   //   date
@@ -26,11 +24,8 @@ export class Order {
   @UpdateDateColumn()
   updatedAt: Date;
   //   relations
-  @ManyToOne(() => OrderDetail, (od) => od.orders)
-  order: Relation<Order>;
-  @ManyToMany(() => Product)
-  @JoinTable()
-  products: Relation<Product>[];
+  @ManyToOne(() => Product, (product) => product.orders)
+  product: Relation<Product>;
   @ManyToOne(() => OrderDetail, (od) => od.orders)
   order_detail: Relation<Order>;
 }
