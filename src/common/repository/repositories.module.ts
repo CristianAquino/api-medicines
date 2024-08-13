@@ -1,4 +1,4 @@
-import { AuthRepository } from '@auth/infrastructure/respositories/auth.repository';
+import { AuthRepository } from '@auth/infrastructure/repositories/auth.repository';
 import { TypeOrmConfigModule } from '@common/config/database-config/typeorm.module';
 import {
   Category,

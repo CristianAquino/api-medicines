@@ -1,4 +1,4 @@
-import { AuthRepository } from '@auth/infrastructure/respositories/auth.repository';
+import { AuthRepository } from '@auth/infrastructure/repositories/auth.repository';
 import { LoginUseCase, LogoutUseCase } from '@auth/usecases';
 import { LoggerModule } from '@common/logger/logger.module';
 import { LoggerService } from '@common/logger/logger.service';
