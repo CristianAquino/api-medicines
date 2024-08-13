@@ -16,7 +16,12 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@common/*": ["src/common/*"],
+      "@auth/*":["src/auth/*","src/auth/domain/*","src/auth/infrastructure/*","src/auth/usecases/*"],
+      "@user/*":["src/user/*","src/user/domain/*","src/user/infrastructure/*","src/user/usecases/*"]
+    }
   },
   "exclude": ["node_modules", "dist","**/*.(spec|test).ts"],
   "include": ["src/**/*"]

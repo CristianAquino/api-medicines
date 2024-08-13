@@ -1,0 +1,93 @@
+Table logs {
+  id integer [primary key]
+  method varchar
+  point varchar
+  id_usuarios int
+  // default
+  created_at timestamp
+  update_at timestamp
+}
+
+Table users {
+  id uuid [primary key]
+  username varchar2(32) unique
+  password varchar
+  role enum
+  // default
+  created_at timestamp
+  update_at timestamp
+}
+
+Table products {
+  id uuid [primary key]
+  name varchar2(64)
+  sku varchar
+  quantity integer
+  available bool
+  unit_price float
+  expiration_date date
+  description varchar2(64)
+  id_categoria int
+  id_orden int
+  // default
+  created_at timestamp
+  update_at timestamp
+}
+
+Table categories{
+  id integer [primary key]
+  name varchar2(32)
+  // default
+  created_at timestamp
+  update_at timestamp
+}
+
+
+Table order{
+  id uuid [primary key]
+  quantity int
+  id_producto uuid
+  id_orden_detalle int
+  // default
+  created_at timestamp
+  update_at timestamp
+}
+
+Table order_details{
+  id integer [primary key]
+  total float
+  tax float
+  id_metodo_pago int
+  id_cliente int
+  // default
+  created_at timestamp
+  update_at timestamp
+}
+
+Table customers{
+  id uuid [primary key]
+  dni varchar2(8)
+  // default
+  created_at timestamp
+  update_at timestamp
+}
+
+Table payments{
+  id integer [primary key]
+  tipo enum
+  // default
+  created_at timestamp
+  update_at timestamp
+}
+
+Ref: products.id_categoria > categories.id
+Ref: users.id < logs.id_usuarios
+Ref: order_details.id_metodo_pago > payments.id
+Ref: order_details.id_cliente > customers.id
+Ref: order.id_producto > products.id_orden
+Ref: order.id_orden_detalle > order_details.id
+/*
+Ref: posts.user_id > users.id // many-to-one
+Ref: users.id < follows.following_user_id
+Ref: users.id < follows.followed_user_id
+*/
