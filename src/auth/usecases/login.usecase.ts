@@ -1,4 +1,4 @@
-import { AuthRepository } from '@auth/infrastructure/respositories/auth.repository';
+import { AuthRepository } from '@auth/infrastructure/repositories/auth.repository';
 import {
   IBcryptService,
   IJwtService,

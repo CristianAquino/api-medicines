@@ -1,4 +1,5 @@
-import { AuthRepository } from '@auth/infrastructure/respositories/auth.repository';
+import { AuthRepository } from '@auth/infrastructure/repositories/auth.repository';
+import { CategoryRepository } from '@category/infrastructure/repositories/category.repository';
 import { TypeOrmConfigModule } from '@common/config/database-config/typeorm.module';
 import {
   Category,
@@ -29,7 +30,12 @@ import {
       Payment,
     ]),
   ],
-  providers: [SeedRepository, UserRepository, AuthRepository],
-  exports: [SeedRepository, UserRepository, AuthRepository],
+  providers: [
+    SeedRepository,
+    UserRepository,
+    AuthRepository,
+    CategoryRepository,
+  ],
+  exports: [SeedRepository, UserRepository, AuthRepository, CategoryRepository],
 })
 export class RepositoriesModule {}

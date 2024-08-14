@@ -14,7 +14,7 @@ export class Category {
   @PrimaryGeneratedColumn()
   id: number;
   @Column({ type: 'varchar', length: 32 })
-  name: string;
+  category: string;
   //   date
   @CreateDateColumn()
   createdAt: Date;

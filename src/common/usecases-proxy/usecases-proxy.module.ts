@@ -1,5 +1,12 @@
-import { AuthRepository } from '@auth/infrastructure/respositories/auth.repository';
+import { AuthRepository } from '@auth/infrastructure/repositories/auth.repository';
 import { LoginUseCase, LogoutUseCase } from '@auth/usecases';
+import { CategoryRepository } from '@category/infrastructure/repositories/category.repository';
+import {
+  AddCategoryUseCase,
+  DeleteCategoryUseCase,
+  GetAllCategoriesUseCase,
+  PutUpdateDataCategoryUseCase,
+} from '@category/usecases';
 import { LoggerModule } from '@common/logger/logger.module';
 import { LoggerService } from '@common/logger/logger.service';
 import { RepositoriesModule } from '@common/repository/repositories.module';
@@ -33,6 +40,12 @@ export class UsecaseProxyModule {
   static DELETE_USER_USECASE_PROXY = 'deleteUserUseCaseProxy';
   static GET_ALL_USERS_USECASE_PROXY = 'getAllUsersUseCaseProxy';
   static PUT_UPDATE_DATA_USER_USECASE_PROXY = 'putUpdateDataUserUseCaseProxy';
+  // category
+  static ADD_CATEGORY_USECASE_PROXY = 'addCategoryUseCaseProxy';
+  static GET_ALL_CATEGORY_USECASE_PROXY = 'getAllCategoryUseCaseProxy';
+  static PUT_UPDATE__DATA_CATEGORY_USECASE_PROXY =
+    'putUpdateDataCategoryUseCaseProxy';
+  static DELETE_CATEGORY_USECASE_PROXY = 'deleteCategoryUseCaseProxy';
 
   static register(): DynamicModule {
     return {
@@ -122,6 +135,50 @@ export class UsecaseProxyModule {
               ),
             ),
         },
+        {
+          inject: [LoggerService, CategoryRepository],
+          provide: UsecaseProxyModule.ADD_CATEGORY_USECASE_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            categoryRepository: CategoryRepository,
+          ) =>
+            new UseCaseProxy(
+              new AddCategoryUseCase(logger, categoryRepository),
+            ),
+        },
+        {
+          inject: [LoggerService, CategoryRepository],
+          provide: UsecaseProxyModule.GET_ALL_CATEGORY_USECASE_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            categoryRepository: CategoryRepository,
+          ) =>
+            new UseCaseProxy(
+              new GetAllCategoriesUseCase(logger, categoryRepository),
+            ),
+        },
+        {
+          inject: [LoggerService, CategoryRepository],
+          provide: UsecaseProxyModule.PUT_UPDATE__DATA_CATEGORY_USECASE_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            categoryRepository: CategoryRepository,
+          ) =>
+            new UseCaseProxy(
+              new PutUpdateDataCategoryUseCase(logger, categoryRepository),
+            ),
+        },
+        {
+          inject: [LoggerService, CategoryRepository],
+          provide: UsecaseProxyModule.DELETE_CATEGORY_USECASE_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            categoryRepository: CategoryRepository,
+          ) =>
+            new UseCaseProxy(
+              new DeleteCategoryUseCase(logger, categoryRepository),
+            ),
+        },
       ],
       exports: [
         UsecaseProxyModule.REGISTER_INITIAL_ADMIN_USER_USECASE_PROXY,
@@ -131,6 +188,10 @@ export class UsecaseProxyModule {
         UsecaseProxyModule.PUT_UPDATE_DATA_USER_USECASE_PROXY,
         UsecaseProxyModule.LOGOUT_USECASE_PROXY,
         UsecaseProxyModule.LOGIN_USECASE_PROXY,
+        UsecaseProxyModule.ADD_CATEGORY_USECASE_PROXY,
+        UsecaseProxyModule.GET_ALL_CATEGORY_USECASE_PROXY,
+        UsecaseProxyModule.PUT_UPDATE__DATA_CATEGORY_USECASE_PROXY,
+        UsecaseProxyModule.DELETE_CATEGORY_USECASE_PROXY,
       ],
     };
   }
