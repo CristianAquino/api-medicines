@@ -38,7 +38,7 @@ export class CategoryRepository implements ICategoryRepository {
       category,
     });
     if (!categoryFind) return null;
-    return this.findCategory(categoryFind);
+    return categoryFind;
   }
 
   private findCategory(category: Category): ReturnCategory {
