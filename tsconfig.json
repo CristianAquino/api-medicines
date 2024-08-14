@@ -20,7 +20,8 @@
     "paths": {
       "@common/*": ["src/common/*"],
       "@auth/*":["src/auth/*","src/auth/domain/*","src/auth/infrastructure/*","src/auth/usecases/*"],
-      "@user/*":["src/user/*","src/user/domain/*","src/user/infrastructure/*","src/user/usecases/*"]
+      "@user/*":["src/user/*","src/user/domain/*","src/user/infrastructure/*","src/user/usecases/*"],
+      "@category/*":["src/category/*","src/category/domain/*","src/category/infrastructure/*","src/category/usecases/*"]
     }
   },
   "exclude": ["node_modules", "dist","**/*.(spec|test).ts"],
