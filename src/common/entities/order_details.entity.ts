@@ -14,13 +14,13 @@ import { Order } from './order.entity';
 import { Payment } from './payment.entity';
 
 @Entity('orders_details')
-@Check(`"total" > 0`)
-@Check(`"tax" >= 0`)
+@Check('total_amount > 0')
+@Check('tax  >= 0')
 export class OrderDetail {
   @PrimaryGeneratedColumn()
   id: number;
   @Column({ type: 'float' })
-  total: number;
+  total_amount: number;
   @Column({ type: 'float' })
   tax: number;
   //   date

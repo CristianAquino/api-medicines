@@ -13,7 +13,7 @@ import { Product } from './product.entity';
 export class Category {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column({ type: 'varchar', length: 32 })
+  @Column({ type: 'varchar', length: 32, unique: true })
   category: string;
   //   date
   @CreateDateColumn()
