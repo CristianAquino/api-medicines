@@ -22,7 +22,7 @@ Table products {
   id uuid [primary key]
   name varchar2(64)
   sku varchar
-  quantity integer
+  stock integer
   available bool
   unit_price float
   expiration_date date

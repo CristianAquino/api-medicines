@@ -12,7 +12,7 @@ import { OrderDetail } from './order_details.entity';
 @Entity('customers')
 export class Customer {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
   @Column({ type: 'varchar', length: 8 })
   dni: string;
   //   date

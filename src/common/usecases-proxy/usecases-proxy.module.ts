@@ -15,6 +15,13 @@ import { BcryptService } from '@common/service/bcrypt/bcrypt.service';
 import { JwtModule } from '@common/service/jwt/jwt.module';
 import { JwtTokenService } from '@common/service/jwt/jwt.service';
 import { DynamicModule, Module } from '@nestjs/common';
+import { ProductRepository } from '@product/infrastructure/repositories/product.repository';
+import {
+  AddProductUseCase,
+  DeleteProductUseCase,
+  GetAllProductsUseCase,
+  PutUpdateDataProductUseCase,
+} from '@product/usecases';
 import { UserRepository } from '@user/infrastructure/repositories';
 import { SeedRepository } from '@user/repositories/seed.repository';
 import {
@@ -46,6 +53,12 @@ export class UsecaseProxyModule {
   static PUT_UPDATE__DATA_CATEGORY_USECASE_PROXY =
     'putUpdateDataCategoryUseCaseProxy';
   static DELETE_CATEGORY_USECASE_PROXY = 'deleteCategoryUseCaseProxy';
+  // product
+  static ADD_PRODUCT_USECASE_PROXY = 'addProductUseCaseProxy';
+  static GET_ALL_PRODUCTS_USECASE_PROXY = 'getAllProductsUseCaseProxy';
+  static DELETE_PRODUCT_BY_ID_USECASE_PROXY = 'deleteProductByIdUseCaseProxy';
+  static PUT_UPDATE_DATA_PRODUCT_USECASE_PROXY =
+    'putUpdateDataProductUseCaseProxy';
 
   static register(): DynamicModule {
     return {
@@ -179,6 +192,60 @@ export class UsecaseProxyModule {
               new DeleteCategoryUseCase(logger, categoryRepository),
             ),
         },
+        {
+          inject: [LoggerService, ProductRepository, CategoryRepository],
+          provide: UsecaseProxyModule.ADD_PRODUCT_USECASE_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            productRepository: ProductRepository,
+            categoryRepository: CategoryRepository,
+          ) =>
+            new UseCaseProxy(
+              new AddProductUseCase(
+                logger,
+                productRepository,
+                categoryRepository,
+              ),
+            ),
+        },
+        {
+          inject: [LoggerService, ProductRepository],
+          provide: UsecaseProxyModule.GET_ALL_PRODUCTS_USECASE_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            productRepository: ProductRepository,
+          ) =>
+            new UseCaseProxy(
+              new GetAllProductsUseCase(logger, productRepository),
+            ),
+        },
+        {
+          inject: [LoggerService, ProductRepository],
+          provide: UsecaseProxyModule.DELETE_PRODUCT_BY_ID_USECASE_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            productRepository: ProductRepository,
+          ) =>
+            new UseCaseProxy(
+              new DeleteProductUseCase(logger, productRepository),
+            ),
+        },
+        {
+          inject: [LoggerService, ProductRepository, CategoryRepository],
+          provide: UsecaseProxyModule.PUT_UPDATE_DATA_PRODUCT_USECASE_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            productRepository: ProductRepository,
+            categoryRepository: CategoryRepository,
+          ) =>
+            new UseCaseProxy(
+              new PutUpdateDataProductUseCase(
+                logger,
+                productRepository,
+                categoryRepository,
+              ),
+            ),
+        },
       ],
       exports: [
         UsecaseProxyModule.REGISTER_INITIAL_ADMIN_USER_USECASE_PROXY,
@@ -192,6 +259,10 @@ export class UsecaseProxyModule {
         UsecaseProxyModule.GET_ALL_CATEGORY_USECASE_PROXY,
         UsecaseProxyModule.PUT_UPDATE__DATA_CATEGORY_USECASE_PROXY,
         UsecaseProxyModule.DELETE_CATEGORY_USECASE_PROXY,
+        UsecaseProxyModule.ADD_PRODUCT_USECASE_PROXY,
+        UsecaseProxyModule.GET_ALL_PRODUCTS_USECASE_PROXY,
+        UsecaseProxyModule.DELETE_PRODUCT_BY_ID_USECASE_PROXY,
+        UsecaseProxyModule.PUT_UPDATE_DATA_PRODUCT_USECASE_PROXY,
       ],
     };
   }

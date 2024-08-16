@@ -16,7 +16,8 @@
         "@common/*": ["src/common/*"],
         "@auth/*":["src/auth/*","src/auth/domain/*","src/auth/infrastructure/*","src/auth/usecases/*"],
         "@user/*":["src/user/*","src/user/domain/*","src/user/infrastructure/*","src/user/usecases/*"],
-        "@category/*":["src/category/*","src/category/domain/*","src/category/infrastructure/*","src/category/usecases/*"]
+        "@category/*":["src/category/*","src/category/domain/*","src/category/infrastructure/*","src/category/usecases/*"],
+        "@product/*":["src/product/*","src/product/domain/*","src/product/infrastructure/*","src/product/usecases/*"]
       }
     },
     "minify": false

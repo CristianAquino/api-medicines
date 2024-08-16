@@ -13,18 +13,18 @@ import { Category } from './category.entity';
 import { Order } from './order.entity';
 
 @Entity('products')
-@Check('quantity >= 0')
+@Check('stock >= 0')
 @Check('unit_price > 0')
 export class Product {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  @Column({ type: 'varchar', length: 64 })
+  @Column({ type: 'varchar', length: 64, unique: true })
   name: string;
   @Column({ type: 'varchar' })
   sku: string;
   @Column({ type: 'int' })
-  quantity: number;
-  @Column({ type: 'boolean' })
+  stock: number;
+  @Column({ type: 'boolean', default: true })
   available: boolean;
   @Column({ type: 'float' })
   unit_price: number;
