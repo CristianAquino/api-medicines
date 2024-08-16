@@ -10,5 +10,5 @@ export interface ICategoryRepository {
   deleteById(id: number): Promise<number>;
   findAll(): Promise<ReturnCategory[]>;
   findById(id: number): Promise<ReturnCategory>;
-  findByCategoryName(category: string): Promise<ReturnCategory>;
+  findByCategoryName(category: string): Promise<any>;
 }
