@@ -12,6 +12,7 @@ import {
 } from '@common/entities';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ProductRepository } from '@product/infrastructure/repositories/product.repository';
 import {
   SeedRepository,
   UserRepository,
@@ -35,7 +36,14 @@ import {
     UserRepository,
     AuthRepository,
     CategoryRepository,
+    ProductRepository,
   ],
-  exports: [SeedRepository, UserRepository, AuthRepository, CategoryRepository],
+  exports: [
+    SeedRepository,
+    UserRepository,
+    AuthRepository,
+    CategoryRepository,
+    ProductRepository,
+  ],
 })
 export class RepositoriesModule {}
