@@ -18,7 +18,10 @@
         "@user/*":["src/user/*","src/user/domain/*","src/user/infrastructure/*","src/user/usecases/*"],
         "@category/*":["src/category/*","src/category/domain/*","src/category/infrastructure/*","src/category/usecases/*"],
         "@product/*":["src/product/*","src/product/domain/*","src/product/infrastructure/*","src/product/usecases/*"],
-        "@order/*":["src/order/*","src/order/domain/*","src/order/infrastructure/*","src/order/usecases/*"]
+        "@order/*":["src/order/*","src/order/domain/*","src/order/infrastructure/*","src/order/usecases/*"],
+        "@order_details/*":["src/order_details/*","src/order_details/domain/*","src/order_details/infrastructure/*","src/order_details/usecases/*"],
+        "@payment/*":["src/payment/*","src/payment/domain/*","src/payment/infrastructure/*","src/payment/usecases/*"],
+        "@customer/*":["src/customer/*","src/customer/domain/*","src/customer/infrastructure/*","src/customer/usecases/*"] 
       }
     },
     "minify": false
