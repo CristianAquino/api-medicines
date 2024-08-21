@@ -26,7 +26,7 @@ export class Product {
   stock: number;
   @Column({ type: 'boolean', default: true })
   available: boolean;
-  @Column({ type: 'float' })
+  @Column({ type: 'float', precision: 2 })
   unit_price: number;
   @Column({ type: 'date' })
   expiration_date: Date;

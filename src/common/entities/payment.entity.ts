@@ -1,18 +1,14 @@
+import { MethodPayment } from '@payment/infrastructure/controller/enum/payment.enum';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   Relation,
   UpdateDateColumn,
 } from 'typeorm';
 import { OrderDetail } from './order_details.entity';
-
-enum MethodPayment {
-  CASH = 'cash',
-  CARD = 'card',
-}
 
 @Entity('payments')
 export class Payment {
@@ -30,6 +26,6 @@ export class Payment {
   @UpdateDateColumn()
   updatedAt: Date;
   //   relations
-  @OneToMany(() => OrderDetail, (od) => od.payment)
-  orders_details: Relation<OrderDetail>[];
+  @OneToOne(() => OrderDetail, (od) => od.payment)
+  orders_details: Relation<OrderDetail>;
 }
