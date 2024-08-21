@@ -1,6 +1,6 @@
 import { Category, Product } from '@common/entities';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IProductRepository } from 'src/product/domain/repositories/productRepository.interface';
+import { IProductRepository } from '@product/domain/repositories/productRepository.interface';
 import { Repository } from 'typeorm';
 import { ProductDTO } from '../controller/dto';
 

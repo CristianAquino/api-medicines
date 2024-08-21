@@ -39,7 +39,10 @@ export class PutUpdateDataProductUseCase {
       product.category = findCategory;
       await this.productRepository.updateProductCategory(product);
     }
-    await this.productRepository.updateProduct(updated);
+    await this.productRepository.updateProduct({
+      ...updated,
+      // available: product.stock - updated.stock !== 0 ?? true,
+    });
     this.logger.log(
       'PutUpdateDataProductUseCase',
       'Product updated successfully',
