@@ -159,4 +159,6 @@ export class UpdateProductDTO extends IdProductDTO {
   @MinLength(3)
   @IsOptional()
   readonly category?: string;
+  @IsOptional()
+  readonly available?: boolean;
 }
