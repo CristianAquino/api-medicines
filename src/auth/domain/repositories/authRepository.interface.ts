@@ -1,3 +1,3 @@
 export interface IAuthRepository {
-  findOneByName(username: string): Promise<any>;
+  findByName(username: string): Promise<any>;
 }
