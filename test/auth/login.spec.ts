@@ -10,17 +10,19 @@ describe('Test login use case', () => {
   let bcryptService: IBcryptService;
   let authRepository: IAuthRepository;
 
+  const username = 'username';
+  const password = 'password';
+
   beforeAll(() => {
     logger = {} as ILogger;
     logger.log = jest.fn();
-    logger.warn = jest.fn();
     logger.error = jest.fn();
 
     bcryptService = {} as IBcryptService;
     bcryptService.compare = jest.fn();
 
     authRepository = {} as IAuthRepository;
-    authRepository.findOneByName = jest.fn();
+    authRepository.findByName = jest.fn();
 
     jwtTokenService = {} as IJwtService;
     jwtTokenService.createToken = jest.fn();
@@ -47,14 +49,15 @@ describe('Test login use case', () => {
       role: 'user',
     };
     const secret = 'helloworld';
-    const expireIn = 24;
+    const expireIn = 86400;
     const token = 'token';
     (jwtTokenService.createToken as jest.Mock).mockReturnValue(token);
 
-    expect(
-      await loginUseCase.getCookieWithJwtToken(payload.id, payload.role),
-    ).toEqual(`Authentication=${token}; HttpOnly; Path=/; Max-Age=${expireIn}`);
-
+    await expect(
+      loginUseCase.getCookieWithJwtToken(payload.id, payload.role),
+    ).resolves.toEqual(
+      `Authentication=${token}; HttpOnly; Path=/; Max-Age=${expireIn}`,
+    );
     expect(logger.log).toHaveBeenCalledWith(
       'LoginUseCases',
       `The user ${payload.id} have been logged.`,
@@ -66,16 +69,15 @@ describe('Test login use case', () => {
     );
   });
 
-  it('validation local strategy,should return null because user not found', async () => {
-    const username = 'username';
-    const password = 'XXXXXXXX';
-    (authRepository.findOneByName as jest.Mock).mockResolvedValue(
+  it('validation local strategy,should return an error because user not found', async () => {
+    (authRepository.findByName as jest.Mock).mockResolvedValue(
       Promise.resolve([null, null]),
     );
-    expect(
-      await loginUseCase.validateUserForLocalStragtegy(username, password),
-    ).toBeNull();
-    expect(authRepository.findOneByName).toHaveBeenCalledWith(username);
+
+    await expect(
+      loginUseCase.validateUserForLocalStragtegy(username, password),
+    ).rejects.toThrow('Invalid username or password.');
+    expect(authRepository.findByName).toHaveBeenCalledWith(username);
     expect(logger.error).toBeCalledWith(
       'LoginUseCases',
       'The user has not been validated',
@@ -85,21 +87,19 @@ describe('Test login use case', () => {
   });
 
   it('validation local strategy,should return null because password is not correct', async () => {
-    const username = 'username';
-    const password = 'password';
     const user = {
       id: '1',
-      password: 'password1234',
+      password: password + 'nnnn',
     };
-    (authRepository.findOneByName as jest.Mock).mockResolvedValue(
+    (authRepository.findByName as jest.Mock).mockResolvedValue(
       Promise.resolve([user, user.password]),
     );
     (bcryptService.compare as jest.Mock).mockResolvedValue(false);
 
-    expect(
-      await loginUseCase.validateUserForLocalStragtegy(username, password),
-    ).toBeNull();
-    expect(authRepository.findOneByName).toHaveBeenCalledWith(username);
+    await expect(
+      loginUseCase.validateUserForLocalStragtegy(username, password),
+    ).resolves.toBeNull();
+    expect(authRepository.findByName).toHaveBeenCalledWith(username);
     expect(logger.error).toBeCalledWith(
       'LoginUseCases',
       'The user has not been validated',
@@ -107,27 +107,26 @@ describe('Test login use case', () => {
     expect(bcryptService.compare).toHaveBeenCalledWith(password, user.password);
     expect(logger.log).not.toBeCalled();
   });
+
   it('validation local strategy,should return user', async () => {
-    const username = 'username';
-    const password = 'password';
     const user = {
       id: '1',
-      password: 'password1234',
+      password,
     };
-    (authRepository.findOneByName as jest.Mock).mockResolvedValue(
+    (authRepository.findByName as jest.Mock).mockResolvedValue(
       Promise.resolve([user, user.password]),
     );
     (bcryptService.compare as jest.Mock).mockResolvedValue(true);
 
-    expect(
-      await loginUseCase.validateUserForLocalStragtegy(username, password),
-    ).toEqual(user);
-    expect(authRepository.findOneByName).toHaveBeenCalledWith(username);
-    expect(logger.error).not.toBeCalled();
+    await expect(
+      loginUseCase.validateUserForLocalStragtegy(username, password),
+    ).resolves.toEqual(user);
+    expect(authRepository.findByName).toHaveBeenCalledWith(username);
     expect(bcryptService.compare).toHaveBeenCalledWith(password, user.password);
     expect(logger.log).toBeCalledWith(
       'LoginUseCases',
       'The user has been validated',
     );
+    expect(logger.error).not.toBeCalled();
   });
 });
