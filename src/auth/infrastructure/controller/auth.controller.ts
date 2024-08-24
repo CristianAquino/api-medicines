@@ -1,10 +1,10 @@
 import { LoginUseCase, LogoutUseCase } from '@auth/usecases';
 import { ResponseErrorDTO } from '@common/dto';
+import { UserModel } from '@common/entities/models';
 import { JwtAuthGuard, LoginGuard } from '@common/guards';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
 import { UsecaseProxyModule } from '@common/usecases-proxy/usecases-proxy.module';
 import {
-  Body,
   Controller,
   HttpCode,
   HttpStatus,
@@ -43,22 +43,23 @@ export class AuthController {
     private readonly logoutUsecaseProxy: UseCaseProxy<LogoutUseCase>,
   ) {}
 
-  @Post('login')
   @UseGuards(LoginGuard)
+  @Post('login')
   @ApiBody({ type: LoginDTO })
   @ApiOperation({ description: 'Login' })
   @HttpCode(HttpStatus.OK)
-  async login(@Body() loginDTO: LoginDTO, @Req() request: Request) {
-    const user: any = request.user;
+  async login(@Req() request: Request) {
+    const user = request.user as UserModel;
     const accessTokenCookie = await this.loginUsecaseProxy
       .getInstance()
       .getCookieWithJwtToken(user.id, user.role);
+    console.log(accessTokenCookie);
     request.res.setHeader('Set-Cookie', accessTokenCookie);
     return 'Login successful';
   }
 
-  @Post('logout')
   @UseGuards(JwtAuthGuard)
+  @Post('logout')
   @ApiCookieAuth()
   @ApiOperation({ description: 'Logout' })
   @HttpCode(HttpStatus.OK)
