@@ -1,18 +1,20 @@
-import { AuthRepository } from '@auth/infrastructure/repositories/auth.repository';
+import { IAuthRepository } from '@auth/domain/repositories/authRepository.interface';
 import {
   IBcryptService,
   IJwtService,
   IJwtServicePayload,
 } from '@common/adapters';
 import { envs } from '@common/config/environment-config';
+import { UserModel } from '@common/entities/models';
 import { ILogger } from '@common/logger/logger.interface';
+import { UnauthorizedException } from '@nestjs/common';
 
 export class LoginUseCase {
   constructor(
     private readonly logger: ILogger,
     private readonly jwtTokenService: IJwtService,
     private readonly bcryptService: IBcryptService,
-    private readonly authRepository: AuthRepository,
+    private readonly authRepository: IAuthRepository,
   ) {}
 
   async getCookieWithJwtToken(id: string, role: string) {
@@ -24,11 +26,14 @@ export class LoginUseCase {
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${envs.jwtExpirationTime}`;
   }
 
-  async validateUserForLocalStragtegy(username: string, pass: string) {
-    const [user, password] = await this.authRepository.findOneByName(username);
+  async validateUserForLocalStragtegy(
+    username: string,
+    pass: string,
+  ): Promise<UserModel> {
+    const [user, password] = await this.authRepository.findByName(username);
     if (!user) {
       this.logger.error('LoginUseCases', 'The user has not been validated');
-      return null;
+      throw new UnauthorizedException('Invalid username or password.');
     }
     const match = await this.bcryptService.compare(pass, password);
     if (user && match) {
