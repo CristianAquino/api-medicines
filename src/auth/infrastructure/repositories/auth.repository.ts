@@ -2,7 +2,7 @@ import { IAuthRepository } from '@auth/domain/repositories/authRepository.interf
 import { User } from '@common/entities';
 import { UserModel } from '@common/entities/models';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ReturnUserData } from '@user/infrastructure/controller/dto';
+import { UserData } from '@user/infrastructure/controller/dto';
 import { Repository } from 'typeorm';
 
 export class AuthRepository implements IAuthRepository {
@@ -16,11 +16,12 @@ export class AuthRepository implements IAuthRepository {
     return [this.userAdapter(user), user.password];
   }
 
-  private userAdapter(user: UserModel): ReturnUserData {
+  private userAdapter(user: UserModel): UserData {
     const userDTO = new UserModel();
     userDTO.id = user.id;
     userDTO.username = user.username;
     userDTO.role = user.role;
+    userDTO.available = user.available;
     return userDTO;
   }
 }
