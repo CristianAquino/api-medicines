@@ -52,8 +52,7 @@ export class AuthController {
     const user = request.user as UserModel;
     const accessTokenCookie = await this.loginUsecaseProxy
       .getInstance()
-      .getCookieWithJwtToken(user.id, user.role);
-    console.log(accessTokenCookie);
+      .getCookieWithJwtToken(user.id, user.role, user.available);
     request.res.setHeader('Set-Cookie', accessTokenCookie);
     return 'Login successful';
   }

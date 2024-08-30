@@ -17,9 +17,9 @@ export class LoginUseCase {
     private readonly authRepository: IAuthRepository,
   ) {}
 
-  async getCookieWithJwtToken(id: string, role: string) {
+  async getCookieWithJwtToken(id: string, role: string, available: boolean) {
     this.logger.log('LoginUseCases', `The user ${id} have been logged.`);
-    const payload: IJwtServicePayload = { id, role };
+    const payload: IJwtServicePayload = { id, role, available };
     const secret = envs.jwtSecret;
     const expiresIn = envs.jwtExpirationTime + 's';
     const token = this.jwtTokenService.createToken(payload, secret, expiresIn);
