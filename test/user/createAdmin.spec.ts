@@ -1,10 +1,10 @@
 import { IBcryptService } from '../../src/common/adapters';
 import { ILogger } from '../../src/common/logger/logger.interface';
 import { ISeedRepository } from '../../src/user/domain/repositories';
-import { AddAdminUserUseCase } from '../../src/user/usecases';
+import { CreateAdminUserUseCase } from '../../src/user/usecases';
 
 describe('Test add admin usecase', () => {
-  let addAdminUserUseCase: AddAdminUserUseCase;
+  let createAdminUserUseCase: CreateAdminUserUseCase;
   let logger: ILogger;
   let bcryptService: IBcryptService;
   let userRepository: ISeedRepository;
@@ -12,16 +12,17 @@ describe('Test add admin usecase', () => {
   beforeAll(() => {
     logger = {} as ILogger;
     logger.log = jest.fn();
+    logger.warn = jest.fn();
 
     bcryptService = {} as IBcryptService;
     bcryptService.hash = jest.fn();
     bcryptService.compare = jest.fn();
 
     userRepository = {} as ISeedRepository;
-    userRepository.addAdminUser = jest.fn();
+    userRepository.createAdminUser = jest.fn();
     userRepository.verifyIsExistingAdminUser = jest.fn();
 
-    addAdminUserUseCase = new AddAdminUserUseCase(
+    createAdminUserUseCase = new CreateAdminUserUseCase(
       logger,
       userRepository,
       bcryptService,
@@ -33,7 +34,7 @@ describe('Test add admin usecase', () => {
   });
 
   it('should be defined', () => {
-    expect(addAdminUserUseCase).toBeDefined();
+    expect(createAdminUserUseCase).toBeDefined();
   });
 
   it('should create an admin user if not exists', async () => {
@@ -44,17 +45,17 @@ describe('Test add admin usecase', () => {
       Promise.resolve('admin1234'),
     );
 
-    await expect(addAdminUserUseCase.execute()).resolves.toBeUndefined();
+    await expect(createAdminUserUseCase.execute()).resolves.toBeUndefined();
     expect(userRepository.verifyIsExistingAdminUser).toHaveBeenCalledWith(
       'admin',
     );
     expect(bcryptService.hash).toHaveBeenCalledWith('admin1234');
-    expect(userRepository.addAdminUser).toHaveBeenCalledWith(
+    expect(userRepository.createAdminUser).toHaveBeenCalledWith(
       'admin',
       'admin1234',
     );
     expect(logger.log).toHaveBeenCalledWith(
-      'AddAdminUser',
+      'CreateAdminUser',
       'Admin user created successfully.',
     );
   });
@@ -64,14 +65,14 @@ describe('Test add admin usecase', () => {
       true,
     );
 
-    await expect(addAdminUserUseCase.execute()).resolves.toBeUndefined();
+    await expect(createAdminUserUseCase.execute()).resolves.toBeUndefined();
     expect(userRepository.verifyIsExistingAdminUser).toHaveBeenCalledWith(
       'admin',
     );
     expect(bcryptService.hash).not.toHaveBeenCalled();
-    expect(userRepository.addAdminUser).not.toHaveBeenCalled();
-    expect(logger.log).toHaveBeenCalledWith(
-      'AddAdminUser',
+    expect(userRepository.createAdminUser).not.toHaveBeenCalled();
+    expect(logger.warn).toHaveBeenCalledWith(
+      'CreateAdminUser',
       'Admin user already exists.',
     );
   });

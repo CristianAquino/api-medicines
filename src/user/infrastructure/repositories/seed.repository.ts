@@ -20,11 +20,12 @@ export class SeedRepository implements ISeedRepository {
     return !!existAdmin;
   }
 
-  async addAdminUser(username: string, password: string): Promise<void> {
+  async createAdminUser(username: string, password: string): Promise<void> {
     const admin = new UserModel();
     admin.username = username;
     admin.password = password;
     admin.role = Role.ADMIN;
+    admin.available = true;
     await this.userEntityRepository.save(admin);
   }
 }

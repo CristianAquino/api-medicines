@@ -2,7 +2,7 @@ import { IBcryptService } from '@common/adapters';
 import { ILogger } from '@common/logger/logger.interface';
 import { ISeedRepository } from '@user/domain/repositories';
 
-export class AddAdminUserUseCase {
+export class CreateAdminUserUseCase {
   constructor(
     private readonly logger: ILogger,
     private readonly seedRepository: ISeedRepository,
@@ -17,11 +17,11 @@ export class AddAdminUserUseCase {
     );
 
     if (isExist) {
-      this.logger.log('AddAdminUser', 'Admin user already exists.');
+      this.logger.warn('CreateAdminUser', 'Admin user already exists.');
     } else {
       const hashedPassword = await this.bcryptService.hash(password);
-      await this.seedRepository.addAdminUser(username, hashedPassword);
-      this.logger.log('AddAdminUser', 'Admin user created successfully.');
+      await this.seedRepository.createAdminUser(username, hashedPassword);
+      this.logger.log('CreateAdminUser', 'Admin user created successfully.');
     }
   }
 }
