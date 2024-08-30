@@ -20,7 +20,7 @@ describe('Test add user usecase', () => {
     bcryptService.hash = jest.fn();
 
     userRepository = {} as IUserRepository;
-    userRepository.insert = jest.fn();
+    userRepository.addUser = jest.fn();
     userRepository.findOneByName = jest.fn();
 
     addUserUseCase = new AddUserUseCase(logger, userRepository, bcryptService);
@@ -52,7 +52,7 @@ describe('Test add user usecase', () => {
       addUseDTO.username,
     );
     expect(bcryptService.hash).not.toHaveBeenCalled();
-    expect(userRepository.insert).not.toHaveBeenCalled();
+    expect(userRepository.addUser).not.toHaveBeenCalled();
     expect(logger.warn).toHaveBeenCalledWith(
       'AddUserUseCase execute',
       'User already exists',
@@ -81,7 +81,7 @@ describe('Test add user usecase', () => {
       addUseDTO.username,
     );
     expect(bcryptService.hash).toHaveBeenCalledWith(addUseDTO.password);
-    expect(userRepository.insert).toHaveBeenCalledWith({
+    expect(userRepository.addUser).toHaveBeenCalledWith({
       ...addUseDTO,
       password: 'hashedPassword',
     });

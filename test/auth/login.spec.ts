@@ -47,6 +47,7 @@ describe('Test login use case', () => {
     const payload = {
       id: '1',
       role: 'user',
+      available: true,
     };
     const secret = 'helloworld';
     const expireIn = 86400;
@@ -54,7 +55,11 @@ describe('Test login use case', () => {
     (jwtTokenService.createToken as jest.Mock).mockReturnValue(token);
 
     await expect(
-      loginUseCase.getCookieWithJwtToken(payload.id, payload.role),
+      loginUseCase.getCookieWithJwtToken(
+        payload.id,
+        payload.role,
+        payload.available,
+      ),
     ).resolves.toEqual(
       `Authentication=${token}; HttpOnly; Path=/; Max-Age=${expireIn}`,
     );

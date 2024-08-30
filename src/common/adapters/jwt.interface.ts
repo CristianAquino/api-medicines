@@ -1,6 +1,7 @@
 export interface IJwtServicePayload {
   id: string;
   role: string;
+  available: boolean;
 }
 
 export interface IJwtService {
