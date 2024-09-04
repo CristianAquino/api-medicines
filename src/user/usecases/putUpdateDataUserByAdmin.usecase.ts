@@ -2,23 +2,38 @@ import { ILogger } from '@common/logger/logger.interface';
 import { NotFoundException } from '@nestjs/common';
 import { UserRepository } from '@user/infrastructure/repositories';
 
-export class PutUpdateDataUserUseCase {
+export class PutUpdateDataUserByAdminUseCase {
   constructor(
     private readonly logger: ILogger,
     private readonly userRepository: UserRepository,
   ) {}
   async execute(data: any): Promise<string> {
-    const updated = await this.userRepository.updateContentToUser(data);
-    if (updated == 0) {
+    const user = await this.userRepository.findById(data.id);
+    if (!user) {
       this.logger.warn(
-        'PutUpdateDataUserUseCase',
+        'PutUpdateDataUserByAdminUseCase',
         'User not found, please check the information',
       );
       throw new NotFoundException(
         'User not found, please check the information',
       );
     }
-    this.logger.log('PutUpdateDataUserUseCase', 'User updated successfully');
+
+    const updated = await this.userRepository.updateContentToAdmin(data);
+    if (updated == 0) {
+      this.logger.warn(
+        'PutUpdateDataUserByAdminUseCase',
+        'User not found, please check the information',
+      );
+      throw new NotFoundException(
+        'User not found, please check the information',
+      );
+    }
+
+    this.logger.log(
+      'PutUpdateDataUserByAdminUseCase',
+      'User updated successfully',
+    );
     return 'User updated successfully';
   }
 }
