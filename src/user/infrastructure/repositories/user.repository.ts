@@ -1,15 +1,15 @@
 import { User } from '@common/entities';
+import { UserModel } from '@common/entities/models';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IUserRepository } from '@user/domain/repositories';
 import { Repository } from 'typeorm';
 import {
-  AddUserDTO,
+  AllUsersData,
+  CreateUserDTO,
   FindAllUsersDTO,
-  ReturnAllUserData,
-  ReturnUserData,
-  UpdateByAdminDTO,
-  UpdateDataByUserDTO,
+  UpdateDataUserByAdminDTO,
+  UserData,
 } from '../controller/dto';
 
 @Injectable()
@@ -19,35 +19,26 @@ export class UserRepository implements IUserRepository {
     private readonly userEntityRepository: Repository<User>,
   ) {}
 
-  async insert(user: AddUserDTO): Promise<void> {
-    await this.userEntityRepository.save(user);
+  async createUser(createUserDTO: CreateUserDTO): Promise<void> {
+    await this.userEntityRepository.save(createUserDTO);
   }
-  async findById(id: string): Promise<ReturnUserData> {
-    const user = await this.userEntityRepository.findOneBy({ id });
-    if (!user) return null;
-    return this.toFindAll(user);
-  }
-  async findOneByName(username: string): Promise<ReturnUserData> {
-    const user = await this.userEntityRepository.findOneBy({ username });
-    if (!user) return null;
-    return this.toFindAll(user);
-  }
-  async findAll(findAllUsersDTO: FindAllUsersDTO): Promise<ReturnAllUserData> {
+  async findAll(findAllUsersDTO: FindAllUsersDTO): Promise<AllUsersData> {
     const { limit, page, username, role } = findAllUsersDTO;
     const query = this.userEntityRepository.createQueryBuilder('user');
 
     if (username && role) {
-      query.andWhere('user.username LIKE :username AND user.role = :role', {
+      query.andWhere(
+        'LOWER(user.username) LIKE LOWER(:username) AND user.role = :role',
+        {
+          username: `%${username}%`,
+          role: role,
+        },
+      );
+    } else if (username) {
+      query.andWhere('LOWER(user.username) LIKE LOWER(:username)', {
         username: `%${username}%`,
-        role: role,
       });
-    }
-    if (username) {
-      query.andWhere('user.username LIKE :username', {
-        username: `%${username}%`,
-      });
-    }
-    if (role) {
+    } else if (role) {
       query.andWhere('user.role = :role', { role });
     }
 
@@ -58,7 +49,7 @@ export class UserRepository implements IUserRepository {
     const last_page = Math.ceil(total_users / limit);
 
     return {
-      data: users.map((user) => this.toFindAll(user)),
+      data: users.map((user) => this.userAdapter(user)),
       meta: {
         total: total_users,
         page,
@@ -66,32 +57,44 @@ export class UserRepository implements IUserRepository {
       },
     };
   }
-  //   pensar en dos endpoints
-  // o en uno solo
-  //   donde el primero usa DTO para admin
-  // el otro usa DTO para user
-  async updateContentByUser(data: UpdateDataByUserDTO): Promise<number> {
-    console.log(data);
+  async findById(id: string): Promise<UserData> {
+    const user = await this.userEntityRepository.findOneBy({ id });
+    if (!user) return null;
+    return this.userAdapter(user);
+  }
+  async findOneByName(username: string): Promise<UserData> {
+    const user = await this.userEntityRepository.findOneBy({ username });
+    if (!user) return null;
+    return this.userAdapter(user);
+  }
+  async updateContentToUser(data: any): Promise<number> {
     const { id, ...content } = data;
     const updated = await this.userEntityRepository.update({ id }, content);
     return updated.affected;
   }
-  async updateContentByAdmin(
-    id: string,
-    content: UpdateByAdminDTO,
-  ): Promise<void> {
-    await this.userEntityRepository.update({ id }, content);
+  async updateContentToAdmin(data: UpdateDataUserByAdminDTO): Promise<number> {
+    const { id, ...content } = data;
+    const updated = await this.userEntityRepository.update({ id }, content);
+    return updated.affected;
+  }
+  async updatePassword(id: string, password: string): Promise<number> {
+    const updated = await this.userEntityRepository.update(
+      { id },
+      { password },
+    );
+    return updated.affected;
   }
   async deleteById(id: string): Promise<number> {
     const del = await this.userEntityRepository.delete({ id });
     return del.affected;
   }
 
-  private toFindAll(user: User): ReturnUserData {
-    const userDTO = new User();
+  private userAdapter(user: UserModel): UserData {
+    const userDTO = new UserModel();
     userDTO.id = user.id;
     userDTO.username = user.username;
     userDTO.role = user.role;
+    userDTO.available = user.available;
     return userDTO;
   }
 }
