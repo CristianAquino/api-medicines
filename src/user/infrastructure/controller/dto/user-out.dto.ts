@@ -1,7 +1,8 @@
 import { ResponseDTO } from '@common/dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { Role } from '../enum/user.enum';
 
-export class ReturnUserData {
+export class UserData {
   @ApiProperty({
     example: '123e4567-e89b-12d3-a456-426614174001',
     description: 'user id',
@@ -13,10 +14,15 @@ export class ReturnUserData {
   })
   username: string;
   @ApiProperty({
-    example: 'user',
+    example: Role.USER,
     description: 'role user',
   })
   role: string;
+  @ApiProperty({
+    example: true,
+    description: 'user available',
+  })
+  available: boolean;
 }
 
 export class MetaPaginationUserData {
@@ -37,12 +43,12 @@ export class MetaPaginationUserData {
   total: number;
 }
 
-export class ReturnAllUserData {
+export class AllUsersData {
   @ApiProperty({
-    type: [ReturnUserData],
+    type: [UserData],
     description: 'data',
   })
-  data: ReturnUserData[];
+  data: UserData[];
   @ApiProperty({
     type: MetaPaginationUserData,
     description: 'meta',
@@ -50,17 +56,24 @@ export class ReturnAllUserData {
   meta: MetaPaginationUserData;
 }
 
-export class SWGReturnAllUserData extends ResponseDTO {
+export class SWGAllUsersData extends ResponseDTO {
   @ApiProperty({
-    type: ReturnAllUserData,
+    type: AllUsersData,
     description: 'data',
   })
-  data: ReturnAllUserData;
+  data: AllUsersData;
 }
-export class SWGReturnUserData extends ResponseDTO {
+export class SWGUserData extends ResponseDTO {
   @ApiProperty({
-    type: ReturnUserData,
+    type: UserData,
     description: 'data',
   })
-  data: ReturnUserData;
+  data: UserData;
+}
+export class SWGMessage extends ResponseDTO {
+  @ApiProperty({
+    example: 'message describing the action performed',
+    description: 'message describing the action performed',
+  })
+  data: string;
 }

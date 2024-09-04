@@ -1,3 +1,4 @@
+import { IsNotEqualTo } from '@common/decorators';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -11,18 +12,6 @@ import {
 } from 'class-validator';
 import { Role, RoleList } from '../enum/user.enum';
 
-export class UsernameDTO {
-  @ApiProperty({
-    required: true,
-    example: 'lorem',
-    description: 'username',
-  })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(3)
-  readonly username: string;
-}
-
 export class IdUserDTO {
   @ApiProperty({
     required: true,
@@ -33,20 +22,19 @@ export class IdUserDTO {
   @IsNotEmpty()
   readonly id: string;
 }
-
-export class AddUserDTO extends UsernameDTO {
+export class CreateUserDTO {
   @ApiProperty({
     required: true,
-    example: 'lorem1234',
-    description: 'password',
+    example: 'lorem',
+    description: 'username',
   })
   @IsString()
   @IsNotEmpty()
-  @MinLength(8)
-  readonly password: string;
+  @MinLength(3)
+  readonly username: string;
   @ApiProperty({
     required: true,
-    example: 'user',
+    example: Role.USER,
     description: 'role user',
     enum: RoleList,
     default: Role.USER,
@@ -56,6 +44,57 @@ export class AddUserDTO extends UsernameDTO {
     message: `Possible status value are ${RoleList}`,
   })
   readonly role: Role = Role.USER;
+}
+
+export class UpdatePasswordDTO {
+  @ApiProperty({
+    required: true,
+    example: 'lorem1234',
+    description: 'password',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(8)
+  readonly oldPassword: string;
+  @ApiProperty({
+    required: true,
+    example: 'lorem1234',
+    description: 'password',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(8)
+  @IsNotEqualTo('oldPassword')
+  readonly newPassword: string;
+}
+
+export class UpdateDataByUserDTO {
+  @ApiProperty({
+    required: false,
+    example: 'lorem',
+    description: 'new username',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  @MinLength(3)
+  readonly username?: string;
+}
+
+export class UpdateDataUserByAdminDTO extends IdUserDTO {
+  @ApiProperty({
+    required: false,
+    example: Role.USER,
+    description: 'role user',
+    enum: RoleList,
+    default: Role.USER,
+  })
+  @IsString()
+  @IsEnum(RoleList, {
+    message: `Possible status value are ${RoleList}`,
+  })
+  @IsOptional()
+  readonly role?: Role;
 }
 
 export class PaginationDTO {
@@ -77,37 +116,6 @@ export class PaginationDTO {
   @IsOptional()
   @Type(() => Number)
   readonly limit?: number = 10;
-}
-export class UpdateDataByUserDTO extends IdUserDTO {
-  @ApiProperty({
-    required: false,
-    example: 'lorem',
-    description: 'new username',
-  })
-  @IsString()
-  @IsNotEmpty()
-  @IsOptional()
-  @MinLength(3)
-  readonly username?: string;
-  @ApiProperty({
-    required: false,
-    example: 'lorem1234',
-    description: 'new user password',
-  })
-  @IsString()
-  @IsNotEmpty()
-  @IsOptional()
-  @MinLength(8)
-  readonly password?: string;
-}
-
-export class UpdateByAdminDTO extends UpdateDataByUserDTO {
-  @IsString()
-  @IsEnum(RoleList, {
-    message: `Possible status value are ${RoleList}`,
-  })
-  @IsOptional()
-  readonly role: Role = Role.USER;
 }
 
 export class FindAllUsersDTO extends PaginationDTO {
