@@ -12,6 +12,9 @@ interface EnvVars {
   DATABASE_NAME: string;
   JWT_SECRET: string;
   JWT_EXPIRATION_TIME: number;
+  JWT_SECRET_CHANGE_PASSWORD: string;
+  JWT_EXPIRATION_TIME_CHANGE_PASSWORD: number;
+  URL_CHANGE_PASSWORD: string;
 }
 const envsSchema = joi
   .object({
@@ -25,6 +28,9 @@ const envsSchema = joi
     DATABASE_NAME: joi.string(),
     JWT_SECRET: joi.string().required(),
     JWT_EXPIRATION_TIME: joi.number().required(),
+    JWT_SECRET_CHANGE_PASSWORD: joi.string().required(),
+    JWT_EXPIRATION_TIME_CHANGE_PASSWORD: joi.number().required(),
+    URL_CHANGE_PASSWORD: joi.string().required(),
   })
   .unknown(true);
 
@@ -50,4 +56,7 @@ export const envs = {
   databaseName: envVars.DATABASE_NAME,
   jwtSecret: envVars.JWT_SECRET,
   jwtExpirationTime: envVars.JWT_EXPIRATION_TIME,
+  jwtSecretChangePassword: envVars.JWT_SECRET_CHANGE_PASSWORD,
+  jwtExpirationTimeChangePassword: envVars.JWT_EXPIRATION_TIME_CHANGE_PASSWORD,
+  urlChangePassword: envVars.URL_CHANGE_PASSWORD,
 };
