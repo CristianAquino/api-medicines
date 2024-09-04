@@ -17,7 +17,6 @@ describe('Test get all users usecase', () => {
   beforeAll(() => {
     logger = {} as ILogger;
     logger.log = jest.fn();
-    logger.warn = jest.fn();
 
     userRepository = {} as IUserRepository;
     userRepository.findAll = jest.fn();
@@ -33,7 +32,7 @@ describe('Test get all users usecase', () => {
     expect(getAllUsersUseCase).toBeDefined();
   });
 
-  it('should return a warning message if not users', async () => {
+  it('should return a logger message if not users', async () => {
     const findAllUsersByUsernameDTO: FindAllUsersDTO = {
       page: 1,
       limit: 10,
@@ -47,11 +46,10 @@ describe('Test get all users usecase', () => {
     expect(userRepository.findAll).toHaveBeenCalledWith(
       findAllUsersByUsernameDTO,
     );
-    expect(logger.warn).toHaveBeenCalledWith(
-      'GetAllUsersUseCase execute',
-      'No found users',
+    expect(logger.log).toHaveBeenCalledWith(
+      'GetAllUsersUseCase',
+      'Users not found',
     );
-    expect(logger.log).not.toHaveBeenCalled();
   });
 
   it('should return all users', async () => {
@@ -71,9 +69,8 @@ describe('Test get all users usecase', () => {
     expect(userRepository.findAll).toHaveBeenCalledWith(
       findAllUsersByUsernameDTO,
     );
-    expect(logger.warn).not.toHaveBeenCalled();
     expect(logger.log).toHaveBeenCalledWith(
-      'GetAllUserUseCase execute',
+      'GetAllUserUseCase',
       'Return all users finds',
     );
   });
@@ -98,9 +95,8 @@ describe('Test get all users usecase', () => {
     expect(userRepository.findAll).toHaveBeenCalledWith(
       findAllUsersByUsernameDTO,
     );
-    expect(logger.warn).not.toHaveBeenCalled();
     expect(logger.log).toHaveBeenCalledWith(
-      'GetAllUserUseCase execute',
+      'GetAllUserUseCase',
       'Return all users finds',
     );
   });
@@ -127,9 +123,8 @@ describe('Test get all users usecase', () => {
     expect(userRepository.findAll).toHaveBeenCalledWith(
       findAllUsersByUsernameDTO,
     );
-    expect(logger.warn).not.toHaveBeenCalled();
     expect(logger.log).toHaveBeenCalledWith(
-      'GetAllUserUseCase execute',
+      'GetAllUserUseCase',
       'Return all users finds',
     );
   });
