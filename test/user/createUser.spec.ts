@@ -1,15 +1,20 @@
 import { IBcryptService } from '../../src/common/adapters';
 import { ILogger } from '../../src/common/logger/logger.interface';
 import { IUserRepository } from '../../src/user/domain/repositories';
-import { AddUserDTO } from '../../src/user/infrastructure/controller/dto';
+import { CreateUserDTO } from '../../src/user/infrastructure/controller/dto';
 import { Role } from '../../src/user/infrastructure/controller/enum/user.enum';
-import { AddUserUseCase } from '../../src/user/usecases';
+import { CreateUserUseCase } from '../../src/user/usecases';
 
 describe('Test add user usecase', () => {
-  let addUserUseCase: AddUserUseCase;
+  let createUserUseCase: CreateUserUseCase;
   let logger: ILogger;
   let bcryptService: IBcryptService;
   let userRepository: IUserRepository;
+
+  const createUserDTO: CreateUserDTO = {
+    username: 'lorem',
+    role: Role.USER,
+  };
 
   beforeAll(() => {
     logger = {} as ILogger;
@@ -20,10 +25,14 @@ describe('Test add user usecase', () => {
     bcryptService.hash = jest.fn();
 
     userRepository = {} as IUserRepository;
-    userRepository.addUser = jest.fn();
+    userRepository.createUser = jest.fn();
     userRepository.findOneByName = jest.fn();
 
-    addUserUseCase = new AddUserUseCase(logger, userRepository, bcryptService);
+    createUserUseCase = new CreateUserUseCase(
+      logger,
+      userRepository,
+      bcryptService,
+    );
   });
 
   afterEach(() => {
@@ -31,63 +40,55 @@ describe('Test add user usecase', () => {
   });
 
   it('should be defined', () => {
-    expect(addUserUseCase).toBeDefined();
+    expect(createUserUseCase).toBeDefined();
   });
 
   it('should return an error if the user already exists', async () => {
-    const addUseDTO: AddUserDTO = {
-      username: 'user',
-      password: 'user1234',
-      role: Role.USER,
-    };
-
     (userRepository.findOneByName as jest.Mock).mockResolvedValue(
-      Promise.resolve(addUseDTO),
+      Promise.resolve(createUserDTO),
     );
 
-    await expect(addUserUseCase.execute(addUseDTO)).rejects.toThrow(
-      'User already exists',
+    await expect(createUserUseCase.execute(createUserDTO)).rejects.toThrow(
+      `User ${createUserDTO.username} already exists`,
     );
     expect(userRepository.findOneByName).toHaveBeenCalledWith(
-      addUseDTO.username,
+      createUserDTO.username,
     );
     expect(bcryptService.hash).not.toHaveBeenCalled();
-    expect(userRepository.addUser).not.toHaveBeenCalled();
+    expect(userRepository.createUser).not.toHaveBeenCalled();
     expect(logger.warn).toHaveBeenCalledWith(
-      'AddUserUseCase execute',
-      'User already exists',
+      'CreateUserUseCase',
+      `User ${createUserDTO.username} already exists`,
     );
   });
 
   it('should insert a new user if the user does not exist', async () => {
-    const addUseDTO: AddUserDTO = {
-      username: 'user',
-      password: 'user1234',
-      role: Role.USER,
-    };
+    const hasedPassword = 'hashedPassword';
 
     (userRepository.findOneByName as jest.Mock).mockResolvedValue(
       Promise.resolve(null),
     );
     (bcryptService.hash as jest.Mock).mockResolvedValue(
-      Promise.resolve('hashedPassword'),
+      Promise.resolve(hasedPassword),
     );
 
-    await expect(addUserUseCase.execute(addUseDTO)).resolves.toBe(
-      'New user have been inserted',
+    await expect(createUserUseCase.execute(createUserDTO)).resolves.toBe(
+      `New user ${createUserDTO.username} have been inserted`,
     );
 
     expect(userRepository.findOneByName).toHaveBeenCalledWith(
-      addUseDTO.username,
+      createUserDTO.username,
     );
-    expect(bcryptService.hash).toHaveBeenCalledWith(addUseDTO.password);
-    expect(userRepository.addUser).toHaveBeenCalledWith({
-      ...addUseDTO,
-      password: 'hashedPassword',
+    expect(bcryptService.hash).toHaveBeenCalledWith(
+      `${createUserDTO.username}1234`,
+    );
+    expect(userRepository.createUser).toHaveBeenCalledWith({
+      ...createUserDTO,
+      password: hasedPassword,
     });
     expect(logger.log).toHaveBeenCalledWith(
-      'AddUserUseCase execute',
-      'New user have been inserted',
+      'CreateUserUseCase',
+      `New user ${createUserDTO.username} have been inserted`,
     );
   });
 });
