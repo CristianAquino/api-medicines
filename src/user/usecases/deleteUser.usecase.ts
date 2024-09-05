@@ -1,11 +1,11 @@
 import { ILogger } from '@common/logger/logger.interface';
 import { NotFoundException } from '@nestjs/common';
-import { UserRepository } from '@user/infrastructure/repositories';
+import { IUserRepository } from '@user/domain/repositories';
 
 export class DeleteUserUseCase {
   constructor(
     private readonly logger: ILogger,
-    private readonly userRepository: UserRepository,
+    private readonly userRepository: IUserRepository,
   ) {}
 
   async execute(id: string): Promise<string> {

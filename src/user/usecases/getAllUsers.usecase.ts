@@ -1,15 +1,15 @@
 import { ILogger } from '@common/logger/logger.interface';
 import { NotFoundException } from '@nestjs/common';
+import { IUserRepository } from '@user/domain/repositories';
 import {
   AllUsersData,
   FindAllUsersDTO,
 } from '@user/infrastructure/controller/dto';
-import { UserRepository } from '@user/infrastructure/repositories';
 
 export class GetAllUsersUseCase {
   constructor(
     private readonly logger: ILogger,
-    private readonly userRepository: UserRepository,
+    private readonly userRepository: IUserRepository,
   ) {}
 
   async execute(findAllUsersDTO: FindAllUsersDTO): Promise<AllUsersData> {

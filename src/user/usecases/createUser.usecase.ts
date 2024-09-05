@@ -2,13 +2,13 @@ import { IBcryptService } from '@common/adapters';
 import { UserModel } from '@common/entities/models';
 import { ILogger } from '@common/logger/logger.interface';
 import { ConflictException } from '@nestjs/common';
+import { IUserRepository } from '@user/domain/repositories';
 import { CreateUserDTO } from '@user/infrastructure/controller/dto';
-import { UserRepository } from '@user/infrastructure/repositories';
 
 export class CreateUserUseCase {
   constructor(
     private readonly logger: ILogger,
-    private readonly userRepository: UserRepository,
+    private readonly userRepository: IUserRepository,
     private readonly bcryptService: IBcryptService,
   ) {}
 
