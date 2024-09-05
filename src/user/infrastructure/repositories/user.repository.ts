@@ -63,7 +63,10 @@ export class UserRepository implements IUserRepository {
     return this.userAdapter(user);
   }
   async findOneByName(username: string): Promise<UserData> {
-    const user = await this.userEntityRepository.findOneBy({ username });
+    const user = await this.userEntityRepository
+      .createQueryBuilder('user')
+      .where('LOWER(user.username) = LOWER(:username)', { username })
+      .getOne();
     if (!user) return null;
     return this.userAdapter(user);
   }

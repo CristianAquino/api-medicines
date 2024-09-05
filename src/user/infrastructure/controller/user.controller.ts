@@ -147,7 +147,7 @@ export class UserController {
   @Delete('delete/:id')
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Delete user' })
-  @ApiResponse({ status: HttpStatus.OK, type: SWGAllUsersData })
+  @ApiResponse({ status: HttpStatus.OK, type: SWGMessage })
   @HttpCode(HttpStatus.OK)
   async deleteUser(@Param('id', ParseUUIDPipe) id: string) {
     const response = await this.deleteUserUsecaseProxy
