@@ -1,6 +1,7 @@
+import { ResponseDTO } from '@common/dto';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ReturnCategory {
+export class CategoryData {
   @ApiProperty({
     example: 1,
     description: 'category id',
@@ -16,4 +17,12 @@ export class ReturnCategory {
     description: 'total products in category',
   })
   total_products: number;
+}
+
+export class SWGAllCategoryData extends ResponseDTO {
+  @ApiProperty({
+    type: [CategoryData],
+    description: 'data',
+  })
+  data: CategoryData[];
 }
