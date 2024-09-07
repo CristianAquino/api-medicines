@@ -7,13 +7,15 @@ describe('Test get all categories usecases', () => {
   let logger: ILogger;
   let categoryRepository: ICategoryRepository;
 
+  const category = 'toy';
+
   beforeAll(() => {
     logger = {} as ILogger;
     logger.log = jest.fn();
     logger.warn = jest.fn();
 
     categoryRepository = {} as ICategoryRepository;
-    categoryRepository.findAll = jest.fn();
+    categoryRepository.findAllCategories = jest.fn();
 
     getAllCategoriesUseCase = new GetAllCategoriesUseCase(
       logger,
@@ -30,13 +32,12 @@ describe('Test get all categories usecases', () => {
   });
 
   it('should return a warning message if not categories', async () => {
-    const result = [];
-    (categoryRepository.findAll as jest.Mock).mockResolvedValue(result);
+    (categoryRepository.findAllCategories as jest.Mock).mockResolvedValue(null);
 
-    await expect(getAllCategoriesUseCase.execute()).rejects.toThrow(
+    await expect(getAllCategoriesUseCase.execute(category)).rejects.toThrow(
       'Categories not found',
     );
-    expect(categoryRepository.findAll).toHaveBeenCalled();
+    expect(categoryRepository.findAllCategories).toHaveBeenCalledWith(category);
     expect(logger.warn).toHaveBeenCalledWith(
       'GetAllCategoriesUseCase',
       'Categories not found',
@@ -45,14 +46,18 @@ describe('Test get all categories usecases', () => {
   });
 
   it('should return all categories', async () => {
-    const result = [{ id: 1, category: 'toys' }];
-    (categoryRepository.findAll as jest.Mock).mockResolvedValue(result);
+    const result = [{ id: 1, category: 'toy' }];
+    (categoryRepository.findAllCategories as jest.Mock).mockResolvedValue(
+      result,
+    );
 
-    await expect(getAllCategoriesUseCase.execute()).resolves.toEqual(result);
-    expect(categoryRepository.findAll).toHaveBeenCalled();
+    await expect(getAllCategoriesUseCase.execute(category)).resolves.toEqual(
+      result,
+    );
+    expect(categoryRepository.findAllCategories).toHaveBeenCalledWith(category);
     expect(logger.warn).not.toHaveBeenCalled();
     expect(logger.log).toHaveBeenCalledWith(
-      'GetAllCategoriesUseCase execute',
+      'GetAllCategoriesUseCase',
       'Return all categories',
     );
   });

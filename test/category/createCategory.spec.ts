@@ -1,14 +1,13 @@
 import { ICategoryRepository } from '../../src/category/domain/repositories/categoryRepository.interface';
-import { AddCategoryUseCase } from '../../src/category/usecases';
+import { CreateCategoryUseCase } from '../../src/category/usecases';
 import { ILogger } from '../../src/common/logger/logger.interface';
 
-describe('Test add category usecase', () => {
-  let addCategoryUseCase: AddCategoryUseCase;
+describe('Test create category usecase', () => {
+  let createCategoryUseCase: CreateCategoryUseCase;
   let logger: ILogger;
   let categoryRepository: ICategoryRepository;
 
   const newCategory = {
-    id: 1,
     category: 'toys',
   };
 
@@ -18,10 +17,13 @@ describe('Test add category usecase', () => {
     logger.warn = jest.fn();
 
     categoryRepository = {} as ICategoryRepository;
-    categoryRepository.findByCategoryName = jest.fn();
-    categoryRepository.insert = jest.fn();
+    categoryRepository.findCategoryByName = jest.fn();
+    categoryRepository.createCategory = jest.fn();
 
-    addCategoryUseCase = new AddCategoryUseCase(logger, categoryRepository);
+    createCategoryUseCase = new CreateCategoryUseCase(
+      logger,
+      categoryRepository,
+    );
   });
 
   afterEach(() => {
@@ -29,43 +31,44 @@ describe('Test add category usecase', () => {
   });
 
   it('should be defined', () => {
-    expect(addCategoryUseCase).toBeDefined();
+    expect(createCategoryUseCase).toBeDefined();
   });
   it('should return an error if the category already exists', async () => {
-    (categoryRepository.findByCategoryName as jest.Mock).mockReturnValue(
+    (categoryRepository.findCategoryByName as jest.Mock).mockReturnValue(
       Promise.resolve({
         id: 1,
         category: 'toys',
       }),
     );
-    await expect(addCategoryUseCase.execute(newCategory)).rejects.toThrow(
+
+    await expect(createCategoryUseCase.execute(newCategory)).rejects.toThrow(
       'Category already exists',
     );
-    expect(categoryRepository.findByCategoryName).toHaveBeenCalledWith(
+    expect(categoryRepository.findCategoryByName).toHaveBeenCalledWith(
       newCategory.category,
     );
     expect(logger.warn).toHaveBeenCalledWith(
-      'AddCategoryUseCase',
+      'CreateCategoryUseCase',
       `The category ${newCategory.category} already exists`,
     );
-    expect(categoryRepository.insert).not.toHaveBeenCalled();
+    expect(categoryRepository.createCategory).not.toHaveBeenCalled();
     expect(logger.log).not.toHaveBeenCalled();
   });
 
   it('should add a new category', async () => {
-    (categoryRepository.findByCategoryName as jest.Mock).mockReturnValue(
+    (categoryRepository.findCategoryByName as jest.Mock).mockReturnValue(
       Promise.resolve(null),
     );
 
-    await expect(addCategoryUseCase.execute(newCategory)).resolves.toBe(
+    await expect(createCategoryUseCase.execute(newCategory)).resolves.toBe(
       'New category have been added',
     );
-    expect(categoryRepository.findByCategoryName).toHaveBeenCalledWith(
+    expect(categoryRepository.findCategoryByName).toHaveBeenCalledWith(
       newCategory.category,
     );
-    expect(categoryRepository.insert).toHaveBeenCalledWith(newCategory);
+    expect(categoryRepository.createCategory).toHaveBeenCalledWith(newCategory);
     expect(logger.log).toHaveBeenCalledWith(
-      'AddCategoryUseCase execute',
+      'CreateCategoryUseCase execute',
       'New category have been added',
     );
     expect(logger.warn).not.toHaveBeenCalled();
