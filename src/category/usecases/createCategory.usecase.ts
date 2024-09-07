@@ -2,26 +2,26 @@ import { ICategoryRepository } from '@category/domain/repositories/categoryRepos
 import { CategoryDTO } from '@category/infrastructure/controller/dto';
 import { ILogger } from '@common/logger/logger.interface';
 
-export class AddCategoryUseCase {
+export class CreateCategoryUseCase {
   constructor(
     private readonly logger: ILogger,
     private readonly categoryRepository: ICategoryRepository,
   ) {}
 
   async execute(category: CategoryDTO) {
-    const findCategory = await this.categoryRepository.findByCategoryName(
+    const findCategory = await this.categoryRepository.findCategoryByName(
       category.category,
     );
     if (findCategory) {
       this.logger.warn(
-        'AddCategoryUseCase',
+        'CreateCategoryUseCase',
         `The category ${category.category} already exists`,
       );
       throw new Error('Category already exists');
     }
-    await this.categoryRepository.insert(category);
+    await this.categoryRepository.createCategory(category);
     this.logger.log(
-      'AddCategoryUseCase execute',
+      'CreateCategoryUseCase execute',
       'New category have been added',
     );
     return 'New category have been added';

@@ -11,7 +11,7 @@ export class DeleteCategoryUseCase {
     const del = await this.categoryRepository.deleteById(id);
     if (del == 0) {
       this.logger.warn(
-        'DeleteCategoryUseCase execute',
+        'DeleteCategoryUseCase',
         'Category not found, please check the information',
       );
       throw new NotFoundException(
@@ -19,7 +19,7 @@ export class DeleteCategoryUseCase {
       );
     }
     this.logger.log(
-      'DeleteCategoryUseCase execute',
+      'DeleteCategoryUseCase',
       `Category ${id} have been deleted`,
     );
     return `Category ${id} have been deleted`;
