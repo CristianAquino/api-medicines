@@ -23,7 +23,7 @@ describe('Test add product usecase', () => {
     productRepository.createProduct = jest.fn();
 
     categoryRepository = {} as ICategoryRepository;
-    categoryRepository.findByCategoryName = jest.fn();
+    categoryRepository.findCategoryByName = jest.fn();
 
     addProductUseCase = new AddProductUseCase(
       logger,
@@ -41,13 +41,13 @@ describe('Test add product usecase', () => {
   });
 
   it('should return an error if the category product not exists', async () => {
-    (categoryRepository.findByCategoryName as jest.Mock).mockResolvedValue(
+    (categoryRepository.findCategoryByName as jest.Mock).mockResolvedValue(
       Promise.resolve(null),
     );
     await expect(addProductUseCase.execute(product)).rejects.toThrow(
       `The category ${product.category} not exists`,
     );
-    expect(categoryRepository.findByCategoryName).toHaveBeenCalledWith(
+    expect(categoryRepository.findCategoryByName).toHaveBeenCalledWith(
       product.category,
     );
     expect(logger.warn).toHaveBeenCalledWith(
@@ -59,7 +59,7 @@ describe('Test add product usecase', () => {
   });
 
   it('should add a new product', async () => {
-    (categoryRepository.findByCategoryName as jest.Mock).mockResolvedValue(
+    (categoryRepository.findCategoryByName as jest.Mock).mockResolvedValue(
       Promise.resolve(product.category),
     );
     (productRepository.createProduct as jest.Mock).mockResolvedValue(
@@ -68,7 +68,7 @@ describe('Test add product usecase', () => {
     await expect(addProductUseCase.execute(product)).resolves.toEqual(
       'New product have been added',
     );
-    expect(categoryRepository.findByCategoryName).toHaveBeenCalledWith(
+    expect(categoryRepository.findCategoryByName).toHaveBeenCalledWith(
       product.category,
     );
     expect(productRepository.createProduct).toHaveBeenCalledWith(product);

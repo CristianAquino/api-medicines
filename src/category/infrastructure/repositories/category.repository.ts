@@ -1,22 +1,44 @@
 import { ICategoryRepository } from '@category/domain/repositories/categoryRepository.interface';
 import { Category } from '@common/entities';
+import { CategoryModel } from '@common/entities/models';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  CategoryDTO,
-  CategoryUpdateDTO,
-  ReturnCategory,
-} from '../controller/dto';
+import { CategoryData, CategoryUpdateDTO } from '../controller/dto';
 
 export class CategoryRepository implements ICategoryRepository {
   constructor(
     @InjectRepository(Category)
     private readonly categoryEntityRepository: Repository<Category>,
   ) {}
-  async insert(category: CategoryDTO): Promise<void> {
+
+  async createCategory(category: any): Promise<void> {
     await this.categoryEntityRepository.save(category);
   }
-  async update(data: CategoryUpdateDTO): Promise<void> {
+  async findAllCategories(category: string): Promise<CategoryData[]> {
+    const query = this.categoryEntityRepository.createQueryBuilder('category');
+    if (category) {
+      query.where('LOWER(category.category) LIKE LOWER(:category)', {
+        category: `%${category}%`,
+      });
+    }
+    const allCategories = await query.getMany();
+    if (allCategories.length == 0) return null;
+    return allCategories.map((category) => this.findCategory(category));
+  }
+  async findCategoryById(id: number): Promise<CategoryData> {
+    const categoryFind = await this.categoryEntityRepository.findOneBy({ id });
+    if (!categoryFind) return null;
+    return this.findCategory(categoryFind);
+  }
+  async findCategoryByName(category: string): Promise<any> {
+    const categoryFind = await this.categoryEntityRepository
+      .createQueryBuilder('category')
+      .where('LOWER(category.category) = LOWER(:category)', { category })
+      .getOne();
+    if (!categoryFind) return null;
+    return categoryFind;
+  }
+  async updateCategory(data: CategoryUpdateDTO): Promise<void> {
     const { id, ...content } = data;
     await this.categoryEntityRepository.update({ id }, content);
   }
@@ -24,24 +46,8 @@ export class CategoryRepository implements ICategoryRepository {
     const del = await this.categoryEntityRepository.delete({ id });
     return del.affected;
   }
-  async findAll(): Promise<ReturnCategory[]> {
-    const allCategories = await this.categoryEntityRepository.find();
-    return allCategories.map((category) => this.findCategory(category));
-  }
-  async findById(id: number): Promise<ReturnCategory> {
-    const categoryFind = await this.categoryEntityRepository.findOneBy({ id });
-    if (!categoryFind) return null;
-    return this.findCategory(categoryFind);
-  }
-  async findByCategoryName(category: string): Promise<any> {
-    const categoryFind = await this.categoryEntityRepository.findOneBy({
-      category,
-    });
-    if (!categoryFind) return null;
-    return categoryFind;
-  }
 
-  private findCategory(category: Category): ReturnCategory {
+  private findCategory(category: CategoryModel): CategoryData {
     const categoryFound = new Category();
     categoryFound.id = category.id;
     categoryFound.category = category.category;

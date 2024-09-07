@@ -28,7 +28,7 @@ describe('Test put update data products usecase', () => {
     productRepository.updateProductCategory = jest.fn();
 
     categoryRepository = {} as ICategoryRepository;
-    categoryRepository.findByCategoryName = jest.fn();
+    categoryRepository.findCategoryByName = jest.fn();
 
     putUpdateDataProductUseCase = new PutUpdateDataProductUseCase(
       logger,
@@ -56,14 +56,14 @@ describe('Test put update data products usecase', () => {
       'PutUpdateDataProductUseCase',
       'Product not found, please check the information',
     );
-    expect(categoryRepository.findByCategoryName).not.toHaveBeenCalled();
+    expect(categoryRepository.findCategoryByName).not.toHaveBeenCalled();
     expect(productRepository.updateProduct).not.toHaveBeenCalled();
     expect(logger.log).not.toHaveBeenCalled();
   });
 
   it('should return an error if there is a product, but the category does not exist', async () => {
     (productRepository.findById as jest.Mock).mockResolvedValue(product);
-    (categoryRepository.findByCategoryName as jest.Mock).mockResolvedValue(
+    (categoryRepository.findCategoryByName as jest.Mock).mockResolvedValue(
       null,
     );
 
@@ -83,7 +83,7 @@ describe('Test put update data products usecase', () => {
     const { category, ...content } = product;
 
     (productRepository.findById as jest.Mock).mockResolvedValue(product);
-    (categoryRepository.findByCategoryName as jest.Mock).mockResolvedValue(
+    (categoryRepository.findCategoryByName as jest.Mock).mockResolvedValue(
       category,
     );
     (productRepository.updateProduct as jest.Mock).mockResolvedValue(product);
@@ -92,7 +92,7 @@ describe('Test put update data products usecase', () => {
       'Product updated successfully',
     );
     expect(productRepository.findById).toHaveBeenCalledWith(product.id);
-    expect(categoryRepository.findByCategoryName).toHaveBeenCalledWith(
+    expect(categoryRepository.findCategoryByName).toHaveBeenCalledWith(
       product.category,
     );
     expect(productRepository.updateProduct).toHaveBeenCalledWith(content);
