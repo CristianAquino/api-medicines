@@ -24,7 +24,7 @@ export class PutUpdateDataProductUseCase {
       );
     }
     if (category) {
-      const findCategory = await this.categoryRepository.findByCategoryName(
+      const findCategory = await this.categoryRepository.findCategoryByName(
         category,
       );
       if (!findCategory) {
@@ -39,9 +39,16 @@ export class PutUpdateDataProductUseCase {
       product.category = findCategory;
       await this.productRepository.updateProductCategory(product);
     }
+    if (product.stock - updated.stock < 0) {
+      this.logger.warn(
+        'PutUpdateDataProductUseCase',
+        'Stock cannot be negative',
+      );
+      throw new NotFoundException('Stock cannot be negative');
+    }
     await this.productRepository.updateProduct({
       ...updated,
-      // available: product.stock - updated.stock !== 0 ?? true,
+      available: product.stock - updated.stock !== 0 ? true : false,
     });
     this.logger.log(
       'PutUpdateDataProductUseCase',

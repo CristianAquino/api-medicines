@@ -12,17 +12,14 @@ export class DeleteProductUseCase {
     const del = await this.productRepository.deleteById(id);
     if (del == 0) {
       this.logger.warn(
-        'DeleteProductUseCase execute',
+        'DeleteProductUseCase',
         'Product not found, please check the information',
       );
       throw new NotFoundException(
         'Producty not found, please check the information',
       );
     }
-    this.logger.log(
-      'DeleteProductUseCase execute',
-      `Product ${id} have been deleted`,
-    );
+    this.logger.log('DeleteProductUseCase', `Product ${id} have been deleted`);
     return `Product ${id} have been deleted`;
   }
 }

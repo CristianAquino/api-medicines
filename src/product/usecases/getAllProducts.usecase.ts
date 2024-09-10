@@ -1,7 +1,10 @@
 import { ILogger } from '@common/logger/logger.interface';
 import { NotFoundException } from '@nestjs/common';
 import { IProductRepository } from '@product/domain/repositories/productRepository.interface';
-import { ProductDTO } from '@product/infrastructure/controller/dto';
+import {
+  AllProductsData,
+  FindAllProductsDTO,
+} from '@product/infrastructure/controller/dto';
 
 export class GetAllProductsUseCase {
   constructor(
@@ -9,13 +12,17 @@ export class GetAllProductsUseCase {
     private readonly productRepository: IProductRepository,
   ) {}
 
-  async execute(): Promise<ProductDTO[]> {
-    const allProducts = await this.productRepository.getAllProducts();
-    if (allProducts.length == 0) {
-      this.logger.warn('GetAllProductsUseCase execute', 'Products not found');
+  async execute(
+    findAllProductsDTO: FindAllProductsDTO,
+  ): Promise<AllProductsData> {
+    const allProducts = await this.productRepository.findAllProducts(
+      findAllProductsDTO,
+    );
+    if (allProducts.meta.total == 0) {
+      this.logger.log('GetAllProductsUseCase', 'Products not found');
       throw new NotFoundException('Products not found');
     }
-    this.logger.log('GetAllProductsUseCase execute', 'Return all products');
+    this.logger.log('GetAllProductsUseCase', 'Return all products');
     return allProducts;
   }
 }
