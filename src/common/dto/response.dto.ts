@@ -29,3 +29,11 @@ export class ResponseErrorDTO {
   })
   readonly error: string;
 }
+
+export class SWGMessage extends ResponseDTO {
+  @ApiProperty({
+    example: 'message describing the action performed',
+    description: 'message describing the action performed',
+  })
+  data: string;
+}
