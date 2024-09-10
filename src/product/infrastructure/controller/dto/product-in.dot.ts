@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  IsBoolean,
   IsDate,
   IsInt,
   IsNotEmpty,
@@ -159,6 +160,44 @@ export class UpdateProductDTO extends IdProductDTO {
   @MinLength(3)
   @IsOptional()
   readonly category?: string;
+  @ApiProperty({
+    example: true,
+    description: 'product availability',
+  })
+  @IsBoolean()
   @IsOptional()
   readonly available?: boolean;
+}
+
+export class PaginationDTO {
+  @ApiProperty({
+    required: false,
+    example: 1,
+    description: 'page',
+  })
+  @IsPositive()
+  @IsOptional()
+  @Type(() => Number)
+  readonly page?: number = 1;
+  @ApiProperty({
+    required: false,
+    example: 10,
+    description: 'limit',
+  })
+  @IsPositive()
+  @IsOptional()
+  @Type(() => Number)
+  readonly limit?: number = 10;
+}
+
+export class FindAllProductsDTO extends PaginationDTO {
+  @ApiProperty({
+    required: false,
+    description: 'product name',
+  })
+  @IsString()
+  @MinLength(3)
+  @MaxLength(64)
+  @IsOptional()
+  readonly name?: string;
 }
