@@ -13,6 +13,10 @@ describe('Test get all users usecase', () => {
     { id: 'string1', username: 'lorem', role: 'user' },
     { id: 'string2', username: 'admin', role: 'admin' },
   ];
+  const pagination = {
+    page: 1,
+    limit: 10,
+  };
 
   beforeAll(() => {
     logger = {} as ILogger;
@@ -33,19 +37,13 @@ describe('Test get all users usecase', () => {
   });
 
   it('should return a logger message if not users', async () => {
-    const findAllUsersByUsernameDTO: FindAllUsersDTO = {
-      page: 1,
-      limit: 10,
-    };
     const allUsers = { data: [], meta: { total: 0 } };
     (userRepository.findAll as jest.Mock).mockResolvedValue(allUsers);
 
-    await expect(
-      getAllUsersUseCase.execute(findAllUsersByUsernameDTO),
-    ).rejects.toThrow('Users not found');
-    expect(userRepository.findAll).toHaveBeenCalledWith(
-      findAllUsersByUsernameDTO,
+    await expect(getAllUsersUseCase.execute(pagination)).rejects.toThrow(
+      'Users not found',
     );
+    expect(userRepository.findAll).toHaveBeenCalledWith(pagination);
     expect(logger.log).toHaveBeenCalledWith(
       'GetAllUsersUseCase',
       'Users not found',
@@ -53,22 +51,16 @@ describe('Test get all users usecase', () => {
   });
 
   it('should return all users', async () => {
-    const findAllUsersByUsernameDTO: FindAllUsersDTO = {
-      page: 1,
-      limit: 10,
-    };
     const allUsers = {
       data: users,
       meta: { total: users.length },
     };
     (userRepository.findAll as jest.Mock).mockResolvedValue(allUsers);
 
-    await expect(
-      getAllUsersUseCase.execute(findAllUsersByUsernameDTO),
-    ).resolves.toBe(allUsers);
-    expect(userRepository.findAll).toHaveBeenCalledWith(
-      findAllUsersByUsernameDTO,
+    await expect(getAllUsersUseCase.execute(pagination)).resolves.toBe(
+      allUsers,
     );
+    expect(userRepository.findAll).toHaveBeenCalledWith(pagination);
     expect(logger.log).toHaveBeenCalledWith(
       'GetAllUserUseCase',
       'Return all users finds',
@@ -78,8 +70,7 @@ describe('Test get all users usecase', () => {
   it('should return all users with username = "lorem"', async () => {
     const findAllUsersByUsernameDTO: FindAllUsersDTO = {
       username: 'lorem',
-      page: 1,
-      limit: 10,
+      ...pagination,
     };
     const allUsers = {
       data: users.filter(
@@ -104,8 +95,7 @@ describe('Test get all users usecase', () => {
   it('should return all users with role = "user"', async () => {
     const findAllUsersByUsernameDTO: FindAllUsersDTO = {
       role: Role.USER,
-      page: 1,
-      limit: 10,
+      ...pagination,
     };
     const allUsers = {
       data: users.map((ele) => ele.role == findAllUsersByUsernameDTO.role),

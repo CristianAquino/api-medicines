@@ -20,7 +20,7 @@ describe('Test add product usecase', () => {
     logger.warn = jest.fn();
 
     productRepository = {} as IProductRepository;
-    productRepository.createProduct = jest.fn();
+    productRepository.addProduct = jest.fn();
 
     categoryRepository = {} as ICategoryRepository;
     categoryRepository.findCategoryByName = jest.fn();
@@ -44,6 +44,7 @@ describe('Test add product usecase', () => {
     (categoryRepository.findCategoryByName as jest.Mock).mockResolvedValue(
       Promise.resolve(null),
     );
+
     await expect(addProductUseCase.execute(product)).rejects.toThrow(
       `The category ${product.category} not exists`,
     );
@@ -54,7 +55,7 @@ describe('Test add product usecase', () => {
       'AddProductUseCase',
       `The category ${product.category} not exists`,
     );
-    expect(productRepository.createProduct).not.toHaveBeenCalled();
+    expect(productRepository.addProduct).not.toHaveBeenCalled();
     expect(logger.log).not.toHaveBeenCalled();
   });
 
@@ -62,16 +63,17 @@ describe('Test add product usecase', () => {
     (categoryRepository.findCategoryByName as jest.Mock).mockResolvedValue(
       Promise.resolve(product.category),
     );
-    (productRepository.createProduct as jest.Mock).mockResolvedValue(
+    (productRepository.addProduct as jest.Mock).mockResolvedValue(
       Promise.resolve({ id: 1, ...product }),
     );
+
     await expect(addProductUseCase.execute(product)).resolves.toEqual(
       'New product have been added',
     );
     expect(categoryRepository.findCategoryByName).toHaveBeenCalledWith(
       product.category,
     );
-    expect(productRepository.createProduct).toHaveBeenCalledWith(product);
+    expect(productRepository.addProduct).toHaveBeenCalledWith(product);
     expect(logger.log).toHaveBeenCalledWith(
       'AddProductUseCase',
       'New product have been added',

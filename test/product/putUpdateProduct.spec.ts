@@ -15,6 +15,10 @@ describe('Test put update data products usecase', () => {
     description: 'Description 1',
     price: 10.0,
     category: 'Category 1',
+    stock: 5,
+  };
+  const upProduct = {
+    stock: 10,
   };
 
   beforeAll(() => {
@@ -57,6 +61,7 @@ describe('Test put update data products usecase', () => {
       'Product not found, please check the information',
     );
     expect(categoryRepository.findCategoryByName).not.toHaveBeenCalled();
+    expect(productRepository.updateProductCategory).not.toHaveBeenCalled();
     expect(productRepository.updateProduct).not.toHaveBeenCalled();
     expect(logger.log).not.toHaveBeenCalled();
   });
@@ -75,8 +80,21 @@ describe('Test put update data products usecase', () => {
       'PutUpdateDataProductUseCase',
       'Category not found, please check the information',
     );
+    expect(productRepository.updateProductCategory).not.toHaveBeenCalled();
     expect(productRepository.updateProduct).not.toHaveBeenCalled();
     expect(logger.log).not.toHaveBeenCalled();
+  });
+
+  it('should return an error if the stock entered and the one in warehouse is less than 0', async () => {
+    (productRepository.findById as jest.Mock).mockResolvedValue(product);
+
+    await expect(
+      putUpdateDataProductUseCase.execute(upProduct),
+    ).rejects.toThrow('Stock cannot be negative');
+    expect(logger.warn).toHaveBeenCalledWith(
+      'PutUpdateDataProductUseCase',
+      'Stock cannot be negative',
+    );
   });
 
   it('should return a success message if product updated', async () => {
@@ -86,7 +104,9 @@ describe('Test put update data products usecase', () => {
     (categoryRepository.findCategoryByName as jest.Mock).mockResolvedValue(
       category,
     );
-    (productRepository.updateProduct as jest.Mock).mockResolvedValue(product);
+    (productRepository.updateProduct as jest.Mock).mockResolvedValue({
+      product,
+    });
 
     await expect(putUpdateDataProductUseCase.execute(product)).resolves.toEqual(
       'Product updated successfully',
@@ -95,7 +115,10 @@ describe('Test put update data products usecase', () => {
     expect(categoryRepository.findCategoryByName).toHaveBeenCalledWith(
       product.category,
     );
-    expect(productRepository.updateProduct).toHaveBeenCalledWith(content);
+    expect(productRepository.updateProduct).toHaveBeenCalledWith({
+      ...content,
+      available: false,
+    });
     expect(logger.log).toHaveBeenCalledWith(
       'PutUpdateDataProductUseCase',
       'Product updated successfully',

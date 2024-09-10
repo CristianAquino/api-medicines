@@ -1,5 +1,6 @@
 import { ILogger } from '../../src/common/logger/logger.interface';
 import { IProductRepository } from '../../src/product/domain/repositories/productRepository.interface';
+import { FindAllProductsDTO } from '../../src/product/infrastructure/controller/dto';
 import { GetAllProductsUseCase } from '../../src/product/usecases';
 
 describe('Test get all products usecase', () => {
@@ -7,13 +8,27 @@ describe('Test get all products usecase', () => {
   let logger: ILogger;
   let productRepository: IProductRepository;
 
+  const pagination = {
+    page: 1,
+    limit: 10,
+  };
+  const products = [
+    {
+      id: '1',
+      name: 'medicine 1',
+    },
+    {
+      id: '2',
+      name: 'toy 1',
+    },
+  ];
+
   beforeAll(() => {
     logger = {} as ILogger;
     logger.log = jest.fn();
-    logger.warn = jest.fn();
 
     productRepository = {} as IProductRepository;
-    productRepository.getAllProducts = jest.fn();
+    productRepository.findAllProducts = jest.fn();
 
     getAllProductsUseCase = new GetAllProductsUseCase(
       logger,
@@ -29,40 +44,67 @@ describe('Test get all products usecase', () => {
     expect(getAllProductsUseCase).toBeDefined();
   });
 
-  it('should return a warning message if not products', async () => {
-    (productRepository.getAllProducts as jest.Mock).mockResolvedValue([]);
+  it('should return a logger message if not products', async () => {
+    const allProducts = { data: [], meta: { total: 0 } };
+    (productRepository.findAllProducts as jest.Mock).mockResolvedValue(
+      allProducts,
+    );
 
-    await expect(getAllProductsUseCase.execute()).rejects.toThrow(
+    await expect(getAllProductsUseCase.execute(pagination)).rejects.toThrow(
       'Products not found',
     );
-    expect(productRepository.getAllProducts).toHaveBeenCalled();
-    expect(logger.warn).toHaveBeenCalledWith(
-      'GetAllProductsUseCase execute',
+    expect(productRepository.findAllProducts).toHaveBeenCalledWith(pagination);
+    expect(logger.log).toHaveBeenCalledWith(
+      'GetAllProductsUseCase',
       'Products not found',
     );
-    expect(logger.log).not.toHaveBeenCalled();
   });
 
   it('should return all products', async () => {
-    const products = [
-      {
-        id: '1',
-        name: 'Product 1',
-      },
-      {
-        id: '2',
-        name: 'Product 2',
-      },
-    ];
-    (productRepository.getAllProducts as jest.Mock).mockResolvedValue(products);
+    const allProducts = { data: products, meta: { total: products.length } };
+    (productRepository.findAllProducts as jest.Mock).mockResolvedValue(
+      allProducts,
+    );
 
-    await expect(getAllProductsUseCase.execute()).resolves.toEqual(products);
-
-    expect(productRepository.getAllProducts).toHaveBeenCalled();
+    await expect(getAllProductsUseCase.execute(pagination)).resolves.toEqual(
+      allProducts,
+    );
+    expect(productRepository.findAllProducts).toHaveBeenCalledWith(pagination);
     expect(logger.log).toHaveBeenCalledWith(
-      'GetAllProductsUseCase execute',
+      'GetAllProductsUseCase',
       'Return all products',
     );
-    expect(logger.warn).not.toHaveBeenCalled();
+  });
+
+  it('should return all products with name = "medicine"', async () => {
+    const findAllProductsDTO: FindAllProductsDTO = {
+      name: 'medicine',
+      ...pagination,
+    };
+    const allProducts = {
+      data: products.map((ele) =>
+        ele.name.includes(findAllProductsDTO.name as string),
+      ),
+      meta: {
+        total: products.filter((ele) =>
+          ele.name.includes(findAllProductsDTO.name as string),
+        ).length,
+      },
+    };
+
+    (productRepository.findAllProducts as jest.Mock).mockResolvedValue(
+      allProducts,
+    );
+
+    await expect(
+      getAllProductsUseCase.execute(findAllProductsDTO),
+    ).resolves.toBe(allProducts);
+    expect(productRepository.findAllProducts).toHaveBeenCalledWith(
+      findAllProductsDTO,
+    );
+    expect(logger.log).toHaveBeenCalledWith(
+      'GetAllProductsUseCase',
+      'Return all products',
+    );
   });
 });
