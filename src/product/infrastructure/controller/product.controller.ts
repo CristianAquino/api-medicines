@@ -1,4 +1,4 @@
-import { ResponseErrorDTO } from '@common/dto';
+import { ResponseErrorDTO, SWGMessage } from '@common/dto';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
 import { UsecaseProxyModule } from '@common/usecases-proxy/usecases-proxy.module';
 import {
@@ -13,6 +13,7 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
@@ -21,7 +22,12 @@ import {
   GetAllProductsUseCase,
   PutUpdateDataProductUseCase,
 } from '@product/usecases';
-import { AddProductDTO, UpdateProductDTO } from './dto';
+import {
+  AddProductDTO,
+  FindAllProductsDTO,
+  SWGAllProductData,
+  UpdateProductDTO,
+} from './dto';
 
 @Controller('product')
 @ApiTags('Product')
@@ -50,6 +56,7 @@ export class ProductController {
   @Post('add')
   @ApiBody({ type: AddProductDTO })
   @ApiOperation({ summary: 'Add new product' })
+  @ApiResponse({ status: HttpStatus.CREATED, type: SWGMessage })
   @HttpCode(HttpStatus.CREATED)
   async addProduct(@Body() productDTO: AddProductDTO) {
     const response = await this.addProductUsecaseProxy
@@ -57,34 +64,35 @@ export class ProductController {
       .execute(productDTO);
     return response;
   }
-
   @Get('all')
   @ApiOperation({ summary: 'Get all products' })
+  @ApiResponse({ status: HttpStatus.OK, type: SWGAllProductData })
   @HttpCode(HttpStatus.OK)
-  async getAllProducts() {
+  async getAllProducts(@Query() findAllProductsDTO: FindAllProductsDTO) {
     const response = await this.getAllProductsUsecaseProxy
       .getInstance()
-      .execute();
+      .execute(findAllProductsDTO);
     return response;
   }
-
-  @Delete('delete/:id')
-  @ApiOperation({ summary: 'Delete product' })
-  @HttpCode(HttpStatus.OK)
-  async deleteCategory(@Param('id', ParseUUIDPipe) id: string) {
-    const response = await this.deleteProductByIdUsecaseProxy
-      .getInstance()
-      .execute(id);
-    return response;
-  }
-
   @Put('update')
+  @ApiBody({ type: UpdateProductDTO })
   @ApiOperation({ summary: 'Update product' })
+  @ApiResponse({ status: HttpStatus.OK, type: SWGMessage })
   @HttpCode(HttpStatus.OK)
   async updateProduct(@Body() updateProductDTO: UpdateProductDTO) {
     const response = await this.putUpdateDataProductUsecaseProxy
       .getInstance()
       .execute(updateProductDTO);
+    return response;
+  }
+  @Delete('delete/:id')
+  @ApiOperation({ summary: 'Delete product' })
+  @ApiResponse({ status: HttpStatus.OK, type: SWGMessage })
+  @HttpCode(HttpStatus.OK)
+  async deleteCategory(@Param('id', ParseUUIDPipe) id: string) {
+    const response = await this.deleteProductByIdUsecaseProxy
+      .getInstance()
+      .execute(id);
     return response;
   }
 }
