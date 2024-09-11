@@ -9,6 +9,10 @@ export class AddPaymentUseCase {
   ) {}
 
   async execute(payment: PaymentDTO): Promise<any> {
-    return await this.paymentRepository.createPayment(payment);
+    this.logger.log(
+      'AddPaymentUseCase',
+      `payment with ${payment.type} successful`,
+    );
+    return await this.paymentRepository.addPayment(payment);
   }
 }
