@@ -1,6 +1,6 @@
 import { Payment } from '@common/entities';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IPaymentRepository } from 'src/payment/domain/repositories/paymentRepository.interface';
+import { IPaymentRepository } from '@payment/domain/repositories/paymentRepository.interface';
 import { Repository } from 'typeorm';
 
 export class PaymentRepository implements IPaymentRepository {
@@ -9,7 +9,7 @@ export class PaymentRepository implements IPaymentRepository {
     private readonly paymentRepository: Repository<Payment>,
   ) {}
 
-  async createPayment(payment: any): Promise<any> {
+  async addPayment(payment: any): Promise<any> {
     return await this.paymentRepository.save(payment);
   }
 }

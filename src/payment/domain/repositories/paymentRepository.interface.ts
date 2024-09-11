@@ -1,3 +1,3 @@
 export interface IPaymentRepository {
-  createPayment(payment: any): Promise<any>;
+  addPayment(payment: any): Promise<any>;
 }
