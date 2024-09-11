@@ -1,5 +1,5 @@
 import { LoginUseCase, LogoutUseCase } from '@auth/usecases';
-import { ResponseErrorDTO } from '@common/dto';
+import { ResponseErrorDTO, SWGMessage } from '@common/dto';
 import { UserModel } from '@common/entities/models';
 import { JwtAuthGuard, LoginGuard } from '@common/guards';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
@@ -23,10 +23,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import {
-  SWGMessage,
-  UpdatePasswordDTO,
-} from '@user/infrastructure/controller/dto';
+import { UpdatePasswordDTO } from '@user/infrastructure/controller/dto';
 import { PutUpdatePasswordUserUseCase } from '@user/usecases';
 import { Request } from 'express';
 import { LoginDTO } from './dto';

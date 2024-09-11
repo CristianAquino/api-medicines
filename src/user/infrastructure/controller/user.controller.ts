@@ -1,5 +1,5 @@
 import { Roles } from '@common/decorators';
-import { ResponseErrorDTO } from '@common/dto';
+import { ResponseErrorDTO, SWGMessage } from '@common/dto';
 import { UserModel } from '@common/entities/models';
 import { JwtAuthGuard, RolesGuard } from '@common/guards';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
@@ -40,7 +40,6 @@ import {
   CreateUserDTO,
   FindAllUsersDTO,
   SWGAllUsersData,
-  SWGMessage,
   UpdateDataByUserDTO,
   UpdateDataUserByAdminDTO,
 } from './dto';

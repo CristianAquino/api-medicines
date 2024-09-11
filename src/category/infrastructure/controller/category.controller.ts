@@ -5,7 +5,7 @@ import {
   PutUpdateDataCategoryUseCase,
 } from '@category/usecases';
 import { Roles } from '@common/decorators';
-import { ResponseErrorDTO } from '@common/dto';
+import { ResponseErrorDTO, SWGMessage } from '@common/dto';
 import { JwtAuthGuard, RolesGuard } from '@common/guards';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
 import { UsecaseProxyModule } from '@common/usecases-proxy/usecases-proxy.module';
@@ -31,7 +31,6 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { SWGMessage } from '@user/infrastructure/controller/dto';
 import { Role } from '@user/infrastructure/controller/enum/user.enum';
 import {
   CategoryDTO,

@@ -1,4 +1,6 @@
+import { Roles } from '@common/decorators';
 import { ResponseErrorDTO, SWGMessage } from '@common/dto';
+import { JwtAuthGuard, RolesGuard } from '@common/guards';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
 import { UsecaseProxyModule } from '@common/usecases-proxy/usecases-proxy.module';
 import {
@@ -14,14 +16,22 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiCookieAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import {
   AddProductUseCase,
   DeleteProductUseCase,
   GetAllProductsUseCase,
   PutUpdateDataProductUseCase,
 } from '@product/usecases';
+import { Role } from '@user/infrastructure/controller/enum/user.enum';
 import {
   AddProductDTO,
   FindAllProductsDTO,
@@ -29,8 +39,10 @@ import {
   UpdateProductDTO,
 } from './dto';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('product')
 @ApiTags('Product')
+@ApiCookieAuth()
 @ApiResponse({
   status: HttpStatus.INTERNAL_SERVER_ERROR,
   description: 'Internal error',
@@ -54,6 +66,7 @@ export class ProductController {
   ) {}
 
   @Post('add')
+  @Roles(Role.ADMIN)
   @ApiBody({ type: AddProductDTO })
   @ApiOperation({ summary: 'Add new product' })
   @ApiResponse({ status: HttpStatus.CREATED, type: SWGMessage })
@@ -75,6 +88,7 @@ export class ProductController {
     return response;
   }
   @Put('update')
+  @Roles(Role.ADMIN)
   @ApiBody({ type: UpdateProductDTO })
   @ApiOperation({ summary: 'Update product' })
   @ApiResponse({ status: HttpStatus.OK, type: SWGMessage })
@@ -86,6 +100,7 @@ export class ProductController {
     return response;
   }
   @Delete('delete/:id')
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Delete product' })
   @ApiResponse({ status: HttpStatus.OK, type: SWGMessage })
   @HttpCode(HttpStatus.OK)
