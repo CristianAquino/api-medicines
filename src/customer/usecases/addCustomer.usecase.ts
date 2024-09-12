@@ -9,6 +9,7 @@ export class AddCustomerUseCase {
   ) {}
 
   async execute(customer: CustomerDTO): Promise<any> {
+    this.logger.log('AddCustomerUseCase', 'The customer has been registered');
     return await this.customerRepository.addCustomer(customer);
   }
 }
