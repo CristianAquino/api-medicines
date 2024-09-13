@@ -1,8 +1,9 @@
 export interface IOrderDetailsRepository {
   createOrderDetail(
-    total: number,
     details: any,
     payment: any,
     customer: any,
+    total: any,
   ): Promise<void>;
+  getOrderDetailsById(id: number): Promise<any>;
 }
