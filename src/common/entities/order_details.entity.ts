@@ -17,7 +17,6 @@ import { Payment } from './payment.entity';
 @Entity('orders_details')
 @Check('total_amount > 0')
 @Check('sub_total > 0')
-@Check('descount < 1 and descount >= 0')
 export class OrderDetail {
   @PrimaryGeneratedColumn()
   id: number;
@@ -25,8 +24,6 @@ export class OrderDetail {
   total_amount: number;
   @Column({ type: 'float', precision: 2 })
   sub_total: number;
-  @Column({ type: 'float', precision: 2, default: 0 })
-  descount: number;
   //   date
   @CreateDateColumn()
   createdAt: Date;
