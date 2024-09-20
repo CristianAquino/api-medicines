@@ -83,7 +83,7 @@ export class UserRepository implements IUserRepository {
   async updatePassword(id: string, password: string): Promise<number> {
     const updated = await this.userEntityRepository.update(
       { id },
-      { password },
+      { password, available: true },
     );
     return updated.affected;
   }
