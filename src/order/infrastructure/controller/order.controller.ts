@@ -1,4 +1,5 @@
 import { ResponseErrorDTO } from '@common/dto';
+import { JwtAuthGuard } from '@common/guards';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
 import { UsecaseProxyModule } from '@common/usecases-proxy/usecases-proxy.module';
 import { AddCustomerUseCase } from '@customer/usecases';
@@ -10,15 +11,25 @@ import {
   HttpStatus,
   Inject,
   Post,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiCookieAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AddOrderUseCase, GetAllOrdersUseCase } from '@order/usecases';
 import { AddOrderDetailsUseCase } from '@order_details/usecases';
 import { AddPaymentUseCase } from '@payment/usecases';
-import { AddOrderDTO } from './dto';
+import { AddOrderDTO, PaginationDTO, SWGAllOrderData } from './dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('order')
 @ApiTags('Order')
+@ApiCookieAuth()
 @ApiResponse({
   status: HttpStatus.INTERNAL_SERVER_ERROR,
   description: 'Internal error',
@@ -43,12 +54,12 @@ export class OrderController {
     private readonly addCustomerUsecaseProxy: UseCaseProxy<AddCustomerUseCase>,
   ) {}
 
-  @Post('add')
+  @Post('create')
   @ApiBody({ type: AddOrderDTO })
   @ApiOperation({ summary: 'Add new product order' })
   @HttpCode(HttpStatus.CREATED)
   async addProduct(@Body() addOrderDTO: AddOrderDTO) {
-    const { orders, customer, payment, descount } = addOrderDTO;
+    const { orders, customer, payment } = addOrderDTO;
     const details = await this.addOrderUsecaseProxy
       .getInstance()
       .execute(orders);
@@ -60,17 +71,18 @@ export class OrderController {
       .execute(customer);
     await this.addOrderDetailsUsecaseProxy
       .getInstance()
-      .execute(details, pay, cust, descount);
+      .execute(details, pay, cust);
     return 'Orders have been added';
   }
 
   @Get('all')
   @ApiOperation({ summary: 'Get all orders' })
+  @ApiResponse({ status: HttpStatus.OK, type: SWGAllOrderData })
   @HttpCode(HttpStatus.OK)
-  async getAllProducts() {
+  async getAllProducts(@Query() pagination: PaginationDTO) {
     const response = await this.getAllOrdersUsecaseProxy
       .getInstance()
-      .execute();
+      .execute(pagination);
     return response;
   }
 }
