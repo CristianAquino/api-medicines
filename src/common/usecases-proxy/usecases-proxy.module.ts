@@ -2,7 +2,7 @@ import { AuthRepository } from '@auth/infrastructure/repositories/auth.repositor
 import { LoginUseCase, LogoutUseCase } from '@auth/usecases';
 import { CategoryRepository } from '@category/infrastructure/repositories/category.repository';
 import {
-  AddCategoryUseCase,
+  CreateCategoryUseCase,
   DeleteCategoryUseCase,
   GetAllCategoriesUseCase,
   PutUpdateDataCategoryUseCase,
@@ -14,7 +14,18 @@ import { BcryptModule } from '@common/service/bcrypt/bcrypt.module';
 import { BcryptService } from '@common/service/bcrypt/bcrypt.service';
 import { JwtModule } from '@common/service/jwt/jwt.module';
 import { JwtTokenService } from '@common/service/jwt/jwt.service';
+import { CustomerRepository } from '@customer/infrasctructure/repositories/customer.repository';
+import { AddCustomerUseCase } from '@customer/usecases';
 import { DynamicModule, Module } from '@nestjs/common';
+import { OrderRepository } from '@order/infrastructure/repositories/order.repository';
+import { AddOrderUseCase, GetAllOrdersUseCase } from '@order/usecases';
+import { OrderDetailsRepository } from '@order_details/infrastructure/repositories/orderDetails.respository';
+import {
+  AddOrderDetailsUseCase,
+  GetOrderDetailsByIdUseCase,
+} from '@order_details/usecases';
+import { PaymentRepository } from '@payment/infrastructure/repositories/payment.repository';
+import { AddPaymentUseCase } from '@payment/usecases';
 import { ProductRepository } from '@product/infrastructure/repositories/product.repository';
 import {
   AddProductUseCase,
@@ -25,11 +36,13 @@ import {
 import { UserRepository } from '@user/infrastructure/repositories';
 import { SeedRepository } from '@user/repositories/seed.repository';
 import {
-  AddUserUseCase,
+  CreateAdminUserUseCase,
+  CreateUserUseCase,
   DeleteUserUseCase,
   GetAllUsersUseCase,
+  PutUpdateDataUserByAdminUseCase,
   PutUpdateDataUserUseCase,
-  RegisterInitialAdminUserUseCase,
+  PutUpdatePasswordUserUseCase,
 } from '@user/usecases';
 import { UseCaseProxy } from './usecases-proxy';
 
@@ -40,15 +53,19 @@ export class UsecaseProxyModule {
   // auth
   static LOGOUT_USECASE_PROXY = 'logoutUseCaseProxy';
   static LOGIN_USECASE_PROXY = 'loginUseCaseProxy';
+  // create admin
+  static CREATE_ADMIN_USER_USECASE_PROXY = 'createAdminUserUseCaseProxy';
   // user
-  static REGISTER_INITIAL_ADMIN_USER_USECASE_PROXY =
-    'registerInitialAdminUserUseCaseProxy';
-  static ADD_USER_USECASE_PROXY = 'addUserUseCaseProxy';
+  static CREATE_USER_USECASE_PROXY = 'createUserUseCaseProxy';
   static DELETE_USER_USECASE_PROXY = 'deleteUserUseCaseProxy';
   static GET_ALL_USERS_USECASE_PROXY = 'getAllUsersUseCaseProxy';
   static PUT_UPDATE_DATA_USER_USECASE_PROXY = 'putUpdateDataUserUseCaseProxy';
+  static PUT_UPDATE_DATA_USER_BY_ADMIN_USECASE_PROXY =
+    'putUpdateDataUserByAdminUseCaseProxy';
+  static PUT_UPDATE_PASSWORD_USER_USECASE_PROXY =
+    'putUpdatePasswordUserUseCaseProxy';
   // category
-  static ADD_CATEGORY_USECASE_PROXY = 'addCategoryUseCaseProxy';
+  static CREATE_CATEGORY_USECASE_PROXY = 'createCategoryUseCaseProxy';
   static GET_ALL_CATEGORY_USECASE_PROXY = 'getAllCategoryUseCaseProxy';
   static PUT_UPDATE__DATA_CATEGORY_USECASE_PROXY =
     'putUpdateDataCategoryUseCaseProxy';
@@ -59,6 +76,17 @@ export class UsecaseProxyModule {
   static DELETE_PRODUCT_BY_ID_USECASE_PROXY = 'deleteProductByIdUseCaseProxy';
   static PUT_UPDATE_DATA_PRODUCT_USECASE_PROXY =
     'putUpdateDataProductUseCaseProxy';
+  // order
+  static ADD_ORDER_USECASE_PROXY = 'addOrderUseCaseProxy';
+  static GET_ALL_ORDERS_USECASE_PROXY = 'getAllOrdersUseCaseProxy';
+  // order details
+  static ADD_ORDER_DETAILS_USECASE_PROXY = 'addOrderDetailUseCaseProxy';
+  static GET_ORDER_DETAILS_BY_ID_USECASE_PROXY =
+    'getOrderDetailsByIdUsecaseProxy';
+  // payment
+  static ADD_PAYMENT_USECASE_PROXY = 'addPaymentUseCaseProxy';
+  // customer
+  static ADD_CUSTOMER_USECASE_PROXY = 'addCustomerUseCaseProxy';
 
   static register(): DynamicModule {
     return {
@@ -66,30 +94,26 @@ export class UsecaseProxyModule {
       providers: [
         {
           inject: [LoggerService, SeedRepository, BcryptService],
-          provide: UsecaseProxyModule.REGISTER_INITIAL_ADMIN_USER_USECASE_PROXY,
+          provide: UsecaseProxyModule.CREATE_ADMIN_USER_USECASE_PROXY,
           useFactory: (
             logger: LoggerService,
             seedRepository: SeedRepository,
             bcryptService: BcryptService,
           ) =>
             new UseCaseProxy(
-              new RegisterInitialAdminUserUseCase(
-                logger,
-                seedRepository,
-                bcryptService,
-              ),
+              new CreateAdminUserUseCase(logger, seedRepository, bcryptService),
             ),
         },
         {
           inject: [LoggerService, UserRepository, BcryptService],
-          provide: UsecaseProxyModule.ADD_USER_USECASE_PROXY,
+          provide: UsecaseProxyModule.CREATE_USER_USECASE_PROXY,
           useFactory: (
             logger: LoggerService,
             userRepository: UserRepository,
             bcryptService: BcryptService,
           ) =>
             new UseCaseProxy(
-              new AddUserUseCase(logger, userRepository, bcryptService),
+              new CreateUserUseCase(logger, userRepository, bcryptService),
             ),
         },
         {
@@ -105,25 +129,50 @@ export class UsecaseProxyModule {
             new UseCaseProxy(new GetAllUsersUseCase(logger, userRepository)),
         },
         {
-          inject: [LoggerService, UserRepository, BcryptService],
+          inject: [LoggerService, UserRepository],
           provide: UsecaseProxyModule.PUT_UPDATE_DATA_USER_USECASE_PROXY,
+          useFactory: (logger: LoggerService, userRepository: UserRepository) =>
+            new UseCaseProxy(
+              new PutUpdateDataUserUseCase(logger, userRepository),
+            ),
+        },
+        {
+          inject: [LoggerService, UserRepository],
+          provide:
+            UsecaseProxyModule.PUT_UPDATE_DATA_USER_BY_ADMIN_USECASE_PROXY,
+          useFactory: (logger: LoggerService, userRepository: UserRepository) =>
+            new UseCaseProxy(
+              new PutUpdateDataUserByAdminUseCase(logger, userRepository),
+            ),
+        },
+        {
+          inject: [
+            LoggerService,
+            UserRepository,
+            BcryptService,
+            JwtTokenService,
+          ],
+          provide: UsecaseProxyModule.PUT_UPDATE_PASSWORD_USER_USECASE_PROXY,
           useFactory: (
             logger: LoggerService,
             userRepository: UserRepository,
             bcryptService: BcryptService,
+            jwtTokenService: JwtTokenService,
           ) =>
             new UseCaseProxy(
-              new PutUpdateDataUserUseCase(
+              new PutUpdatePasswordUserUseCase(
                 logger,
                 userRepository,
                 bcryptService,
+                jwtTokenService,
               ),
             ),
         },
         {
-          inject: [],
+          inject: [LoggerService],
           provide: UsecaseProxyModule.LOGOUT_USECASE_PROXY,
-          useFactory: () => new UseCaseProxy(new LogoutUseCase()),
+          useFactory: (logger: LoggerService) =>
+            new UseCaseProxy(new LogoutUseCase(logger)),
         },
         {
           inject: [
@@ -150,13 +199,13 @@ export class UsecaseProxyModule {
         },
         {
           inject: [LoggerService, CategoryRepository],
-          provide: UsecaseProxyModule.ADD_CATEGORY_USECASE_PROXY,
+          provide: UsecaseProxyModule.CREATE_CATEGORY_USECASE_PROXY,
           useFactory: (
             logger: LoggerService,
             categoryRepository: CategoryRepository,
           ) =>
             new UseCaseProxy(
-              new AddCategoryUseCase(logger, categoryRepository),
+              new CreateCategoryUseCase(logger, categoryRepository),
             ),
         },
         {
@@ -246,16 +295,81 @@ export class UsecaseProxyModule {
               ),
             ),
         },
+        {
+          inject: [LoggerService, ProductRepository, OrderRepository],
+          provide: UsecaseProxyModule.ADD_ORDER_USECASE_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            productRepository: ProductRepository,
+            orderRepository: OrderRepository,
+          ) =>
+            new UseCaseProxy(
+              new AddOrderUseCase(logger, productRepository, orderRepository),
+            ),
+        },
+        {
+          inject: [LoggerService, OrderRepository],
+          provide: UsecaseProxyModule.GET_ALL_ORDERS_USECASE_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            orderRepository: OrderRepository,
+          ) =>
+            new UseCaseProxy(new GetAllOrdersUseCase(logger, orderRepository)),
+        },
+        {
+          inject: [LoggerService, OrderDetailsRepository],
+          provide: UsecaseProxyModule.ADD_ORDER_DETAILS_USECASE_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            orderDetailsRepository: OrderDetailsRepository,
+          ) =>
+            new UseCaseProxy(
+              new AddOrderDetailsUseCase(logger, orderDetailsRepository),
+            ),
+        },
+        {
+          inject: [LoggerService, OrderDetailsRepository],
+          provide: UsecaseProxyModule.GET_ORDER_DETAILS_BY_ID_USECASE_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            orderDetailsRepository: OrderDetailsRepository,
+          ) =>
+            new UseCaseProxy(
+              new GetOrderDetailsByIdUseCase(logger, orderDetailsRepository),
+            ),
+        },
+        {
+          inject: [LoggerService, PaymentRepository],
+          provide: UsecaseProxyModule.ADD_PAYMENT_USECASE_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            paymentRepository: PaymentRepository,
+          ) =>
+            new UseCaseProxy(new AddPaymentUseCase(logger, paymentRepository)),
+        },
+        {
+          inject: [LoggerService, CustomerRepository],
+          provide: UsecaseProxyModule.ADD_CUSTOMER_USECASE_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            customerRepository: CustomerRepository,
+          ) =>
+            new UseCaseProxy(
+              new AddCustomerUseCase(logger, customerRepository),
+            ),
+        },
       ],
       exports: [
-        UsecaseProxyModule.REGISTER_INITIAL_ADMIN_USER_USECASE_PROXY,
-        UsecaseProxyModule.ADD_USER_USECASE_PROXY,
+        UsecaseProxyModule.CREATE_ADMIN_USER_USECASE_PROXY,
+        UsecaseProxyModule.CREATE_USER_USECASE_PROXY,
         UsecaseProxyModule.DELETE_USER_USECASE_PROXY,
         UsecaseProxyModule.GET_ALL_USERS_USECASE_PROXY,
         UsecaseProxyModule.PUT_UPDATE_DATA_USER_USECASE_PROXY,
+        UsecaseProxyModule.PUT_UPDATE_DATA_USER_BY_ADMIN_USECASE_PROXY,
+        UsecaseProxyModule.PUT_UPDATE_PASSWORD_USER_USECASE_PROXY,
         UsecaseProxyModule.LOGOUT_USECASE_PROXY,
         UsecaseProxyModule.LOGIN_USECASE_PROXY,
-        UsecaseProxyModule.ADD_CATEGORY_USECASE_PROXY,
+        UsecaseProxyModule.CREATE_CATEGORY_USECASE_PROXY,
         UsecaseProxyModule.GET_ALL_CATEGORY_USECASE_PROXY,
         UsecaseProxyModule.PUT_UPDATE__DATA_CATEGORY_USECASE_PROXY,
         UsecaseProxyModule.DELETE_CATEGORY_USECASE_PROXY,
@@ -263,6 +377,12 @@ export class UsecaseProxyModule {
         UsecaseProxyModule.GET_ALL_PRODUCTS_USECASE_PROXY,
         UsecaseProxyModule.DELETE_PRODUCT_BY_ID_USECASE_PROXY,
         UsecaseProxyModule.PUT_UPDATE_DATA_PRODUCT_USECASE_PROXY,
+        UsecaseProxyModule.ADD_ORDER_USECASE_PROXY,
+        UsecaseProxyModule.GET_ALL_ORDERS_USECASE_PROXY,
+        UsecaseProxyModule.ADD_ORDER_DETAILS_USECASE_PROXY,
+        UsecaseProxyModule.GET_ORDER_DETAILS_BY_ID_USECASE_PROXY,
+        UsecaseProxyModule.ADD_PAYMENT_USECASE_PROXY,
+        UsecaseProxyModule.ADD_CUSTOMER_USECASE_PROXY,
       ],
     };
   }
