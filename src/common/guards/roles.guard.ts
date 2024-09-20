@@ -28,7 +28,7 @@ export class RolesGuard implements CanActivate {
     }
     if (!user.available) {
       throw new ForbiddenException(
-        'User is not available, change your password to access',
+        'Unauthorized user role or has not updated their password',
       );
     }
 
