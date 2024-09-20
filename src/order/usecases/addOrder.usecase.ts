@@ -22,13 +22,8 @@ export class AddOrderUseCase {
       const { id: productID, ...order } = data;
       const productResponse = await this.productRepository.findById(productID);
       if (!productResponse) {
-        this.logger.error(
-          'AddOrderUseCase',
-          `The product ${productResponse.name} not exists`,
-        );
-        throw new NotFoundException(
-          `The product ${productResponse.name} not exists`,
-        );
+        this.logger.error('AddOrderUseCase', 'The product not exists');
+        throw new NotFoundException('The product not exists');
       }
       if (!productResponse.available) {
         this.logger.error(
@@ -46,7 +41,7 @@ export class AddOrderUseCase {
           `The quantity of product ${productResponse.name} in ${order.quantity} is greater than the stock ${productResponse.stock}`,
         );
       }
-      if (data.total != order.quantity * productResponse.unit_price) {
+      if (order.total != order.quantity * productResponse.unit_price) {
         this.logger.error(
           'AddOrderUseCase',
           `The total of product ${productResponse.name} is incorrect`,
@@ -71,6 +66,9 @@ export class AddOrderUseCase {
       });
       const od = await this.orderRepository.createOrder(content);
       details.push(od);
+    }
+    if (details.length > 0) {
+      this.logger.log('AddOrderUseCase', 'Orders have been added');
     }
     return details;
   }
