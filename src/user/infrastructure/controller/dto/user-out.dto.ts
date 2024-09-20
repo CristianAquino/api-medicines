@@ -1,4 +1,4 @@
-import { ResponseDTO } from '@common/dto';
+import { MetaPaginationData, ResponseDTO } from '@common/dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from '../enum/user.enum';
 
@@ -25,24 +25,6 @@ export class UserData {
   available: boolean;
 }
 
-export class MetaPaginationUserData {
-  @ApiProperty({
-    example: 1,
-    description: 'page',
-  })
-  page: number;
-  @ApiProperty({
-    example: 10,
-    description: 'limit',
-  })
-  last_page: number;
-  @ApiProperty({
-    example: 10,
-    description: 'total pages',
-  })
-  total: number;
-}
-
 export class AllUsersData {
   @ApiProperty({
     type: [UserData],
@@ -50,10 +32,10 @@ export class AllUsersData {
   })
   data: UserData[];
   @ApiProperty({
-    type: MetaPaginationUserData,
+    type: MetaPaginationData,
     description: 'meta',
   })
-  meta: MetaPaginationUserData;
+  meta: MetaPaginationData;
 }
 
 export class SWGAllUsersData extends ResponseDTO {
@@ -69,11 +51,4 @@ export class SWGUserData extends ResponseDTO {
     description: 'data',
   })
   data: UserData;
-}
-export class SWGMessage extends ResponseDTO {
-  @ApiProperty({
-    example: 'message describing the action performed',
-    description: 'message describing the action performed',
-  })
-  data: string;
 }

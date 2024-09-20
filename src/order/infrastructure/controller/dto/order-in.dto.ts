@@ -66,14 +66,25 @@ export class AddOrderDTO {
   @ValidateNested()
   @Type(() => PaymentDTO)
   readonly payment: PaymentDTO;
+}
+
+export class PaginationDTO {
   @ApiProperty({
-    example: 0.1,
-    description: 'descount',
-    default: 0,
+    required: false,
+    example: 1,
+    description: 'page',
   })
-  @IsNumber()
   @IsPositive()
-  @IsNotEmpty()
   @IsOptional()
-  readonly descount?: number;
+  @Type(() => Number)
+  readonly page?: number = 1;
+  @ApiProperty({
+    required: false,
+    example: 10,
+    description: 'limit',
+  })
+  @IsPositive()
+  @IsOptional()
+  @Type(() => Number)
+  readonly limit?: number = 10;
 }
