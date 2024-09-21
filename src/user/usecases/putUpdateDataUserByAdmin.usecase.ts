@@ -32,8 +32,8 @@ export class PutUpdateDataUserByAdminUseCase {
 
     this.logger.log(
       'PutUpdateDataUserByAdminUseCase',
-      'User updated successfully',
+      `User ${user.username} has updated successfully`,
     );
-    return 'User updated successfully';
+    return `User ${user.username} has updated successfully`;
   }
 }
