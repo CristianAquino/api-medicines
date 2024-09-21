@@ -8,14 +8,16 @@ import { CategoryData, CategoryUpdateDTO } from '../controller/dto';
 export class CategoryRepository implements ICategoryRepository {
   constructor(
     @InjectRepository(Category)
-    private readonly categoryEntityRepository: Repository<Category>,
+    private readonly categoryRepository: Repository<Category>,
   ) {}
 
-  async createCategory(category: any): Promise<void> {
-    await this.categoryEntityRepository.save(category);
+  async createCategory(category: string): Promise<void> {
+    await this.categoryRepository.save({
+      category: category.toLocaleLowerCase(),
+    });
   }
   async findAllCategories(category: string): Promise<CategoryData[]> {
-    const query = this.categoryEntityRepository.createQueryBuilder('category');
+    const query = this.categoryRepository.createQueryBuilder('category');
     if (category) {
       query.where('LOWER(category.category) LIKE LOWER(:category)', {
         category: `%${category}%`,
@@ -26,12 +28,12 @@ export class CategoryRepository implements ICategoryRepository {
     return allCategories.map((category) => this.findCategory(category));
   }
   async findCategoryById(id: number): Promise<CategoryData> {
-    const categoryFind = await this.categoryEntityRepository.findOneBy({ id });
+    const categoryFind = await this.categoryRepository.findOneBy({ id });
     if (!categoryFind) return null;
     return this.findCategory(categoryFind);
   }
   async findCategoryByName(category: string): Promise<any> {
-    const categoryFind = await this.categoryEntityRepository
+    const categoryFind = await this.categoryRepository
       .createQueryBuilder('category')
       .where('LOWER(category.category) = LOWER(:category)', { category })
       .getOne();
@@ -39,11 +41,14 @@ export class CategoryRepository implements ICategoryRepository {
     return categoryFind;
   }
   async updateCategory(data: CategoryUpdateDTO): Promise<void> {
-    const { id, ...content } = data;
-    await this.categoryEntityRepository.update({ id }, content);
+    const { id, category } = data;
+    await this.categoryRepository.update(
+      { id },
+      { category: category.toLocaleLowerCase() },
+    );
   }
   async deleteById(id: number): Promise<number> {
-    const del = await this.categoryEntityRepository.delete({ id });
+    const del = await this.categoryRepository.delete({ id });
     return del.affected;
   }
 

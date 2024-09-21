@@ -4,7 +4,7 @@ import {
 } from '@category/infrastructure/controller/dto';
 
 export interface ICategoryRepository {
-  createCategory(categoryDTO: any): Promise<void>;
+  createCategory(category: string): Promise<void>;
   findAllCategories(category: string): Promise<CategoryData[]>;
   findCategoryById(id: number): Promise<CategoryData>;
   findCategoryByName(category: string): Promise<any>;
