@@ -35,8 +35,8 @@ export class PutUpdateDataCategoryUseCase {
     await this.categoryRepository.updateCategory(data);
     this.logger.log(
       'PutUpdateDataCategoryUseCase',
-      'Category updated successfully',
+      `The ${category.category} category has been updated to ${data.category}`,
     );
-    return 'Category updated successfully';
+    return `The ${category.category} category has been updated to ${data.category}`;
   }
 }
