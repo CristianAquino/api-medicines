@@ -61,15 +61,17 @@ describe('Test create category usecase', () => {
     );
 
     await expect(createCategoryUseCase.execute(newCategory)).resolves.toBe(
-      'New category have been added',
+      `Category ${newCategory.category} has been added`,
     );
     expect(categoryRepository.findCategoryByName).toHaveBeenCalledWith(
       newCategory.category,
     );
-    expect(categoryRepository.createCategory).toHaveBeenCalledWith(newCategory);
+    expect(categoryRepository.createCategory).toHaveBeenCalledWith(
+      newCategory.category,
+    );
     expect(logger.log).toHaveBeenCalledWith(
-      'CreateCategoryUseCase execute',
-      'New category have been added',
+      'CreateCategoryUseCase',
+      `Category ${newCategory.category} has been added`,
     );
     expect(logger.warn).not.toHaveBeenCalled();
   });

@@ -35,12 +35,12 @@ describe('Test get all categories usecases', () => {
     (categoryRepository.findAllCategories as jest.Mock).mockResolvedValue(null);
 
     await expect(getAllCategoriesUseCase.execute(category)).rejects.toThrow(
-      'Categories not found',
+      `Categories ${category ?? ''} not found`,
     );
     expect(categoryRepository.findAllCategories).toHaveBeenCalledWith(category);
     expect(logger.warn).toHaveBeenCalledWith(
       'GetAllCategoriesUseCase',
-      'Categories not found',
+      `Categories ${category ?? ''} not found`,
     );
     expect(logger.log).not.toHaveBeenCalled();
   });

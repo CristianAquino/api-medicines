@@ -78,14 +78,14 @@ describe('Test put update data user by admin', () => {
 
     await expect(
       putUpdateDataUserByAdminUseCase.execute(updated),
-    ).resolves.toBe('User updated successfully');
+    ).resolves.toBe('User lorem has updated successfully');
 
     expect(userRepository.findById).toHaveBeenCalledWith(updated.id);
     expect(userRepository.updateContentToAdmin).toHaveBeenCalledWith(updated);
     expect(logger.warn).not.toHaveBeenCalled();
     expect(logger.log).toHaveBeenCalledWith(
       'PutUpdateDataUserByAdminUseCase',
-      'User updated successfully',
+      'User lorem has updated successfully',
     );
   });
 });

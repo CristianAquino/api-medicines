@@ -79,14 +79,17 @@ describe('Test put update data category usecase', () => {
       id: 1,
       category: 'toys1',
     };
-    (categoryRepository.findCategoryById as jest.Mock).mockResolvedValue({
+    const data = {
       ...updated,
       category: 'toys2',
-    });
+    };
+    (categoryRepository.findCategoryById as jest.Mock).mockResolvedValue(data);
     (categoryRepository.updateCategory as jest.Mock).mockResolvedValue(updated);
     await expect(
       putUpdateDataCategoryUseCase.execute(updated),
-    ).resolves.toEqual('Category updated successfully');
+    ).resolves.toEqual(
+      `The ${data.category} category has been updated to ${updated.category}`,
+    );
     expect(categoryRepository.findCategoryById).toHaveBeenCalledWith(
       updated.id,
     );
@@ -94,7 +97,7 @@ describe('Test put update data category usecase', () => {
     expect(categoryRepository.updateCategory).toHaveBeenCalledWith(updated);
     expect(logger.log).toHaveBeenCalledWith(
       'PutUpdateDataCategoryUseCase',
-      'Category updated successfully',
+      `The ${data.category} category has been updated to ${updated.category}`,
     );
   });
 });
