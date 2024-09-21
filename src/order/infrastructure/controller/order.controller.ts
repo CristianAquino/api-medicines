@@ -1,5 +1,5 @@
 import { ResponseErrorDTO } from '@common/dto';
-import { JwtAuthGuard } from '@common/guards';
+import { JwtAuthGuard, RolesGuard } from '@common/guards';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
 import { UsecaseProxyModule } from '@common/usecases-proxy/usecases-proxy.module';
 import { AddCustomerUseCase } from '@customer/usecases';
@@ -25,8 +25,10 @@ import { AddOrderUseCase, GetAllOrdersUseCase } from '@order/usecases';
 import { AddOrderDetailsUseCase } from '@order_details/usecases';
 import { AddPaymentUseCase } from '@payment/usecases';
 import { AddOrderDTO, PaginationDTO, SWGAllOrderData } from './dto';
+import { Roles } from '@common/decorators';
+import { Role } from '@user/infrastructure/controller/enum/user.enum';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('order')
 @ApiTags('Order')
 @ApiCookieAuth()
@@ -55,6 +57,7 @@ export class OrderController {
   ) {}
 
   @Post('create')
+  @Roles(Role.ADMIN, Role.USER)
   @ApiBody({ type: AddOrderDTO })
   @ApiOperation({ summary: 'Add new product order' })
   @HttpCode(HttpStatus.CREATED)
@@ -76,6 +79,7 @@ export class OrderController {
   }
 
   @Get('all')
+  @Roles(Role.ADMIN, Role.USER)
   @ApiOperation({ summary: 'Get all orders' })
   @ApiResponse({ status: HttpStatus.OK, type: SWGAllOrderData })
   @HttpCode(HttpStatus.OK)
