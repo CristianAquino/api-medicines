@@ -19,11 +19,11 @@ export class CreateCategoryUseCase {
       );
       throw new Error('Category already exists');
     }
-    await this.categoryRepository.createCategory(category);
+    await this.categoryRepository.createCategory(category.category);
     this.logger.log(
-      'CreateCategoryUseCase execute',
-      'New category have been added',
+      'CreateCategoryUseCase',
+      `Category ${category.category} has been added`,
     );
-    return 'New category have been added';
+    return `Category ${category.category} has been added`;
   }
 }

@@ -14,8 +14,11 @@ export class GetAllCategoriesUseCase {
       category,
     );
     if (!allCategories) {
-      this.logger.warn('GetAllCategoriesUseCase', 'Categories not found');
-      throw new NotFoundException('Categories not found');
+      this.logger.warn(
+        'GetAllCategoriesUseCase',
+        `Categories ${category ?? ''} not found`,
+      );
+      throw new NotFoundException(`Categories ${category ?? ''} not found`);
     }
     this.logger.log('GetAllCategoriesUseCase', 'Return all categories');
     return allCategories;
