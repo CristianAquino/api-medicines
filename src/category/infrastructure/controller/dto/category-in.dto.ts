@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsNotEmpty,
   IsOptional,
@@ -16,6 +17,7 @@ export class CategoryDTO {
   @IsString()
   @IsNotEmpty()
   @MinLength(3)
+  @Transform(({ value }) => value.toLowerCase())
   readonly category: string;
 }
 export class CategoryQueryDTO {
@@ -26,6 +28,7 @@ export class CategoryQueryDTO {
   @IsString()
   @IsOptional()
   @MinLength(3)
+  @Transform(({ value }) => value.toLowerCase())
   readonly category?: string;
 }
 export class CategoryIdDTO {
@@ -47,5 +50,6 @@ export class CategoryUpdateDTO extends CategoryIdDTO {
   @IsString()
   @IsNotEmpty()
   @MinLength(3)
+  @Transform(({ value }) => value.toLowerCase())
   readonly category?: string;
 }
