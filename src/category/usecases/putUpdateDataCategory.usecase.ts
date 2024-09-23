@@ -22,9 +22,7 @@ export class PutUpdateDataCategoryUseCase {
       );
     }
 
-    if (
-      category.category.toLocaleLowerCase() == data.category.toLocaleLowerCase()
-    ) {
+    if (category.category == data.category) {
       this.logger.warn(
         'PutUpdateDataCategoryUseCase',
         `The category ${data.category} already exists`,
