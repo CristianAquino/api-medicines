@@ -12,9 +12,7 @@ export class CategoryRepository implements ICategoryRepository {
   ) {}
 
   async createCategory(category: string): Promise<void> {
-    await this.categoryRepository.save({
-      category: category.toLocaleLowerCase(),
-    });
+    await this.categoryRepository.save({ category });
   }
   async findAllCategories(category: string): Promise<CategoryData[]> {
     const query = this.categoryRepository.createQueryBuilder('category');
@@ -42,10 +40,7 @@ export class CategoryRepository implements ICategoryRepository {
   }
   async updateCategory(data: CategoryUpdateDTO): Promise<void> {
     const { id, category } = data;
-    await this.categoryRepository.update(
-      { id },
-      { category: category.toLocaleLowerCase() },
-    );
+    await this.categoryRepository.update({ id }, { category });
   }
   async deleteById(id: number): Promise<number> {
     const del = await this.categoryRepository.delete({ id });
