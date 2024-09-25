@@ -1,13 +1,9 @@
-import { Category, Product } from '@common/entities';
+import { Product } from '@common/entities';
 import { CategoryModel, ProductModel } from '@common/entities/models';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IProductRepository } from '@product/domain/repositories/productRepository.interface';
 import { Repository } from 'typeorm';
-import {
-  AllProductsData,
-  FindAllProductsDTO,
-  ProductDTO,
-} from '../controller/dto';
+import { AllProductsData, FindAllProductsDTO } from '../controller/dto';
 
 export class ProductRepository implements IProductRepository {
   constructor(
@@ -23,7 +19,9 @@ export class ProductRepository implements IProductRepository {
     findAllProductsDTO: FindAllProductsDTO,
   ): Promise<AllProductsData> {
     const { limit, page, name: productName } = findAllProductsDTO;
-    const query = this.productEntityRepository.createQueryBuilder();
+    const query = this.productEntityRepository
+      .createQueryBuilder('product')
+      .innerJoinAndSelect('product.category', 'category');
     if (productName) {
       query.where('LOWER(product.name) LIKE LOWER(:productName)', {
         productName: `%${productName}%`,
@@ -37,10 +35,7 @@ export class ProductRepository implements IProductRepository {
     const last_page = Math.ceil(total_products / limit);
 
     return {
-      data: products.filter((product) => {
-        if (product.available && product.stock > 0)
-          return this.findProducts(product);
-      }),
+      data: products.map((ele) => this.findProducts(ele)),
       meta: {
         total: total_products,
         page,
@@ -65,8 +60,8 @@ export class ProductRepository implements IProductRepository {
     return del.affected;
   }
 
-  private findProduct(product: ProductModel): ProductDTO {
-    const productFound = new Product();
+  private findProduct(product: ProductModel): ProductModel {
+    const productFound = new ProductModel();
     productFound.id = product.id;
     productFound.name = product.name;
     productFound.sku = product.sku;
@@ -77,14 +72,14 @@ export class ProductRepository implements IProductRepository {
     productFound.description = product.description;
     return productFound;
   }
-  private findProducts(product: ProductModel): ProductDTO {
+  private findProducts(product: ProductModel): ProductModel {
     const allProducts = this.findProduct(product) as ProductModel;
     allProducts.category = this.category(product.category);
     return allProducts;
   }
 
-  private category(category: CategoryModel): any {
-    const categoryFound = new Category();
+  private category(category: CategoryModel): CategoryModel {
+    const categoryFound = new CategoryModel();
     categoryFound.id = category.id;
     categoryFound.category = category.category;
     return categoryFound;
