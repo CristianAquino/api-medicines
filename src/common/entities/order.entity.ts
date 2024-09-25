@@ -19,6 +19,8 @@ export class Order {
   id: string;
   @Column({ type: 'int' })
   quantity: number;
+  @Column({ type: 'float', precision: 2 })
+  unit_price: number;
   @Column({ type: 'float' }) //quantity*unit_price(product)
   total: number;
   //   date
