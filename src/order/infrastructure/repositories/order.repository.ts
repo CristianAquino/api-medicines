@@ -18,7 +18,8 @@ export class OrderRepository implements IOrderRepository {
   async findAllOrders(pagination: PaginationDTO): Promise<AllOrdersData> {
     const { page, limit } = pagination;
     const [orders, total_orders] = await this.orderRepository
-      .createQueryBuilder()
+      .createQueryBuilder('order')
+      .innerJoinAndSelect('order.product', 'product')
       .skip((page - 1) * limit)
       .take(limit)
       .getManyAndCount();
@@ -39,6 +40,7 @@ export class OrderRepository implements IOrderRepository {
     const ord = new OrderModel();
     ord.id = order.id;
     ord.quantity = order.quantity;
+    ord.unit_price = order.unit_price;
     ord.total = order.total;
     ord.createdAt = order.createdAt;
     return ord;
@@ -55,7 +57,6 @@ export class OrderRepository implements IOrderRepository {
     pro.id = product.id;
     pro.name = product.name;
     pro.sku = product.sku;
-    pro.unit_price = product.unit_price;
     return pro;
   }
 }
