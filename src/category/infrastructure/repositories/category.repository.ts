@@ -15,7 +15,9 @@ export class CategoryRepository implements ICategoryRepository {
     await this.categoryRepository.save({ category });
   }
   async findAllCategories(category: string): Promise<CategoryData[]> {
-    const query = this.categoryRepository.createQueryBuilder('category');
+    const query = this.categoryRepository
+      .createQueryBuilder('category')
+      .leftJoinAndSelect('category.products', 'products');
     if (category) {
       query.where('LOWER(category.category) LIKE LOWER(:category)', {
         category: `%${category}%`,
@@ -48,12 +50,12 @@ export class CategoryRepository implements ICategoryRepository {
   }
 
   private findCategory(category: CategoryModel): CategoryData {
-    const categoryFound = new Category();
+    const categoryFound = new CategoryModel();
     categoryFound.id = category.id;
     categoryFound.category = category.category;
     const total = {
       ...categoryFound,
-      total_products: category.products?.length ?? 0,
+      total_products: category.products.length ?? 0,
     };
     return total;
   }
