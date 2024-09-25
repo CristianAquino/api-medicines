@@ -48,7 +48,8 @@ export class PutUpdateDataProductUseCase {
     }
     await this.productRepository.updateProduct({
       ...updated,
-      available: product.stock - updated.stock !== 0 ? true : false,
+      available:
+        updated.available ?? product.stock - updated.stock !== 0 ? true : false,
     });
     this.logger.log(
       'PutUpdateDataProductUseCase',

@@ -27,7 +27,10 @@ export class AddProductUseCase {
       ...product,
       category: categoryResponse,
     });
-    this.logger.log('AddProductUseCase', 'New product have been added');
-    return 'New product have been added';
+    this.logger.log(
+      'AddProductUseCase',
+      `New product ${data.name} have been added`,
+    );
+    return `New product ${data.name} have been added`;
   }
 }
