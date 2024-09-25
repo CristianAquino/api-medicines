@@ -19,9 +19,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { GetOrderDetailsByIdUseCase } from '@order_details/usecases';
+import { SWGOrderDetailsData } from './dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller('order details')
+@Controller('order_details')
 @ApiTags('Order Details')
 @ApiCookieAuth()
 @ApiResponse({
@@ -41,7 +42,8 @@ export class OrderDetailsController {
   ) {}
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get all orders' })
+  @ApiOperation({ summary: 'Get order details' })
+  @ApiResponse({ status: HttpStatus.OK, type: SWGOrderDetailsData })
   @HttpCode(HttpStatus.OK)
   async getOrderDetailsById(@Param('id', ParseIntPipe) id: number) {
     return this.getOrderDetailsByIdUsecaseProxy.getInstance().execute(id);
