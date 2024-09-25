@@ -52,6 +52,7 @@ export class AddOrderUseCase {
       }
       verify.push({
         ...data,
+        unit_price: productResponse.unit_price,
         product: productResponse,
       });
     }
