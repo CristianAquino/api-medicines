@@ -68,7 +68,7 @@ describe('Test add product usecase', () => {
     );
 
     await expect(addProductUseCase.execute(product)).resolves.toEqual(
-      'New product have been added',
+      `New product ${product.name} have been added`,
     );
     expect(categoryRepository.findCategoryByName).toHaveBeenCalledWith(
       product.category,
@@ -76,7 +76,7 @@ describe('Test add product usecase', () => {
     expect(productRepository.addProduct).toHaveBeenCalledWith(product);
     expect(logger.log).toHaveBeenCalledWith(
       'AddProductUseCase',
-      'New product have been added',
+      `New product ${product.name} have been added`,
     );
     expect(logger.warn).not.toHaveBeenCalled();
   });
