@@ -3,6 +3,7 @@ import { CategoryController } from '@category/infrastructure/controller/category
 import { UsecaseProxyModule } from '@common/usecases-proxy/usecases-proxy.module';
 import { Module } from '@nestjs/common';
 import { OrderController } from '@order/infrastructure/controller/order.controller';
+import { OrderDetailsController } from '@order_details/infrastructure/controller/orderDetails.controller';
 import { ProductController } from '@product/infrastructure/controller/product.controller';
 import { UserController } from '@user/infrastructure/controller/user.controller';
 
@@ -14,6 +15,7 @@ import { UserController } from '@user/infrastructure/controller/user.controller'
     CategoryController,
     ProductController,
     OrderController,
+    OrderDetailsController,
   ],
 })
 export class ControllersModule {}
