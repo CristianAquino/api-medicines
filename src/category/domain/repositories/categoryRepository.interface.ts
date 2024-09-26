@@ -1,14 +1,13 @@
 import {
-  CategoryDTO,
+  CategoryData,
   CategoryUpdateDTO,
-  ReturnCategory,
 } from '@category/infrastructure/controller/dto';
 
 export interface ICategoryRepository {
-  insert(categoryDTO: CategoryDTO): Promise<void>;
-  update(categoryUpdateDTO: CategoryUpdateDTO): Promise<void>;
+  createCategory(category: string): Promise<void>;
+  findAllCategories(category: string): Promise<CategoryData[]>;
+  findCategoryById(id: number): Promise<CategoryData>;
+  findCategoryByName(category: string): Promise<any>;
+  updateCategory(categoryUpdateDTO: CategoryUpdateDTO): Promise<void>;
   deleteById(id: number): Promise<number>;
-  findAll(): Promise<ReturnCategory[]>;
-  findById(id: number): Promise<ReturnCategory>;
-  findByCategoryName(category: string): Promise<any>;
 }

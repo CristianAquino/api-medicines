@@ -10,7 +10,7 @@ export class PutUpdateDataCategoryUseCase {
   ) {}
 
   async execute(data: CategoryUpdateDTO) {
-    const category = await this.categoryRepository.findById(data.id);
+    const category = await this.categoryRepository.findCategoryById(data.id);
 
     if (!category) {
       this.logger.warn(
@@ -22,21 +22,19 @@ export class PutUpdateDataCategoryUseCase {
       );
     }
 
-    if (
-      category.category.toLocaleLowerCase() == data.category.toLocaleLowerCase()
-    ) {
+    if (category.category == data.category) {
       this.logger.warn(
         'PutUpdateDataCategoryUseCase',
-        'Category name already exists',
+        `The category ${data.category} already exists`,
       );
-      throw new Error('Category name already exists');
+      throw new Error(`The category ${data.category} already exists`);
     }
 
-    await this.categoryRepository.update(data);
+    await this.categoryRepository.updateCategory(data);
     this.logger.log(
       'PutUpdateDataCategoryUseCase',
-      'Category updated successfully',
+      `The ${category.category} category has been updated to ${data.category}`,
     );
-    return 'Category updated successfully';
+    return `The ${category.category} category has been updated to ${data.category}`;
   }
 }

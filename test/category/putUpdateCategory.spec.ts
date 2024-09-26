@@ -11,11 +11,10 @@ describe('Test put update data category usecase', () => {
     logger = {} as ILogger;
     logger.log = jest.fn();
     logger.warn = jest.fn();
-    logger.error = jest.fn();
 
     categoryRepository = {} as ICategoryRepository;
-    categoryRepository.findById = jest.fn();
-    categoryRepository.update = jest.fn();
+    categoryRepository.findCategoryById = jest.fn();
+    categoryRepository.updateCategory = jest.fn();
 
     putUpdateDataCategoryUseCase = new PutUpdateDataCategoryUseCase(
       logger,
@@ -36,16 +35,19 @@ describe('Test put update data category usecase', () => {
       id: 1,
       category: 'toys1',
     };
-    (categoryRepository.findById as jest.Mock).mockResolvedValue(null);
+    (categoryRepository.findCategoryById as jest.Mock).mockResolvedValue(null);
+
     await expect(putUpdateDataCategoryUseCase.execute(updated)).rejects.toThrow(
       'Category not found, please check the information',
     );
-    expect(categoryRepository.findById).toHaveBeenCalledWith(updated.id);
+    expect(categoryRepository.findCategoryById).toHaveBeenCalledWith(
+      updated.id,
+    );
     expect(logger.warn).toHaveBeenCalledWith(
       'PutUpdateDataCategoryUseCase',
       'Category not found, please check the information',
     );
-    expect(categoryRepository.update).not.toHaveBeenCalled();
+    expect(categoryRepository.updateCategory).not.toHaveBeenCalled();
     expect(logger.log).not.toHaveBeenCalled();
   });
 
@@ -54,16 +56,21 @@ describe('Test put update data category usecase', () => {
       id: 1,
       category: 'toys1',
     };
-    (categoryRepository.findById as jest.Mock).mockResolvedValue(updated);
-    await expect(putUpdateDataCategoryUseCase.execute(updated)).rejects.toThrow(
-      'Category name already exists',
+    (categoryRepository.findCategoryById as jest.Mock).mockResolvedValue(
+      updated,
     );
-    expect(categoryRepository.findById).toHaveBeenCalledWith(updated.id);
+
+    await expect(putUpdateDataCategoryUseCase.execute(updated)).rejects.toThrow(
+      `The category ${updated.category} already exists`,
+    );
+    expect(categoryRepository.findCategoryById).toHaveBeenCalledWith(
+      updated.id,
+    );
     expect(logger.warn).toHaveBeenCalledWith(
       'PutUpdateDataCategoryUseCase',
-      'Category name already exists',
+      `The category ${updated.category} already exists`,
     );
-    expect(categoryRepository.update).not.toHaveBeenCalled();
+    expect(categoryRepository.updateCategory).not.toHaveBeenCalled();
     expect(logger.log).not.toHaveBeenCalled();
   });
 
@@ -72,20 +79,25 @@ describe('Test put update data category usecase', () => {
       id: 1,
       category: 'toys1',
     };
-    (categoryRepository.findById as jest.Mock).mockResolvedValue({
+    const data = {
       ...updated,
       category: 'toys2',
-    });
-    (categoryRepository.update as jest.Mock).mockResolvedValue(updated);
+    };
+    (categoryRepository.findCategoryById as jest.Mock).mockResolvedValue(data);
+    (categoryRepository.updateCategory as jest.Mock).mockResolvedValue(updated);
     await expect(
       putUpdateDataCategoryUseCase.execute(updated),
-    ).resolves.toEqual('Category updated successfully');
-    expect(categoryRepository.findById).toHaveBeenCalledWith(updated.id);
+    ).resolves.toEqual(
+      `The ${data.category} category has been updated to ${updated.category}`,
+    );
+    expect(categoryRepository.findCategoryById).toHaveBeenCalledWith(
+      updated.id,
+    );
     expect(logger.warn).not.toHaveBeenCalled();
-    expect(categoryRepository.update).toHaveBeenCalledWith(updated);
+    expect(categoryRepository.updateCategory).toHaveBeenCalledWith(updated);
     expect(logger.log).toHaveBeenCalledWith(
       'PutUpdateDataCategoryUseCase',
-      'Category updated successfully',
+      `The ${data.category} category has been updated to ${updated.category}`,
     );
   });
 });

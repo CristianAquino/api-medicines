@@ -26,6 +26,11 @@ export class RolesGuard implements CanActivate {
         'User is not authenticated or user does not have any roles assigned.',
       );
     }
+    if (!user.available) {
+      throw new ForbiddenException(
+        'Unauthorized user role or has not updated their password',
+      );
+    }
 
     const hasRole = requiredRoles.some((role) => role == user.role);
     if (!hasRole) {

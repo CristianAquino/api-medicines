@@ -1,8 +1,9 @@
-import { Category, Product } from '@common/entities';
+import { Product } from '@common/entities';
+import { CategoryModel, ProductModel } from '@common/entities/models';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IProductRepository } from 'src/product/domain/repositories/productRepository.interface';
+import { IProductRepository } from '@product/domain/repositories/productRepository.interface';
 import { Repository } from 'typeorm';
-import { ProductDTO } from '../controller/dto';
+import { AllProductsData, FindAllProductsDTO } from '../controller/dto';
 
 export class ProductRepository implements IProductRepository {
   constructor(
@@ -10,15 +11,42 @@ export class ProductRepository implements IProductRepository {
     private readonly productEntityRepository: Repository<Product>,
   ) {}
 
-  async createProduct(data: any): Promise<void> {
+  async addProduct(data: any): Promise<void> {
     const product = this.productEntityRepository.create(data);
     await this.productEntityRepository.save(product);
   }
-  async getAllProducts(): Promise<ProductDTO[]> {
-    const allProducts = await this.productEntityRepository.find({
-      relations: { category: true },
-    });
-    return allProducts.map((product) => this.findAllProducts(product));
+  async findAllProducts(
+    findAllProductsDTO: FindAllProductsDTO,
+  ): Promise<AllProductsData> {
+    const { limit, page, name: productName } = findAllProductsDTO;
+    const query = this.productEntityRepository
+      .createQueryBuilder('product')
+      .innerJoinAndSelect('product.category', 'category');
+    if (productName) {
+      query.where('LOWER(product.name) LIKE LOWER(:productName)', {
+        productName: `%${productName}%`,
+      });
+    }
+    const [products, total_products] = await query
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    const last_page = Math.ceil(total_products / limit);
+
+    return {
+      data: products.map((ele) => this.findProducts(ele)),
+      meta: {
+        total: total_products,
+        page,
+        last_page,
+      },
+    };
+  }
+  async findById(id: string): Promise<any> {
+    const product = await this.productEntityRepository.findOneBy({ id });
+    if (!product) return null;
+    return this.findProduct(product);
   }
   async updateProduct(data: any): Promise<void> {
     const { id, ...content } = data;
@@ -27,18 +55,13 @@ export class ProductRepository implements IProductRepository {
   async updateProductCategory(product: any) {
     await this.productEntityRepository.save(product);
   }
-  async findById(id: string): Promise<any> {
-    const product = await this.productEntityRepository.findOneBy({ id });
-    if (!product) return null;
-    return this.findProduct(product);
-  }
   async deleteById(id: string): Promise<number> {
     const del = await this.productEntityRepository.delete({ id });
     return del.affected;
   }
 
-  private findProduct(product: Product): ProductDTO {
-    const productFound = new Product();
+  private findProduct(product: ProductModel): ProductModel {
+    const productFound = new ProductModel();
     productFound.id = product.id;
     productFound.name = product.name;
     productFound.sku = product.sku;
@@ -49,14 +72,14 @@ export class ProductRepository implements IProductRepository {
     productFound.description = product.description;
     return productFound;
   }
-  private findAllProducts(product: Product): ProductDTO {
-    const allProducts = this.findProduct(product) as Product;
+  private findProducts(product: ProductModel): ProductModel {
+    const allProducts = this.findProduct(product) as ProductModel;
     allProducts.category = this.category(product.category);
     return allProducts;
   }
 
-  private category(category: Category): any {
-    const categoryFound = new Category();
+  private category(category: CategoryModel): CategoryModel {
+    const categoryFound = new CategoryModel();
     categoryFound.id = category.id;
     categoryFound.category = category.category;
     return categoryFound;

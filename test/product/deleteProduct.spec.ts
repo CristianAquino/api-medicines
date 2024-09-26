@@ -38,7 +38,7 @@ describe('Test delect product usecase', () => {
     );
     expect(productRepository.deleteById).toHaveBeenCalledWith(productID);
     expect(logger.warn).toHaveBeenCalledWith(
-      'DeleteProductUseCase execute',
+      'DeleteProductUseCase',
       'Product not found, please check the information',
     );
     expect(logger.log).not.toHaveBeenCalled();
@@ -55,7 +55,7 @@ describe('Test delect product usecase', () => {
     expect(productRepository.deleteById).toHaveBeenCalledWith(productID);
     expect(logger.warn).not.toHaveBeenCalled();
     expect(logger.log).toHaveBeenCalledWith(
-      'DeleteProductUseCase execute',
+      'DeleteProductUseCase',
       `Product ${productID} have been deleted`,
     );
   });

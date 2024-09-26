@@ -20,13 +20,13 @@ export class Product {
   id: string;
   @Column({ type: 'varchar', length: 64, unique: true })
   name: string;
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', default: '00000000' })
   sku: string;
   @Column({ type: 'int' })
   stock: number;
   @Column({ type: 'boolean', default: true })
   available: boolean;
-  @Column({ type: 'float' })
+  @Column({ type: 'float', precision: 2 })
   unit_price: number;
   @Column({ type: 'date' })
   expiration_date: Date;

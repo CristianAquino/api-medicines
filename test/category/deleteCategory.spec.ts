@@ -41,7 +41,7 @@ describe('Test delete category usecase', () => {
 
     expect(categoryRepository.deleteById).toHaveBeenCalledWith(categoryId);
     expect(logger.warn).toHaveBeenCalledWith(
-      'DeleteCategoryUseCase execute',
+      'DeleteCategoryUseCase',
       'Category not found, please check the information',
     );
     expect(logger.log).not.toHaveBeenCalled();
@@ -57,7 +57,7 @@ describe('Test delete category usecase', () => {
 
     expect(categoryRepository.deleteById).toHaveBeenCalledWith(categoryId);
     expect(logger.log).toHaveBeenCalledWith(
-      'DeleteCategoryUseCase execute',
+      'DeleteCategoryUseCase',
       `Category ${categoryId} have been deleted`,
     );
     expect(logger.warn).not.toHaveBeenCalled();

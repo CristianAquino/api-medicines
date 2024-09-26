@@ -1,4 +1,5 @@
 import { User } from '@common/entities';
+import { UserModel } from '@common/entities/models';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ISeedRepository } from '@user/repositories';
@@ -12,18 +13,19 @@ export class SeedRepository implements ISeedRepository {
     private readonly userEntityRepository: Repository<User>,
   ) {}
 
-  async verifyExistingAdminUser(username: string): Promise<boolean> {
+  async verifyIsExistingAdminUser(username: string): Promise<boolean> {
     const existAdmin = await this.userEntityRepository.findOneBy({
       username,
     });
     return !!existAdmin;
   }
 
-  async insertAdminUser(username: string, password: string): Promise<void> {
-    const admin = new User();
+  async createAdminUser(username: string, password: string): Promise<void> {
+    const admin = new UserModel();
     admin.username = username;
     admin.password = password;
     admin.role = Role.ADMIN;
+    admin.available = true;
     await this.userEntityRepository.save(admin);
   }
 }

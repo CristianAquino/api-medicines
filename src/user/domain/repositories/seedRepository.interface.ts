@@ -1,4 +1,4 @@
 export interface ISeedRepository {
-  insertAdminUser(username: string, password: string): Promise<void>;
-  verifyExistingAdminUser(username: string): Promise<boolean>;
+  createAdminUser(username: string, password: string): Promise<void>;
+  verifyIsExistingAdminUser(username: string): Promise<boolean>;
 }

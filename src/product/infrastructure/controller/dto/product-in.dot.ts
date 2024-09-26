@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  IsBoolean,
   IsDate,
   IsInt,
   IsNotEmpty,
@@ -25,7 +26,7 @@ export class IdProductDTO {
 export class ProductDTO {
   @ApiProperty({
     required: true,
-    example: 'medicines',
+    example: 'doll',
     description: 'product name',
   })
   @IsString()
@@ -34,17 +35,18 @@ export class ProductDTO {
   @MaxLength(64)
   readonly name: string;
   @ApiProperty({
-    required: true,
+    required: false,
     example: 'ABC123',
     description: 'product sku',
   })
   @IsString()
   @IsNotEmpty()
-  readonly sku: string;
+  @IsOptional()
+  readonly sku?: string;
   @ApiProperty({
     required: true,
     example: 10,
-    description: 'product quantity',
+    description: 'product stock',
   })
   @IsInt()
   @IsNumber()
@@ -95,7 +97,8 @@ export class AddProductDTO extends ProductDTO {
 
 export class UpdateProductDTO extends IdProductDTO {
   @ApiProperty({
-    example: 'medicines',
+    required: false,
+    example: 'doll',
     description: 'product name',
   })
   @IsString()
@@ -105,6 +108,7 @@ export class UpdateProductDTO extends IdProductDTO {
   @IsOptional()
   readonly name?: string;
   @ApiProperty({
+    required: false,
     example: 'ABC123',
     description: 'product sku',
   })
@@ -113,8 +117,9 @@ export class UpdateProductDTO extends IdProductDTO {
   @IsOptional()
   readonly sku?: string;
   @ApiProperty({
+    required: false,
     example: 10,
-    description: 'product quantity',
+    description: 'product stock',
   })
   @IsInt()
   @IsNumber()
@@ -123,6 +128,7 @@ export class UpdateProductDTO extends IdProductDTO {
   @IsOptional()
   readonly stock?: number;
   @ApiProperty({
+    required: false,
     example: 10.5,
     description: 'product unit price',
   })
@@ -132,6 +138,7 @@ export class UpdateProductDTO extends IdProductDTO {
   @IsOptional()
   readonly unit_price?: number;
   @ApiProperty({
+    required: false,
     example: '2024-10-01',
     description: 'product expiration date',
   })
@@ -141,6 +148,7 @@ export class UpdateProductDTO extends IdProductDTO {
   @IsOptional()
   readonly expiration_date?: Date;
   @ApiProperty({
+    required: false,
     example: 'description of product',
     description: 'product description',
   })
@@ -151,6 +159,7 @@ export class UpdateProductDTO extends IdProductDTO {
   @IsOptional()
   readonly description?: string;
   @ApiProperty({
+    required: false,
     example: 'toys',
     description: 'category name',
   })
@@ -159,4 +168,45 @@ export class UpdateProductDTO extends IdProductDTO {
   @MinLength(3)
   @IsOptional()
   readonly category?: string;
+  @ApiProperty({
+    required: false,
+    example: true,
+    description: 'product availability',
+  })
+  @IsBoolean()
+  @IsOptional()
+  readonly available?: boolean;
+}
+
+export class PaginationDTO {
+  @ApiProperty({
+    required: false,
+    example: 1,
+    description: 'page',
+  })
+  @IsPositive()
+  @IsOptional()
+  @Type(() => Number)
+  readonly page?: number = 1;
+  @ApiProperty({
+    required: false,
+    example: 10,
+    description: 'limit',
+  })
+  @IsPositive()
+  @IsOptional()
+  @Type(() => Number)
+  readonly limit?: number = 10;
+}
+
+export class FindAllProductsDTO extends PaginationDTO {
+  @ApiProperty({
+    required: false,
+    description: 'product name',
+  })
+  @IsString()
+  @MinLength(3)
+  @MaxLength(64)
+  @IsOptional()
+  readonly name?: string;
 }

@@ -9,7 +9,7 @@ import { UsecaseProxyModule } from '@common/usecases-proxy/usecases-proxy.module
 import { Inject, Module, OnModuleInit } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { RegisterInitialAdminUserUseCase } from '@user/usecases';
+import { CreateAdminUserUseCase } from '@user/usecases';
 @Module({
   imports: [
     PassportModule,
@@ -26,11 +26,11 @@ import { RegisterInitialAdminUserUseCase } from '@user/usecases';
 })
 export class AppModule implements OnModuleInit {
   constructor(
-    @Inject(UsecaseProxyModule.REGISTER_INITIAL_ADMIN_USER_USECASE_PROXY)
-    private readonly initialAdminUserUseCaseProxy: UseCaseProxy<RegisterInitialAdminUserUseCase>,
+    @Inject(UsecaseProxyModule.CREATE_ADMIN_USER_USECASE_PROXY)
+    private readonly createAdminUserUseCaseProxy: UseCaseProxy<CreateAdminUserUseCase>,
   ) {}
 
   async onModuleInit() {
-    await this.initialAdminUserUseCaseProxy.getInstance().execute();
+    await this.createAdminUserUseCaseProxy.getInstance().execute();
   }
 }

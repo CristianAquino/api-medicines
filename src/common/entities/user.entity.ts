@@ -15,7 +15,9 @@ export class User {
   username: string;
   @Column({ type: 'varchar' })
   password: string;
-  @Column({ type: 'simple-enum', enum: Role, default: Role.USER, unique: true })
+  @Column({ type: 'boolean', default: false })
+  available: boolean;
+  @Column({ type: 'simple-enum', enum: Role, default: Role.USER })
   role: Role;
   // date
   @CreateDateColumn()

@@ -1,18 +1,18 @@
 import {
-  AddUserDTO,
+  AllUsersData,
+  CreateUserDTO,
   FindAllUsersDTO,
-  ReturnAllUserData,
-  ReturnUserData,
-  UpdateByAdminDTO,
-  UpdateDataByUserDTO,
+  UpdateDataUserByAdminDTO,
+  UserData,
 } from '@user/infrastructure/controller/dto';
 
 export interface IUserRepository {
-  insert(user: AddUserDTO): Promise<void>;
-  findAll(findAllUserDTO: FindAllUsersDTO): Promise<ReturnAllUserData>;
-  findById(id: string): Promise<ReturnUserData>;
-  findOneByName(username: string): Promise<ReturnUserData>;
-  updateContentByUser(data: UpdateDataByUserDTO): Promise<number>;
-  updateContentByAdmin(id: string, content: UpdateByAdminDTO): Promise<void>;
+  createUser(createUserDTO: CreateUserDTO): Promise<void>;
+  findAll(findAllUserDTO: FindAllUsersDTO): Promise<AllUsersData>;
+  findById(id: string): Promise<UserData>;
+  findOneByName(username: string): Promise<UserData>;
+  updateContentToUser(data: any): Promise<number>;
+  updateContentToAdmin(data: UpdateDataUserByAdminDTO): Promise<number>;
+  updatePassword(id: string, password: string): Promise<number>;
   deleteById(id: string): Promise<number>;
 }

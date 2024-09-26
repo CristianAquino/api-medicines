@@ -20,10 +20,10 @@ describe('Test add product usecase', () => {
     logger.warn = jest.fn();
 
     productRepository = {} as IProductRepository;
-    productRepository.createProduct = jest.fn();
+    productRepository.addProduct = jest.fn();
 
     categoryRepository = {} as ICategoryRepository;
-    categoryRepository.findByCategoryName = jest.fn();
+    categoryRepository.findCategoryByName = jest.fn();
 
     addProductUseCase = new AddProductUseCase(
       logger,
@@ -41,40 +41,42 @@ describe('Test add product usecase', () => {
   });
 
   it('should return an error if the category product not exists', async () => {
-    (categoryRepository.findByCategoryName as jest.Mock).mockResolvedValue(
+    (categoryRepository.findCategoryByName as jest.Mock).mockResolvedValue(
       Promise.resolve(null),
     );
+
     await expect(addProductUseCase.execute(product)).rejects.toThrow(
       `The category ${product.category} not exists`,
     );
-    expect(categoryRepository.findByCategoryName).toHaveBeenCalledWith(
+    expect(categoryRepository.findCategoryByName).toHaveBeenCalledWith(
       product.category,
     );
     expect(logger.warn).toHaveBeenCalledWith(
       'AddProductUseCase',
       `The category ${product.category} not exists`,
     );
-    expect(productRepository.createProduct).not.toHaveBeenCalled();
+    expect(productRepository.addProduct).not.toHaveBeenCalled();
     expect(logger.log).not.toHaveBeenCalled();
   });
 
   it('should add a new product', async () => {
-    (categoryRepository.findByCategoryName as jest.Mock).mockResolvedValue(
+    (categoryRepository.findCategoryByName as jest.Mock).mockResolvedValue(
       Promise.resolve(product.category),
     );
-    (productRepository.createProduct as jest.Mock).mockResolvedValue(
+    (productRepository.addProduct as jest.Mock).mockResolvedValue(
       Promise.resolve({ id: 1, ...product }),
     );
+
     await expect(addProductUseCase.execute(product)).resolves.toEqual(
-      'New product have been added',
+      `New product ${product.name} have been added`,
     );
-    expect(categoryRepository.findByCategoryName).toHaveBeenCalledWith(
+    expect(categoryRepository.findCategoryByName).toHaveBeenCalledWith(
       product.category,
     );
-    expect(productRepository.createProduct).toHaveBeenCalledWith(product);
+    expect(productRepository.addProduct).toHaveBeenCalledWith(product);
     expect(logger.log).toHaveBeenCalledWith(
       'AddProductUseCase',
-      'New product have been added',
+      `New product ${product.name} have been added`,
     );
     expect(logger.warn).not.toHaveBeenCalled();
   });

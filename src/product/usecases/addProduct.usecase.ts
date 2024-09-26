@@ -13,7 +13,7 @@ export class AddProductUseCase {
 
   async execute(data: AddProductDTO): Promise<string> {
     const { category: categoryName, ...product } = data;
-    const categoryResponse = await this.categoryRepository.findByCategoryName(
+    const categoryResponse = await this.categoryRepository.findCategoryByName(
       categoryName,
     );
     if (!categoryResponse) {
@@ -23,11 +23,14 @@ export class AddProductUseCase {
       );
       throw new NotFoundException(`The category ${categoryName} not exists`);
     }
-    await this.productRepository.createProduct({
+    await this.productRepository.addProduct({
       ...product,
       category: categoryResponse,
     });
-    this.logger.log('AddProductUseCase', 'New product have been added');
-    return 'New product have been added';
+    this.logger.log(
+      'AddProductUseCase',
+      `New product ${data.name} have been added`,
+    );
+    return `New product ${data.name} have been added`;
   }
 }

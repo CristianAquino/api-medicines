@@ -1,26 +1,14 @@
-import { IBcryptService } from '@common/adapters';
-import { LoggerService, NotFoundException } from '@nestjs/common';
-import { UpdateDataByUserDTO } from '@user/infrastructure/controller/dto';
-import { UserRepository } from '@user/infrastructure/repositories';
+import { ILogger } from '@common/logger/logger.interface';
+import { NotFoundException } from '@nestjs/common';
+import { IUserRepository } from '@user/domain/repositories';
 
 export class PutUpdateDataUserUseCase {
   constructor(
-    private readonly logger: LoggerService,
-    private readonly userRepository: UserRepository,
-    private readonly bcryptService: IBcryptService,
+    private readonly logger: ILogger,
+    private readonly userRepository: IUserRepository,
   ) {}
-  async execute(data: UpdateDataByUserDTO): Promise<string> {
-    let updated: number;
-    if (data.password) {
-      const newPassword = await this.bcryptService.hash(data.password);
-      updated = await this.userRepository.updateContentByUser({
-        ...data,
-        password: newPassword,
-      });
-    } else {
-      updated = await this.userRepository.updateContentByUser(data);
-    }
-
+  async execute(data: any): Promise<string> {
+    const updated = await this.userRepository.updateContentToUser(data);
     if (updated == 0) {
       this.logger.warn(
         'PutUpdateDataUserUseCase',

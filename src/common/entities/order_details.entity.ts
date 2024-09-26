@@ -3,8 +3,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToOne,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   Relation,
   UpdateDateColumn,
@@ -15,14 +16,14 @@ import { Payment } from './payment.entity';
 
 @Entity('orders_details')
 @Check('total_amount > 0')
-@Check('tax  >= 0')
+@Check('sub_total > 0')
 export class OrderDetail {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column({ type: 'float' })
+  @Column({ type: 'float', precision: 2 })
   total_amount: number;
-  @Column({ type: 'float' })
-  tax: number;
+  @Column({ type: 'float', precision: 2 })
+  sub_total: number;
   //   date
   @CreateDateColumn()
   createdAt: Date;
@@ -31,8 +32,10 @@ export class OrderDetail {
   //   relations
   @OneToMany(() => Order, (order) => order.order_detail)
   orders: Relation<Order>[];
-  @ManyToOne(() => Customer, (customer) => customer.orders_details)
+  @OneToOne(() => Customer, (customer) => customer.orders_details)
+  @JoinColumn()
   customer: Relation<Customer>;
-  @ManyToOne(() => Payment, (payment) => payment.orders_details)
+  @OneToOne(() => Payment, (payment) => payment.orders_details)
+  @JoinColumn()
   payment: Relation<Payment>;
 }

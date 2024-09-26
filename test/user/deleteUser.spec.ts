@@ -36,7 +36,7 @@ describe('Test delete user usecase', () => {
       'User not found, please check the information',
     );
     expect(logger.warn).toHaveBeenCalledWith(
-      'DeleteUserUseCase execute',
+      'DeleteUserUseCase',
       'User not found, please check the information',
     );
   });
@@ -51,7 +51,7 @@ describe('Test delete user usecase', () => {
       `User ${id} have been deleted`,
     );
     expect(logger.log).toHaveBeenCalledWith(
-      'DeleteUserUseCase execute',
+      'DeleteUserUseCase',
       `User ${id} have been deleted`,
     );
   });

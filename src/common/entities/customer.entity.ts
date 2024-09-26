@@ -2,7 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   Relation,
   UpdateDateColumn,
@@ -13,7 +13,11 @@ import { OrderDetail } from './order_details.entity';
 export class Customer {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  @Column({ type: 'varchar', length: 8 })
+  @Column({ type: 'varchar', default: null, nullable: true })
+  full_names: string;
+  @Column({ type: 'varchar', default: null, nullable: true })
+  surnames: string;
+  @Column({ type: 'varchar', length: 8, default: '00000000' })
   dni: string;
   //   date
   @CreateDateColumn()
@@ -21,6 +25,6 @@ export class Customer {
   @UpdateDateColumn()
   updatedAt: Date;
   //   relations
-  @OneToMany(() => OrderDetail, (od) => od.customer)
-  orders_details: Relation<OrderDetail>[];
+  @OneToOne(() => OrderDetail, (od) => od.customer)
+  orders_details: Relation<OrderDetail>;
 }

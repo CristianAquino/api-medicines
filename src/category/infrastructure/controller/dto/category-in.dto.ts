@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsPositive, IsString, MinLength } from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsPositive,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 export class CategoryDTO {
   @ApiProperty({
@@ -10,7 +17,19 @@ export class CategoryDTO {
   @IsString()
   @IsNotEmpty()
   @MinLength(3)
+  @Transform(({ value }) => value.toLowerCase())
   readonly category: string;
+}
+export class CategoryQueryDTO {
+  @ApiProperty({
+    required: false,
+    description: 'category name',
+  })
+  @IsString()
+  @IsOptional()
+  @MinLength(3)
+  @Transform(({ value }) => value.toLowerCase())
+  readonly category?: string;
 }
 export class CategoryIdDTO {
   @ApiProperty({
@@ -24,12 +43,13 @@ export class CategoryIdDTO {
 }
 export class CategoryUpdateDTO extends CategoryIdDTO {
   @ApiProperty({
-    required: true,
+    required: false,
     example: 'toys',
     description: 'category name',
   })
   @IsString()
   @IsNotEmpty()
   @MinLength(3)
-  readonly category: string;
+  @Transform(({ value }) => value.toLowerCase())
+  readonly category?: string;
 }

@@ -46,6 +46,7 @@ Table categories{
 Table order{
   id uuid [primary key]
   quantity int
+  total float
   id_producto uuid
   id_orden_detalle int
   // default
@@ -55,8 +56,9 @@ Table order{
 
 Table order_details{
   id integer [primary key]
-  total float
-  tax float
+  total_amount float
+  sub_total float
+  descount float
   id_metodo_pago int
   id_cliente int
   // default
@@ -66,6 +68,8 @@ Table order_details{
 
 Table customers{
   id uuid [primary key]
+  full_names varchar
+  surnames varchar
   dni varchar2(8)
   // default
   created_at timestamp
@@ -74,7 +78,7 @@ Table customers{
 
 Table payments{
   id integer [primary key]
-  tipo enum
+  type enum
   // default
   created_at timestamp
   update_at timestamp
@@ -82,8 +86,8 @@ Table payments{
 
 Ref: products.id_categoria > categories.id
 Ref: users.id < logs.id_usuarios
-Ref: order_details.id_metodo_pago > payments.id
-Ref: order_details.id_cliente > customers.id
+Ref: order_details.id_metodo_pago - payments.id
+Ref: order_details.id_cliente - customers.id
 Ref: order.id_producto > products.id_orden
 Ref: order.id_orden_detalle > order_details.id
 /*
