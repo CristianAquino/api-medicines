@@ -14,6 +14,8 @@ import { BcryptModule } from '@common/service/bcrypt/bcrypt.module';
 import { BcryptService } from '@common/service/bcrypt/bcrypt.service';
 import { JwtModule } from '@common/service/jwt/jwt.module';
 import { JwtTokenService } from '@common/service/jwt/jwt.service';
+import { PdfMakeModule } from '@common/service/pdfMake/pdfMake.module';
+import { PdfMakeService } from '@common/service/pdfMake/pdfMake.service';
 import { CustomerRepository } from '@customer/infrasctructure/repositories/customer.repository';
 import { AddCustomerUseCase } from '@customer/usecases';
 import { DynamicModule, Module } from '@nestjs/common';
@@ -33,6 +35,7 @@ import {
   GetAllProductsUseCase,
   PutUpdateDataProductUseCase,
 } from '@product/usecases';
+import { CreateBillReportUseCase } from '@report/usecases/createBillReport.usecase';
 import { UserRepository } from '@user/infrastructure/repositories';
 import { SeedRepository } from '@user/repositories/seed.repository';
 import {
@@ -47,7 +50,13 @@ import {
 import { UseCaseProxy } from './usecases-proxy';
 
 @Module({
-  imports: [LoggerModule, JwtModule, BcryptModule, RepositoriesModule],
+  imports: [
+    LoggerModule,
+    JwtModule,
+    BcryptModule,
+    PdfMakeModule,
+    RepositoriesModule,
+  ],
 })
 export class UsecaseProxyModule {
   // auth
@@ -87,6 +96,8 @@ export class UsecaseProxyModule {
   static ADD_PAYMENT_USECASE_PROXY = 'addPaymentUseCaseProxy';
   // customer
   static ADD_CUSTOMER_USECASE_PROXY = 'addCustomerUseCaseProxy';
+  // print
+  static CREATE_BILL_REPORT_USECASE_PROXY = 'createBillReportUseCaseProxy';
 
   static register(): DynamicModule {
     return {
@@ -358,6 +369,14 @@ export class UsecaseProxyModule {
               new AddCustomerUseCase(logger, customerRepository),
             ),
         },
+        {
+          inject: [LoggerService, PdfMakeService],
+          provide: UsecaseProxyModule.CREATE_BILL_REPORT_USECASE_PROXY,
+          useFactory: (logger: LoggerService, pdfMakeSerive: PdfMakeService) =>
+            new UseCaseProxy(
+              new CreateBillReportUseCase(logger, pdfMakeSerive),
+            ),
+        },
       ],
       exports: [
         UsecaseProxyModule.CREATE_ADMIN_USER_USECASE_PROXY,
@@ -383,6 +402,7 @@ export class UsecaseProxyModule {
         UsecaseProxyModule.GET_ORDER_DETAILS_BY_ID_USECASE_PROXY,
         UsecaseProxyModule.ADD_PAYMENT_USECASE_PROXY,
         UsecaseProxyModule.ADD_CUSTOMER_USECASE_PROXY,
+        UsecaseProxyModule.CREATE_BILL_REPORT_USECASE_PROXY,
       ],
     };
   }
