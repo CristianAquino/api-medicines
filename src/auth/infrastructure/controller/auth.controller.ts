@@ -2,6 +2,7 @@ import { LoginUseCase, LogoutUseCase } from '@auth/usecases';
 import { ResponseErrorDTO, SWGMessage } from '@common/dto';
 import { UserModel } from '@common/entities/models';
 import { JwtAuthGuard, LoginGuard } from '@common/guards';
+import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
 import { UsecaseProxyModule } from '@common/usecases-proxy/usecases-proxy.module';
 import {
@@ -15,6 +16,7 @@ import {
   Query,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -40,6 +42,7 @@ import { LoginDTO } from './dto';
   description: 'Conflict',
   type: ResponseErrorDTO,
 })
+@UseInterceptors(ResponseInterceptor)
 export class AuthController {
   constructor(
     @Inject(UsecaseProxyModule.LOGIN_USECASE_PROXY)
