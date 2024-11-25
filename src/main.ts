@@ -1,6 +1,5 @@
 import { envs } from '@common/config/environment-config';
 import { HttpExceptionFilter } from '@common/filters/exception.filter';
-import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -18,7 +17,7 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
 
   // interceptors
-  app.useGlobalInterceptors(new ResponseInterceptor());
+  // app.useGlobalInterceptors(new ResponseInterceptor());
 
   // pipes
   app.useGlobalPipes(

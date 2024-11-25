@@ -47,7 +47,7 @@ describe('Test login use case', () => {
       role: 'user',
     };
     const secret = 'helloworld';
-    const expireIn = 24;
+    const expireIn = 86400;
     const token = 'token';
     (jwtTokenService.createToken as jest.Mock).mockReturnValue(token);
 
