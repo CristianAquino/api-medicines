@@ -2,6 +2,7 @@ import { Roles } from '@common/decorators';
 import { ResponseErrorDTO, SWGMessage } from '@common/dto';
 import { UserModel } from '@common/entities/models';
 import { JwtAuthGuard, RolesGuard } from '@common/guards';
+import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
 import { UsecaseProxyModule } from '@common/usecases-proxy/usecases-proxy.module';
 import {
@@ -19,6 +20,7 @@ import {
   Query,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -59,6 +61,7 @@ import { Role } from './enum/user.enum';
   description: 'Conflict',
   type: ResponseErrorDTO,
 })
+@UseInterceptors(ResponseInterceptor)
 export class UserController {
   constructor(
     @Inject(UsecaseProxyModule.CREATE_USER_USECASE_PROXY)

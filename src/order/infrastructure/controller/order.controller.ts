@@ -1,5 +1,7 @@
+import { Roles } from '@common/decorators';
 import { ResponseErrorDTO } from '@common/dto';
 import { JwtAuthGuard, RolesGuard } from '@common/guards';
+import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
 import { UsecaseProxyModule } from '@common/usecases-proxy/usecases-proxy.module';
 import { AddCustomerUseCase } from '@customer/usecases';
@@ -13,6 +15,7 @@ import {
   Post,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -24,9 +27,8 @@ import {
 import { AddOrderUseCase, GetAllOrdersUseCase } from '@order/usecases';
 import { AddOrderDetailsUseCase } from '@order_details/usecases';
 import { AddPaymentUseCase } from '@payment/usecases';
-import { AddOrderDTO, PaginationDTO, SWGAllOrderData } from './dto';
-import { Roles } from '@common/decorators';
 import { Role } from '@user/infrastructure/controller/enum/user.enum';
+import { AddOrderDTO, PaginationDTO, SWGAllOrderData } from './dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('order')
@@ -42,6 +44,7 @@ import { Role } from '@user/infrastructure/controller/enum/user.enum';
   description: 'Conflict',
   type: ResponseErrorDTO,
 })
+@UseInterceptors(ResponseInterceptor)
 export class OrderController {
   constructor(
     @Inject(UsecaseProxyModule.ADD_ORDER_USECASE_PROXY)

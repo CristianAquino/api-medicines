@@ -1,6 +1,7 @@
 import { Roles } from '@common/decorators';
 import { ResponseErrorDTO, SWGMessage } from '@common/dto';
 import { JwtAuthGuard, RolesGuard } from '@common/guards';
+import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
 import { UsecaseProxyModule } from '@common/usecases-proxy/usecases-proxy.module';
 import {
@@ -17,6 +18,7 @@ import {
   Put,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -53,6 +55,7 @@ import {
   description: 'Conflict',
   type: ResponseErrorDTO,
 })
+@UseInterceptors(ResponseInterceptor)
 export class ProductController {
   constructor(
     @Inject(UsecaseProxyModule.ADD_PRODUCT_USECASE_PROXY)
