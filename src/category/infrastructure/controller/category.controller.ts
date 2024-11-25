@@ -5,6 +5,7 @@ import {
   PutUpdateDataCategoryUseCase,
 } from '@category/usecases';
 import { ResponseErrorDTO } from '@common/dto';
+import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
 import { UsecaseProxyModule } from '@common/usecases-proxy/usecases-proxy.module';
 import {
@@ -19,6 +20,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CategoryDTO, CategoryUpdateDTO } from './dto';
@@ -35,6 +37,7 @@ import { CategoryDTO, CategoryUpdateDTO } from './dto';
   description: 'Conflict',
   type: ResponseErrorDTO,
 })
+@UseInterceptors(ResponseInterceptor)
 export class CategoryController {
   constructor(
     @Inject(UsecaseProxyModule.ADD_CATEGORY_USECASE_PROXY)
