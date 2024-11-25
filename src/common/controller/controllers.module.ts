@@ -5,6 +5,7 @@ import { Module } from '@nestjs/common';
 import { OrderController } from '@order/infrastructure/controller/order.controller';
 import { OrderDetailsController } from '@order_details/infrastructure/controller/orderDetails.controller';
 import { ProductController } from '@product/infrastructure/controller/product.controller';
+import { ReportController } from '@report/infrastructure/controller/report.controller';
 import { UserController } from '@user/infrastructure/controller/user.controller';
 
 @Module({
@@ -16,6 +17,7 @@ import { UserController } from '@user/infrastructure/controller/user.controller'
     ProductController,
     OrderController,
     OrderDetailsController,
+    ReportController,
   ],
 })
 export class ControllersModule {}

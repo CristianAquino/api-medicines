@@ -1,5 +1,6 @@
 import { ResponseErrorDTO } from '@common/dto';
 import { JwtAuthGuard, RolesGuard } from '@common/guards';
+import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
 import { UsecaseProxyModule } from '@common/usecases-proxy/usecases-proxy.module';
 import {
@@ -11,6 +12,7 @@ import {
   Param,
   ParseIntPipe,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiCookieAuth,
@@ -35,6 +37,7 @@ import { SWGOrderDetailsData } from './dto';
   description: 'Conflict',
   type: ResponseErrorDTO,
 })
+@UseInterceptors(ResponseInterceptor)
 export class OrderDetailsController {
   constructor(
     @Inject(UsecaseProxyModule.GET_ORDER_DETAILS_BY_ID_USECASE_PROXY)

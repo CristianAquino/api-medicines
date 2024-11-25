@@ -61,6 +61,7 @@ export class OrderDetailsRepository implements IOrderDetailsRepository {
     const product = new ProductModel();
     product.id = data.id;
     product.name = data.name;
+    product.sku = data.sku;
     return product;
   }
   private findOrder(data: OrderModel): OrderModel {

@@ -3,6 +3,7 @@ import { ControllersModule } from '@common/controller/controllers.module';
 import { LoggerModule } from '@common/logger/logger.module';
 import { BcryptModule } from '@common/service/bcrypt/bcrypt.module';
 import { JwtModule as JwtServiceModule } from '@common/service/jwt/jwt.module';
+import { PdfMakeModule } from '@common/service/pdfMake/pdfMake.module';
 import { JwtStrategy, LocalStrategy } from '@common/strategies';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
 import { UsecaseProxyModule } from '@common/usecases-proxy/usecases-proxy.module';
@@ -21,6 +22,7 @@ import { CreateAdminUserUseCase } from '@user/usecases';
     ControllersModule,
     BcryptModule,
     JwtServiceModule,
+    PdfMakeModule,
   ],
   providers: [LocalStrategy, JwtStrategy],
 })
