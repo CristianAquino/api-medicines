@@ -9,6 +9,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { IOrderDetailsRepository } from '@order_details/domain/repositories/orderDetailsRepository.interface';
 import { Repository } from 'typeorm';
+import { AllOrderDetailsData, FindAllOrderDetailsDTO } from '../controller/dto';
 
 export class OrderDetailsRepository implements IOrderDetailsRepository {
   constructor(
@@ -30,7 +31,7 @@ export class OrderDetailsRepository implements IOrderDetailsRepository {
     od.customer = customer;
     await this.orderDetailEntityRepository.save(od);
   }
-  async getOrderDetailsById(id: number): Promise<any> {
+  async findOrderDetailsById(id: number): Promise<any> {
     // const details = await this.orderDetailEntityRepository
     //   .createQueryBuilder('order_details')
     //   .innerJoinAndSelect('order_details.orders', 'orders')
@@ -47,11 +48,48 @@ export class OrderDetailsRepository implements IOrderDetailsRepository {
     return this.findOrderDetails(details);
   }
 
+  async findAllOrderDetails(
+    findAllOrderDetails: FindAllOrderDetailsDTO,
+  ): Promise<AllOrderDetailsData> {
+    const { limit, page, date } = findAllOrderDetails;
+    const query = this.orderDetailEntityRepository
+      .createQueryBuilder('order_details')
+      .innerJoinAndSelect('order_details.orders', 'orders')
+      .innerJoinAndSelect('orders.product', 'product')
+      .innerJoinAndSelect('order_details.payment', 'payment')
+      .innerJoinAndSelect('order_details.customer', 'customer');
+    if (date) {
+      query.where('order_details.created_at = :date', { date });
+    }
+    const [orders, total_orders] = await query
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    const last_page = Math.ceil(total_orders / limit);
+
+    return {
+      data: orders.map((ele) => this.findAllOrdersDetails(ele)),
+      meta: {
+        total: total_orders,
+        page,
+        last_page,
+      },
+    };
+  }
+
   private findOrderDetails(data: OrderDetailsModel) {
     const od = new OrderDetailsModel();
     od.id = data.id;
     od.total_amount = data.total_amount;
     od.sub_total = data.sub_total;
+    od.orders = data.orders.map((order) => this.findOrder(order));
+    od.customer = this.findCustomer(data.customer);
+    od.payment = this.findPayment(data.payment);
+    return od;
+  }
+  private findAllOrdersDetails(data: OrderDetailsModel) {
+    const od = this.findOrderDetails(data) as OrderDetailsModel;
     od.orders = data.orders.map((order) => this.findOrder(order));
     od.customer = this.findCustomer(data.customer);
     od.payment = this.findPayment(data.payment);

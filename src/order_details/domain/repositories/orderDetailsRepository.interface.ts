@@ -1,3 +1,5 @@
+import { FindAllOrderDetailsDTO } from '@order_details/infrastructure/controller/dto';
+
 export interface IOrderDetailsRepository {
   createOrderDetail(
     details: any,
@@ -5,5 +7,8 @@ export interface IOrderDetailsRepository {
     customer: any,
     total: any,
   ): Promise<void>;
-  getOrderDetailsById(id: number): Promise<any>;
+  findOrderDetailsById(id: number): Promise<any>;
+  findAllOrderDetails(
+    findAllOrderDetailsDTO: FindAllOrderDetailsDTO,
+  ): Promise<any>;
 }
