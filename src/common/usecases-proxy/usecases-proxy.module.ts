@@ -24,6 +24,7 @@ import { AddOrderUseCase, GetAllOrdersUseCase } from '@order/usecases';
 import { OrderDetailsRepository } from '@order_details/infrastructure/repositories/orderDetails.respository';
 import {
   AddOrderDetailsUseCase,
+  GetAllOrderDetailsUseCase,
   GetOrderDetailsByIdUseCase,
 } from '@order_details/usecases';
 import { PaymentRepository } from '@payment/infrastructure/repositories/payment.repository';
@@ -92,6 +93,7 @@ export class UsecaseProxyModule {
   static ADD_ORDER_DETAILS_USECASE_PROXY = 'addOrderDetailUseCaseProxy';
   static GET_ORDER_DETAILS_BY_ID_USECASE_PROXY =
     'getOrderDetailsByIdUsecaseProxy';
+  static GET_ALL_ORDER_DETAILS_USECASE_PROXY = 'getAllOrderDetailsUsecaseProxy';
   // payment
   static ADD_PAYMENT_USECASE_PROXY = 'addPaymentUseCaseProxy';
   // customer
@@ -350,6 +352,17 @@ export class UsecaseProxyModule {
             ),
         },
         {
+          inject: [LoggerService, OrderDetailsRepository],
+          provide: UsecaseProxyModule.GET_ALL_ORDER_DETAILS_USECASE_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            orderDetailsRepository: OrderDetailsRepository,
+          ) =>
+            new UseCaseProxy(
+              new GetAllOrderDetailsUseCase(logger, orderDetailsRepository),
+            ),
+        },
+        {
           inject: [LoggerService, PaymentRepository],
           provide: UsecaseProxyModule.ADD_PAYMENT_USECASE_PROXY,
           useFactory: (
@@ -400,6 +413,7 @@ export class UsecaseProxyModule {
         UsecaseProxyModule.GET_ALL_ORDERS_USECASE_PROXY,
         UsecaseProxyModule.ADD_ORDER_DETAILS_USECASE_PROXY,
         UsecaseProxyModule.GET_ORDER_DETAILS_BY_ID_USECASE_PROXY,
+        UsecaseProxyModule.GET_ALL_ORDER_DETAILS_USECASE_PROXY,
         UsecaseProxyModule.ADD_PAYMENT_USECASE_PROXY,
         UsecaseProxyModule.ADD_CUSTOMER_USECASE_PROXY,
         UsecaseProxyModule.CREATE_BILL_REPORT_USECASE_PROXY,
