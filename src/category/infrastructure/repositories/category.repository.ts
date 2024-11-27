@@ -44,9 +44,12 @@ export class CategoryRepository implements ICategoryRepository {
     const { id, category } = data;
     await this.categoryRepository.update({ id }, { category });
   }
-  async deleteById(id: number): Promise<number> {
-    const del = await this.categoryRepository.delete({ id });
-    return del.affected;
+  async deleteById(id: number): Promise<CategoryData> {
+    const category = await this.findCategoryById(id);
+    if (category) {
+      await this.categoryRepository.delete({ id });
+    }
+    return category;
   }
 
   private findCategory(category: CategoryModel): CategoryData {
@@ -55,7 +58,7 @@ export class CategoryRepository implements ICategoryRepository {
     categoryFound.category = category.category;
     const total = {
       ...categoryFound,
-      total_products: category.products.length ?? 0,
+      total_products: category.products?.length ?? 0,
     };
     return total;
   }
