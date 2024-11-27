@@ -53,8 +53,8 @@ export class PutUpdateDataProductUseCase {
     });
     this.logger.log(
       'PutUpdateDataProductUseCase',
-      'Product updated successfully',
+      `Product ${product.name} updated successfully`,
     );
-    return 'Product updated successfully';
+    return `Product ${product.name} updated successfully`;
   }
 }
