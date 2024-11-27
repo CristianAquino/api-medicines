@@ -78,7 +78,7 @@ export class ProductController {
     const response = await this.addProductUsecaseProxy
       .getInstance()
       .execute(productDTO);
-    return response;
+    return { message: response };
   }
   @Get('all')
   @ApiOperation({ summary: 'Get all products' })
@@ -100,7 +100,7 @@ export class ProductController {
     const response = await this.putUpdateDataProductUsecaseProxy
       .getInstance()
       .execute(updateProductDTO);
-    return response;
+    return { message: response };
   }
   @Delete('delete/:id')
   @Roles(Role.ADMIN)
@@ -111,6 +111,6 @@ export class ProductController {
     const response = await this.deleteProductByIdUsecaseProxy
       .getInstance()
       .execute(id);
-    return response;
+    return { message: response };
   }
 }
