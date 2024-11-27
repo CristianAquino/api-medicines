@@ -43,7 +43,7 @@ export class ProductRepository implements IProductRepository {
       },
     };
   }
-  async findById(id: string): Promise<any> {
+  async findById(id: string): Promise<ProductModel> {
     const product = await this.productEntityRepository.findOneBy({ id });
     if (!product) return null;
     return this.findProduct(product);
@@ -55,9 +55,12 @@ export class ProductRepository implements IProductRepository {
   async updateProductCategory(product: any) {
     await this.productEntityRepository.save(product);
   }
-  async deleteById(id: string): Promise<number> {
-    const del = await this.productEntityRepository.delete({ id });
-    return del.affected;
+  async deleteById(id: string): Promise<ProductModel> {
+    const product = await this.findById(id);
+    if (product) {
+      await this.productEntityRepository.delete({ id });
+    }
+    return product;
   }
 
   private findProduct(product: ProductModel): ProductModel {
