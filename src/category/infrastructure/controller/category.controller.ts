@@ -78,8 +78,9 @@ export class CategoryController {
     const response = await this.createCategoryUsecaseProxy
       .getInstance()
       .execute(categoryDTO);
-    return response;
+    return { message: response };
   }
+  // agregar paginacion
   @Get('all')
   @ApiOperation({ summary: 'Get all categories' })
   @ApiResponse({ status: HttpStatus.OK, type: SWGAllCategoryData })
@@ -100,7 +101,7 @@ export class CategoryController {
     const response = await this.putUpdateDataCategoryUsecaseProxy
       .getInstance()
       .execute(categoryDTO);
-    return response;
+    return { message: response };
   }
   @Delete('delete/:id')
   @Roles(Role.ADMIN)
@@ -111,6 +112,6 @@ export class CategoryController {
     const response = await this.deleteCategoryUsecaseProxy
       .getInstance()
       .execute(id);
-    return response;
+    return { message: response };
   }
 }
