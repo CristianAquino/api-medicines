@@ -9,8 +9,8 @@ export class DeleteUserUseCase {
   ) {}
 
   async execute(id: string): Promise<string> {
-    const del = await this.userRepository.deleteById(id);
-    if (del == 0) {
+    const { username } = await this.userRepository.deleteById(id);
+    if (!username) {
       this.logger.warn(
         'DeleteUserUseCase',
         'User not found, please check the information',
@@ -19,7 +19,7 @@ export class DeleteUserUseCase {
         'User not found, please check the information',
       );
     }
-    this.logger.log('DeleteUserUseCase', `User ${id} have been deleted`);
-    return `User ${id} have been deleted`;
+    this.logger.log('DeleteUserUseCase', `User ${username} have been deleted`);
+    return `User ${username} have been deleted`;
   }
 }
