@@ -28,7 +28,12 @@ import { AddOrderUseCase, GetAllOrdersUseCase } from '@order/usecases';
 import { AddOrderDetailsUseCase } from '@order_details/usecases';
 import { AddPaymentUseCase } from '@payment/usecases';
 import { Role } from '@user/infrastructure/controller/enum/user.enum';
-import { AddOrderDTO, PaginationDTO, SWGAllOrderData } from './dto';
+import {
+  AddOrderDTO,
+  PaginationDTO,
+  SWGAllOrderData,
+  SWGCreateOrderData,
+} from './dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('order')
@@ -63,6 +68,7 @@ export class OrderController {
   @Roles(Role.ADMIN, Role.USER)
   @ApiBody({ type: AddOrderDTO })
   @ApiOperation({ summary: 'Add new product order' })
+  @ApiResponse({ status: HttpStatus.CREATED, type: SWGCreateOrderData })
   @HttpCode(HttpStatus.CREATED)
   async addProduct(@Body() addOrderDTO: AddOrderDTO) {
     const { orders, customer, payment } = addOrderDTO;
@@ -75,10 +81,10 @@ export class OrderController {
     const cust = await this.addCustomerUsecaseProxy
       .getInstance()
       .execute(customer);
-    await this.addOrderDetailsUsecaseProxy
+    const od = await this.addOrderDetailsUsecaseProxy
       .getInstance()
       .execute(details, pay, cust);
-    return 'Orders have been added';
+    return { message: 'The order has been created successfully', id: od };
   }
 
   @Get('all')
