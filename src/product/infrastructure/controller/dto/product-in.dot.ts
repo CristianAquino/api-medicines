@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsBoolean,
   IsDate,
@@ -40,8 +40,10 @@ export class ProductDTO {
     description: 'product sku',
   })
   @IsString()
-  @IsNotEmpty()
   @IsOptional()
+  @Transform(({ value, obj }) =>
+    value?.trim() === '' ? obj.name.replace(/\s+/g, '') : value,
+  )
   readonly sku?: string;
   @ApiProperty({
     required: true,
@@ -79,7 +81,7 @@ export class ProductDTO {
   @IsString()
   @IsNotEmpty()
   @MinLength(3)
-  @MaxLength(64)
+  @MaxLength(128)
   readonly description: string;
 }
 
@@ -155,7 +157,7 @@ export class UpdateProductDTO extends IdProductDTO {
   @IsString()
   @IsNotEmpty()
   @MinLength(3)
-  @MaxLength(64)
+  @MaxLength(128)
   @IsOptional()
   readonly description?: string;
   @ApiProperty({
