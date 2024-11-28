@@ -15,6 +15,14 @@ export class ResponseInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data) => {
         const { message, ...rest } = data;
+        if (Array.isArray(data)) {
+          return {
+            status: response.statusCode,
+            message: message ?? 'Request successful',
+            error: null,
+            data: data,
+          };
+        }
 
         return {
           status: response.statusCode,
