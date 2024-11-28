@@ -45,18 +45,18 @@ describe('Test delect product usecase', () => {
   });
 
   it('should return a success message if the category is deleted', async () => {
-    (productRepository.deleteById as jest.Mock).mockResolvedValue(
-      Promise.resolve(1),
-    );
+    const product = { name: 'xxxx' };
+    (productRepository.deleteById as jest.Mock).mockResolvedValue(product);
 
     await expect(deleteProductUseCase.execute(productID)).resolves.toBe(
-      `Product ${productID} have been deleted`,
+      `Product ${product.name} have been deleted`,
     );
+
     expect(productRepository.deleteById).toHaveBeenCalledWith(productID);
     expect(logger.warn).not.toHaveBeenCalled();
     expect(logger.log).toHaveBeenCalledWith(
       'DeleteProductUseCase',
-      `Product ${productID} have been deleted`,
+      `Product ${product.name} have been deleted`,
     );
   });
 });

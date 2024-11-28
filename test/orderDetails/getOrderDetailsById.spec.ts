@@ -13,7 +13,7 @@ describe('Test get order details by id usecase', () => {
     logger.warn = jest.fn();
 
     orderDetailsRepository = {} as IOrderDetailsRepository;
-    orderDetailsRepository.getOrderDetailsById = jest.fn();
+    orderDetailsRepository.findOrderDetailsById = jest.fn();
 
     getOrderDetailsByIdUseCase = new GetOrderDetailsByIdUseCase(
       logger,
@@ -30,9 +30,9 @@ describe('Test get order details by id usecase', () => {
   });
 
   it('should return a warning if there are no results', async () => {
-    (orderDetailsRepository.getOrderDetailsById as jest.Mock).mockResolvedValue(
-      null,
-    );
+    (
+      orderDetailsRepository.findOrderDetailsById as jest.Mock
+    ).mockResolvedValue(null);
 
     await expect(getOrderDetailsByIdUseCase.execute(1)).rejects.toThrow(
       'Order details not found',
@@ -45,9 +45,9 @@ describe('Test get order details by id usecase', () => {
   });
 
   it('should return the order details according to the identifier', async () => {
-    (orderDetailsRepository.getOrderDetailsById as jest.Mock).mockResolvedValue(
-      { id: 1 },
-    );
+    (
+      orderDetailsRepository.findOrderDetailsById as jest.Mock
+    ).mockResolvedValue({ id: 1 });
     await expect(getOrderDetailsByIdUseCase.execute(1)).resolves.toEqual({
       id: 1,
     });

@@ -108,9 +108,10 @@ describe('Test put update data products usecase', () => {
       product,
     });
 
-    await expect(putUpdateDataProductUseCase.execute(product)).resolves.toEqual(
-      'Product updated successfully',
+    await expect(putUpdateDataProductUseCase.execute(product)).resolves.toBe(
+      `Product ${product.name} updated successfully`,
     );
+
     expect(productRepository.findById).toHaveBeenCalledWith(product.id);
     expect(categoryRepository.findCategoryByName).toHaveBeenCalledWith(
       product.category,
@@ -121,7 +122,7 @@ describe('Test put update data products usecase', () => {
     });
     expect(logger.log).toHaveBeenCalledWith(
       'PutUpdateDataProductUseCase',
-      'Product updated successfully',
+      `Product ${product.name} updated successfully`,
     );
     expect(logger.warn).not.toHaveBeenCalled();
   });
