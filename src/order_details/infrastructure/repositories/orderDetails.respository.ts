@@ -22,14 +22,15 @@ export class OrderDetailsRepository implements IOrderDetailsRepository {
     payment: any,
     customer: any,
     total: any,
-  ): Promise<void> {
+  ): Promise<number> {
     const od = new OrderDetailsModel();
     od.total_amount = total.total_amount;
     od.sub_total = total.sub_total;
     od.orders = details;
     od.payment = payment;
     od.customer = customer;
-    await this.orderDetailEntityRepository.save(od);
+    const newOD = await this.orderDetailEntityRepository.save(od);
+    return newOD.id;
   }
   async findOrderDetailsById(id: number): Promise<any> {
     // const details = await this.orderDetailEntityRepository

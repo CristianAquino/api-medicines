@@ -6,7 +6,7 @@ export interface IOrderDetailsRepository {
     payment: any,
     customer: any,
     total: any,
-  ): Promise<void>;
+  ): Promise<number>;
   findOrderDetailsById(id: number): Promise<any>;
   findAllOrderDetails(
     findAllOrderDetailsDTO: FindAllOrderDetailsDTO,
