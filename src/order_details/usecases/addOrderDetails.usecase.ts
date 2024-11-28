@@ -7,17 +7,18 @@ export class AddOrderDetailsUseCase {
     private readonly orderDetailsRepository: IOrderDetailsRepository,
   ) {}
 
-  async execute(details: any, payment: any, customer: any): Promise<void> {
+  async execute(details: any, payment: any, customer: any): Promise<number> {
     let total = 0;
     for (const dato of details) {
       total += dato.total;
     }
-    await this.orderDetailsRepository.createOrderDetail(
+    const od = await this.orderDetailsRepository.createOrderDetail(
       details,
       payment,
       customer,
       { sub_total: total, total_amount: total },
     );
     this.logger.log('AddOrderDetailsUseCase', 'Orders Details have been added');
+    return od;
   }
 }
