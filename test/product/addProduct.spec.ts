@@ -9,9 +9,13 @@ describe('Test add product usecase', () => {
   let productRepository: IProductRepository;
   let categoryRepository: ICategoryRepository;
 
+  const category = {
+    id: 1,
+    name: 'tablest',
+  };
   const product = {
-    name: 'nwe product',
-    category: 'toys',
+    name: 'new product',
+    category: 1,
   };
 
   beforeAll(() => {
@@ -23,7 +27,7 @@ describe('Test add product usecase', () => {
     productRepository.addProduct = jest.fn();
 
     categoryRepository = {} as ICategoryRepository;
-    categoryRepository.findCategoryByName = jest.fn();
+    categoryRepository.findCategoryById = jest.fn();
 
     addProductUseCase = new AddProductUseCase(
       logger,
@@ -41,39 +45,42 @@ describe('Test add product usecase', () => {
   });
 
   it('should return an error if the category product not exists', async () => {
-    (categoryRepository.findCategoryByName as jest.Mock).mockResolvedValue(
+    (categoryRepository.findCategoryById as jest.Mock).mockResolvedValue(
       Promise.resolve(null),
     );
 
     await expect(addProductUseCase.execute(product)).rejects.toThrow(
-      `The category ${product.category} not exists`,
+      'Invalid category or does not exist',
     );
-    expect(categoryRepository.findCategoryByName).toHaveBeenCalledWith(
+    expect(categoryRepository.findCategoryById).toHaveBeenCalledWith(
       product.category,
     );
     expect(logger.warn).toHaveBeenCalledWith(
       'AddProductUseCase',
-      `The category ${product.category} not exists`,
+      'Invalid category or does not exist',
     );
     expect(productRepository.addProduct).not.toHaveBeenCalled();
     expect(logger.log).not.toHaveBeenCalled();
   });
 
   it('should add a new product', async () => {
-    (categoryRepository.findCategoryByName as jest.Mock).mockResolvedValue(
-      Promise.resolve(product.category),
+    (categoryRepository.findCategoryById as jest.Mock).mockResolvedValue(
+      Promise.resolve(category),
     );
     (productRepository.addProduct as jest.Mock).mockResolvedValue(
-      Promise.resolve({ id: 1, ...product }),
+      Promise.resolve({ id: 1, name: product.name, category }),
     );
 
     await expect(addProductUseCase.execute(product)).resolves.toEqual(
       `New product ${product.name} have been added`,
     );
-    expect(categoryRepository.findCategoryByName).toHaveBeenCalledWith(
+    expect(categoryRepository.findCategoryById).toHaveBeenCalledWith(
       product.category,
     );
-    expect(productRepository.addProduct).toHaveBeenCalledWith(product);
+    expect(productRepository.addProduct).toHaveBeenCalledWith({
+      name: product.name,
+      category,
+    });
     expect(logger.log).toHaveBeenCalledWith(
       'AddProductUseCase',
       `New product ${product.name} have been added`,
