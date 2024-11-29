@@ -41,12 +41,12 @@ describe('Test get all users usecase', () => {
     (userRepository.findAll as jest.Mock).mockResolvedValue(allUsers);
 
     await expect(getAllUsersUseCase.execute(pagination)).rejects.toThrow(
-      'Users not found',
+      'There are no registered users yet',
     );
     expect(userRepository.findAll).toHaveBeenCalledWith(pagination);
     expect(logger.log).toHaveBeenCalledWith(
       'GetAllUsersUseCase',
-      'Users not found',
+      'There are no registered users yet',
     );
   });
 
