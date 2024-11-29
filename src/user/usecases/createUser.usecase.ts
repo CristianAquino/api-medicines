@@ -29,8 +29,8 @@ export class CreateUserUseCase {
     await this.userRepository.createUser(newUser);
     this.logger.log(
       'CreateUserUseCase',
-      `New user ${user.username} have been inserted, your password is ${user.username}1234`,
+      `New user ${user.username} have been created successfully, his password is ${user.username}1234`,
     );
-    return `New user ${user.username} have been inserted, your password is ${user.username}1234`;
+    return `New user ${user.username} have been created successfully, his password is ${user.username}1234`;
   }
 }

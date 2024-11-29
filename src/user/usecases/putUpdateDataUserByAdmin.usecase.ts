@@ -32,8 +32,8 @@ export class PutUpdateDataUserByAdminUseCase {
 
     this.logger.log(
       'PutUpdateDataUserByAdminUseCase',
-      `User ${user.username} has updated successfully`,
+      `The role for user ${user.username} has been successfully updated to ${user.role}`,
     );
-    return `User ${user.username} has updated successfully`;
+    return `The role for user ${user.username} has been successfully updated to ${data.role}`;
   }
 }
