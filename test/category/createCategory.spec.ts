@@ -42,7 +42,7 @@ describe('Test create category usecase', () => {
     );
 
     await expect(createCategoryUseCase.execute(newCategory)).rejects.toThrow(
-      'Category already exists',
+      `The category ${newCategory.category} already exists`,
     );
     expect(categoryRepository.findCategoryByName).toHaveBeenCalledWith(
       newCategory.category,

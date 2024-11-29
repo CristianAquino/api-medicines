@@ -80,7 +80,6 @@ export class CategoryController {
       .execute(categoryDTO);
     return { message: response };
   }
-  // agregar paginacion
   @Get('all')
   @ApiOperation({ summary: 'Get all categories' })
   @ApiResponse({ status: HttpStatus.OK, type: SWGAllCategoryData })
