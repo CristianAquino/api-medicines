@@ -1,7 +1,11 @@
 import { LoginUseCase, LogoutUseCase } from '@auth/usecases';
 import { ResponseErrorDTO, SWGMessage } from '@common/dto';
 import { UserModel } from '@common/entities/models';
-import { JwtAuthGuard, LoginGuard } from '@common/guards';
+import {
+  JwtAuthGuard,
+  LocalLoginValidationGuard,
+  LoginGuard,
+} from '@common/guards';
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
 import { UsecaseProxyModule } from '@common/usecases-proxy/usecases-proxy.module';
@@ -53,7 +57,7 @@ export class AuthController {
     private readonly putUpdatePasswordUserUsecaseProxy: UseCaseProxy<PutUpdatePasswordUserUseCase>,
   ) {}
 
-  @UseGuards(LoginGuard)
+  @UseGuards(LocalLoginValidationGuard, LoginGuard)
   @Post('login')
   @ApiBody({ type: LoginDTO })
   @ApiOperation({ description: 'Login' })

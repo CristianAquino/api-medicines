@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class LoginDTO {
@@ -7,6 +8,7 @@ export class LoginDTO {
     example: 'lorem',
     description: 'username',
   })
+  @Transform(({ value }) => value.trim())
   @IsString()
   @IsNotEmpty()
   @MinLength(3)
@@ -16,6 +18,7 @@ export class LoginDTO {
     example: 'lorem1234',
     description: 'password',
   })
+  @Transform(({ value }) => value.trim())
   @IsString()
   @IsNotEmpty()
   @MinLength(8)
