@@ -18,14 +18,31 @@ export class ProductRepository implements IProductRepository {
   async findAllProducts(
     findAllProductsDTO: FindAllProductsDTO,
   ): Promise<AllProductsData> {
-    const { limit, page, name: productName } = findAllProductsDTO;
+    const {
+      limit,
+      page,
+      name: productName,
+      category: category_id,
+    } = findAllProductsDTO;
+    console.log(typeof category_id);
     const query = this.productEntityRepository
       .createQueryBuilder('product')
       .innerJoinAndSelect('product.category', 'category');
-    if (productName) {
+
+    if (productName && category_id) {
+      query.andWhere(
+        'LOWER(product.name) LIKE LOWER(:productName) AND category.id =:category',
+        {
+          productName: `%${productName}%`,
+          category: Number(category_id),
+        },
+      );
+    } else if (productName) {
       query.where('LOWER(product.name) LIKE LOWER(:productName)', {
         productName: `%${productName}%`,
       });
+    } else if (category_id) {
+      query.where('category.id =:category', { category: Number(category_id) });
     }
     const [products, total_products] = await query
       .skip((page - 1) * limit)
