@@ -15,10 +15,10 @@ export class PutUpdateDataCategoryUseCase {
     if (!category) {
       this.logger.warn(
         'PutUpdateDataCategoryUseCase',
-        'Category not found, please check the information',
+        `Category ${data.category} not found, please check the information`,
       );
       throw new NotFoundException(
-        'Category not found, please check the information',
+        `Category ${data.category} not found, please check the information`,
       );
     }
 

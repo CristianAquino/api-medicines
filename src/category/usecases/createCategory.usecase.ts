@@ -17,7 +17,7 @@ export class CreateCategoryUseCase {
         'CreateCategoryUseCase',
         `The category ${category.category} already exists`,
       );
-      throw new Error('Category already exists');
+      throw new Error(`The category ${category.category} already exists`);
     }
     await this.categoryRepository.createCategory(category.category);
     this.logger.log(

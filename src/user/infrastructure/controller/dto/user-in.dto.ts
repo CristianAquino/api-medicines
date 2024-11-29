@@ -94,6 +94,7 @@ export class FindAllUsersDTO extends PaginationDTO {
     required: false,
     description: 'username',
   })
+  @Trim()
   @IsString()
   @MinLength(3)
   @IsOptional()
@@ -103,6 +104,7 @@ export class FindAllUsersDTO extends PaginationDTO {
     description: 'roles for user',
     enum: RoleList,
   })
+  @Trim()
   @IsString()
   @IsEnum(RoleList, {
     message: `Possible status value are ${RoleList}`,
