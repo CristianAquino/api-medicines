@@ -15,8 +15,11 @@ export class GetAllOrderDetailsUseCase {
         findAllOrderDetailsDTO,
       );
     if (allOrderDetails.meta.total == 0) {
-      this.logger.log('GetAllOrderDetailsUseCase', 'Orders details not found');
-      throw new NotFoundException('Orders details');
+      this.logger.log(
+        'GetAllOrderDetailsUseCase',
+        'No orders have been placed yet',
+      );
+      throw new NotFoundException('No orders have been placed yet');
     }
     this.logger.log('GetAllOrderDetails', 'Return all order details');
     return allOrderDetails;

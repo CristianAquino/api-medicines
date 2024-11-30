@@ -33,14 +33,6 @@ export class OrderDetailsRepository implements IOrderDetailsRepository {
     return newOD.id;
   }
   async findOrderDetailsById(id: number): Promise<any> {
-    // const details = await this.orderDetailEntityRepository
-    //   .createQueryBuilder('order_details')
-    //   .innerJoinAndSelect('order_details.orders', 'orders')
-    //   .innerJoinAndSelect('orders.product', 'product')
-    //   .innerJoinAndSelect('order_details.payment', 'payment')
-    //   .innerJoinAndSelect('order_details.customer', 'customer')
-    //   .where('order_details.id = :id', { id })
-    //   .getOne();
     const details = await this.orderDetailEntityRepository.findOne({
       where: { id: id },
       relations: ['orders', 'orders.product', 'payment', 'customer'],
@@ -48,7 +40,6 @@ export class OrderDetailsRepository implements IOrderDetailsRepository {
     if (!details) return null;
     return this.findOrderDetails(details);
   }
-
   async findAllOrderDetails(
     findAllOrderDetails: FindAllOrderDetailsDTO,
   ): Promise<AllOrderDetailsData> {
@@ -59,8 +50,19 @@ export class OrderDetailsRepository implements IOrderDetailsRepository {
       .innerJoinAndSelect('orders.product', 'product')
       .innerJoinAndSelect('order_details.payment', 'payment')
       .innerJoinAndSelect('order_details.customer', 'customer');
+
     if (date) {
-      query.where('order_details.created_at = :date', { date });
+      const startDate = new Date(date);
+      startDate.setHours(0, 0, 0, 0);
+      const endDate = new Date(date);
+      endDate.setHours(23, 59, 59, 999);
+      query.andWhere(
+        'order_details.createdAt BETWEEN :startDate AND :endDate',
+        {
+          startDate,
+          endDate,
+        },
+      );
     }
     const [orders, total_orders] = await query
       .skip((page - 1) * limit)
@@ -84,6 +86,7 @@ export class OrderDetailsRepository implements IOrderDetailsRepository {
     od.id = data.id;
     od.total_amount = data.total_amount;
     od.sub_total = data.sub_total;
+    od.createdAt = data.createdAt;
     od.orders = data.orders.map((order) => this.findOrder(order));
     od.customer = this.findCustomer(data.customer);
     od.payment = this.findPayment(data.payment);

@@ -67,7 +67,7 @@ export class OrderDetailsController {
     return response;
   }
   @Get(':id')
-  @ApiOperation({ summary: 'Get order details' })
+  @ApiOperation({ summary: 'Get order details by id' })
   @ApiResponse({ status: HttpStatus.OK, type: SWGOrderDetailsData })
   @HttpCode(HttpStatus.OK)
   async getOrderDetailsById(@Param('id', ParseIntPipe) id: number) {
