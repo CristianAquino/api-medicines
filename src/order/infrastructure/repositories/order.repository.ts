@@ -1,9 +1,10 @@
+import { PaginationDTO } from '@common/dto';
 import { Order } from '@common/entities';
 import { OrderModel, ProductModel } from '@common/entities/models';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IOrderRepository } from '@order/domain/repositories/orderRepository.interface';
 import { Repository } from 'typeorm';
-import { AllOrdersData, PaginationDTO } from '../controller/dto';
+import { AllOrdersData } from '../controller/dto';
 
 export class OrderRepository implements IOrderRepository {
   constructor(

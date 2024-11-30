@@ -1,5 +1,5 @@
 import { Roles } from '@common/decorators';
-import { ResponseErrorDTO } from '@common/dto';
+import { PaginationDTO, ResponseErrorDTO } from '@common/dto';
 import { JwtAuthGuard, RolesGuard } from '@common/guards';
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
@@ -28,12 +28,7 @@ import { AddOrderUseCase, GetAllOrdersUseCase } from '@order/usecases';
 import { AddOrderDetailsUseCase } from '@order_details/usecases';
 import { AddPaymentUseCase } from '@payment/usecases';
 import { Role } from '@user/infrastructure/controller/enum/user.enum';
-import {
-  AddOrderDTO,
-  PaginationDTO,
-  SWGAllOrderData,
-  SWGCreateOrderData,
-} from './dto';
+import { AddOrderDTO, SWGAllOrderData, SWGCreateOrderData } from './dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('order')
@@ -72,19 +67,17 @@ export class OrderController {
   @HttpCode(HttpStatus.CREATED)
   async addProduct(@Body() addOrderDTO: AddOrderDTO) {
     const { orders, customer, payment } = addOrderDTO;
-    const details = await this.addOrderUsecaseProxy
-      .getInstance()
-      .execute(orders);
+    const od = await this.addOrderUsecaseProxy.getInstance().execute(orders);
     const pay = await this.addPaymentUsecaseProxy
       .getInstance()
       .execute(payment);
     const cust = await this.addCustomerUsecaseProxy
       .getInstance()
       .execute(customer);
-    const od = await this.addOrderDetailsUsecaseProxy
+    const details = await this.addOrderDetailsUsecaseProxy
       .getInstance()
-      .execute(details, pay, cust);
-    return { message: 'The order has been created successfully', id: od };
+      .execute(od, pay, cust);
+    return { message: 'The order has been created successfully', id: details };
   }
 
   @Get('all')

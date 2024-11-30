@@ -20,7 +20,7 @@ export class Product {
   id: string;
   @Column({ type: 'varchar', length: 64, unique: true })
   name: string;
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', unique: true })
   sku: string;
   @Column({ type: 'int' })
   stock: number;
