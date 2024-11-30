@@ -1,3 +1,4 @@
+import { Trim } from '@common/decorators';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsOptional, IsString, MinLength } from 'class-validator';
@@ -8,6 +9,7 @@ export class CustomerDTO {
     example: 'John Doe',
     description: 'Full names of the customer',
   })
+  @Trim()
   @IsString()
   @IsOptional()
   readonly full_names?: string;
@@ -16,6 +18,7 @@ export class CustomerDTO {
     example: 'Doe',
     description: 'Surnames of the customer',
   })
+  @Trim()
   @IsString()
   @IsOptional()
   readonly surnames?: string;
@@ -24,6 +27,7 @@ export class CustomerDTO {
     example: '12345678',
     description: 'DNI of the customer',
   })
+  @Trim()
   @IsString()
   @MinLength(8)
   @IsOptional()

@@ -1,3 +1,4 @@
+import { UUIDIdDTO } from '@common/dto';
 import { CustomerDTO } from '@customer/infrasctructure/controller/dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { PaymentDTO } from '@payment/infrastructure/controller/dto';
@@ -6,24 +7,11 @@ import {
   IsInt,
   IsNotEmpty,
   IsNumber,
-  IsOptional,
   IsPositive,
-  IsUUID,
   ValidateNested,
 } from 'class-validator';
 
-export class IdProductDTO {
-  @ApiProperty({
-    required: true,
-    example: '123e4567-e89b-12d3-a456-426614174001',
-    description: 'product id',
-  })
-  @IsUUID()
-  @IsNotEmpty()
-  readonly id: string;
-}
-
-export class OrderDTO extends IdProductDTO {
+export class OrderDTO extends UUIDIdDTO {
   @ApiProperty({
     required: true,
     example: 2,
@@ -66,25 +54,4 @@ export class AddOrderDTO {
   @ValidateNested()
   @Type(() => PaymentDTO)
   readonly payment: PaymentDTO;
-}
-
-export class PaginationDTO {
-  @ApiProperty({
-    required: false,
-    example: 1,
-    description: 'page',
-  })
-  @IsPositive()
-  @IsOptional()
-  @Type(() => Number)
-  readonly page?: number = 1;
-  @ApiProperty({
-    required: false,
-    example: 10,
-    description: 'limit',
-  })
-  @IsPositive()
-  @IsOptional()
-  @Type(() => Number)
-  readonly limit?: number = 10;
 }
