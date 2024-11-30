@@ -52,13 +52,13 @@ describe('Test put update data user', () => {
     (userRepository.updateContentToUser as jest.Mock).mockResolvedValue(1);
 
     await expect(putUpdateDataUserUseCase.execute(updated)).resolves.toBe(
-      'User updated successfully',
+      'Your username has been updated successfully',
     );
     expect(userRepository.updateContentToUser).toHaveBeenCalledWith(updated);
     expect(logger.warn).not.toHaveBeenCalled();
     expect(logger.log).toHaveBeenCalledWith(
       'PutUpdateDataUserUseCase',
-      'User updated successfully',
+      'Your username has been updated successfully',
     );
   });
 });

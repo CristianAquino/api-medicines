@@ -9,8 +9,8 @@ export class DeleteProductUseCase {
   ) {}
 
   async execute(id: string): Promise<string> {
-    const del = await this.productRepository.deleteById(id);
-    if (del == 0) {
+    const { name } = await this.productRepository.deleteById(id);
+    if (!name) {
       this.logger.warn(
         'DeleteProductUseCase',
         'Product not found, please check the information',
@@ -19,7 +19,10 @@ export class DeleteProductUseCase {
         'Producty not found, please check the information',
       );
     }
-    this.logger.log('DeleteProductUseCase', `Product ${id} have been deleted`);
-    return `Product ${id} have been deleted`;
+    this.logger.log(
+      'DeleteProductUseCase',
+      `Product ${name} have been deleted`,
+    );
+    return `Product ${name} have been deleted`;
   }
 }

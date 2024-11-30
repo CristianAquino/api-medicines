@@ -14,5 +14,5 @@ export interface IUserRepository {
   updateContentToUser(data: any): Promise<number>;
   updateContentToAdmin(data: UpdateDataUserByAdminDTO): Promise<number>;
   updatePassword(id: string, password: string): Promise<number>;
-  deleteById(id: string): Promise<number>;
+  deleteById(id: string): Promise<UserData>;
 }

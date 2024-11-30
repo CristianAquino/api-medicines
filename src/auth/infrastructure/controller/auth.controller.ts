@@ -1,7 +1,11 @@
 import { LoginUseCase, LogoutUseCase } from '@auth/usecases';
 import { ResponseErrorDTO, SWGMessage } from '@common/dto';
 import { UserModel } from '@common/entities/models';
-import { JwtAuthGuard, LoginGuard } from '@common/guards';
+import {
+  JwtAuthGuard,
+  LocalLoginValidationGuard,
+  LoginGuard,
+} from '@common/guards';
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { UseCaseProxy } from '@common/usecases-proxy/usecases-proxy';
 import { UsecaseProxyModule } from '@common/usecases-proxy/usecases-proxy.module';
@@ -53,7 +57,7 @@ export class AuthController {
     private readonly putUpdatePasswordUserUsecaseProxy: UseCaseProxy<PutUpdatePasswordUserUseCase>,
   ) {}
 
-  @UseGuards(LoginGuard)
+  @UseGuards(LocalLoginValidationGuard, LoginGuard)
   @Post('login')
   @ApiBody({ type: LoginDTO })
   @ApiOperation({ description: 'Login' })
@@ -65,7 +69,7 @@ export class AuthController {
       .getInstance()
       .getCookieWithJwtToken(user.id, user.role, user.available);
     request.res.setHeader('Set-Cookie', accessTokenCookie);
-    return 'Login successful';
+    return { message: 'Login successful' };
   }
 
   @UseGuards(JwtAuthGuard)
@@ -77,7 +81,7 @@ export class AuthController {
   async logout(@Req() request: Request) {
     const cookie = await this.logoutUsecaseProxy.getInstance().execute();
     request.res.setHeader('Set-Cookie', cookie);
-    return 'Logout successful';
+    return { message: 'Logout successful' };
   }
 
   @Put('update-password')
@@ -92,6 +96,6 @@ export class AuthController {
     const response = await this.putUpdatePasswordUserUsecaseProxy
       .getInstance()
       .updatePassword({ key, password: updatePasswordDTO.newPassword });
-    return response;
+    return { message: response };
   }
 }

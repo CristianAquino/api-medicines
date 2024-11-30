@@ -12,16 +12,16 @@ export class AddProductUseCase {
   ) {}
 
   async execute(data: AddProductDTO): Promise<string> {
-    const { category: categoryName, ...product } = data;
-    const categoryResponse = await this.categoryRepository.findCategoryByName(
-      categoryName,
+    const { category, ...product } = data;
+    const categoryResponse = await this.categoryRepository.findCategoryById(
+      category,
     );
     if (!categoryResponse) {
       this.logger.warn(
         'AddProductUseCase',
-        `The category ${categoryName} not exists`,
+        'Invalid category or does not exist',
       );
-      throw new NotFoundException(`The category ${categoryName} not exists`);
+      throw new NotFoundException('Invalid category or does not exist');
     }
     await this.productRepository.addProduct({
       ...product,

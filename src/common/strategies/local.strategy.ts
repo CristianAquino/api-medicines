@@ -15,9 +15,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(username: string, password: string) {
-    if (!username || !password) {
-      throw new UnauthorizedException('Username or password is missing');
-    }
     const user = await this.loginUsecaseProxy
       .getInstance()
       .validateUserForLocalStragtegy(username, password);

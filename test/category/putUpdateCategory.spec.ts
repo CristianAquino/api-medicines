@@ -38,14 +38,14 @@ describe('Test put update data category usecase', () => {
     (categoryRepository.findCategoryById as jest.Mock).mockResolvedValue(null);
 
     await expect(putUpdateDataCategoryUseCase.execute(updated)).rejects.toThrow(
-      'Category not found, please check the information',
+      `Category ${updated.category} not found, please check the information`,
     );
     expect(categoryRepository.findCategoryById).toHaveBeenCalledWith(
       updated.id,
     );
     expect(logger.warn).toHaveBeenCalledWith(
       'PutUpdateDataCategoryUseCase',
-      'Category not found, please check the information',
+      `Category ${updated.category} not found, please check the information`,
     );
     expect(categoryRepository.updateCategory).not.toHaveBeenCalled();
     expect(logger.log).not.toHaveBeenCalled();

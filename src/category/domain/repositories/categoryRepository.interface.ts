@@ -9,5 +9,5 @@ export interface ICategoryRepository {
   findCategoryById(id: number): Promise<CategoryData>;
   findCategoryByName(category: string): Promise<any>;
   updateCategory(categoryUpdateDTO: CategoryUpdateDTO): Promise<void>;
-  deleteById(id: number): Promise<number>;
+  deleteById(id: number): Promise<CategoryData>;
 }

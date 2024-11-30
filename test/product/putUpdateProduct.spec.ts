@@ -14,7 +14,7 @@ describe('Test put update data products usecase', () => {
     name: 'Product 1',
     description: 'Description 1',
     price: 10.0,
-    category: 'Category 1',
+    category: 1,
     stock: 5,
   };
   const upProduct = {
@@ -32,7 +32,7 @@ describe('Test put update data products usecase', () => {
     productRepository.updateProductCategory = jest.fn();
 
     categoryRepository = {} as ICategoryRepository;
-    categoryRepository.findCategoryByName = jest.fn();
+    categoryRepository.findCategoryById = jest.fn();
 
     putUpdateDataProductUseCase = new PutUpdateDataProductUseCase(
       logger,
@@ -60,7 +60,7 @@ describe('Test put update data products usecase', () => {
       'PutUpdateDataProductUseCase',
       'Product not found, please check the information',
     );
-    expect(categoryRepository.findCategoryByName).not.toHaveBeenCalled();
+    expect(categoryRepository.findCategoryById).not.toHaveBeenCalled();
     expect(productRepository.updateProductCategory).not.toHaveBeenCalled();
     expect(productRepository.updateProduct).not.toHaveBeenCalled();
     expect(logger.log).not.toHaveBeenCalled();
@@ -68,9 +68,7 @@ describe('Test put update data products usecase', () => {
 
   it('should return an error if there is a product, but the category does not exist', async () => {
     (productRepository.findById as jest.Mock).mockResolvedValue(product);
-    (categoryRepository.findCategoryByName as jest.Mock).mockResolvedValue(
-      null,
-    );
+    (categoryRepository.findCategoryById as jest.Mock).mockResolvedValue(null);
 
     await expect(putUpdateDataProductUseCase.execute(product)).rejects.toThrow(
       'Category not found, please check the information',
@@ -101,18 +99,19 @@ describe('Test put update data products usecase', () => {
     const { category, ...content } = product;
 
     (productRepository.findById as jest.Mock).mockResolvedValue(product);
-    (categoryRepository.findCategoryByName as jest.Mock).mockResolvedValue(
+    (categoryRepository.findCategoryById as jest.Mock).mockResolvedValue(
       category,
     );
     (productRepository.updateProduct as jest.Mock).mockResolvedValue({
       product,
     });
 
-    await expect(putUpdateDataProductUseCase.execute(product)).resolves.toEqual(
-      'Product updated successfully',
+    await expect(putUpdateDataProductUseCase.execute(product)).resolves.toBe(
+      `Product ${product.name} updated successfully`,
     );
+
     expect(productRepository.findById).toHaveBeenCalledWith(product.id);
-    expect(categoryRepository.findCategoryByName).toHaveBeenCalledWith(
+    expect(categoryRepository.findCategoryById).toHaveBeenCalledWith(
       product.category,
     );
     expect(productRepository.updateProduct).toHaveBeenCalledWith({
@@ -121,7 +120,7 @@ describe('Test put update data products usecase', () => {
     });
     expect(logger.log).toHaveBeenCalledWith(
       'PutUpdateDataProductUseCase',
-      'Product updated successfully',
+      `Product ${product.name} updated successfully`,
     );
     expect(logger.warn).not.toHaveBeenCalled();
   });

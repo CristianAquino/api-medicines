@@ -18,14 +18,31 @@ export class ProductRepository implements IProductRepository {
   async findAllProducts(
     findAllProductsDTO: FindAllProductsDTO,
   ): Promise<AllProductsData> {
-    const { limit, page, name: productName } = findAllProductsDTO;
+    const {
+      limit,
+      page,
+      name: productName,
+      category: category_id,
+    } = findAllProductsDTO;
+    console.log(typeof category_id);
     const query = this.productEntityRepository
       .createQueryBuilder('product')
       .innerJoinAndSelect('product.category', 'category');
-    if (productName) {
+
+    if (productName && category_id) {
+      query.andWhere(
+        'LOWER(product.name) LIKE LOWER(:productName) AND category.id =:category',
+        {
+          productName: `%${productName}%`,
+          category: Number(category_id),
+        },
+      );
+    } else if (productName) {
       query.where('LOWER(product.name) LIKE LOWER(:productName)', {
         productName: `%${productName}%`,
       });
+    } else if (category_id) {
+      query.where('category.id =:category', { category: Number(category_id) });
     }
     const [products, total_products] = await query
       .skip((page - 1) * limit)
@@ -43,7 +60,7 @@ export class ProductRepository implements IProductRepository {
       },
     };
   }
-  async findById(id: string): Promise<any> {
+  async findById(id: string): Promise<ProductModel> {
     const product = await this.productEntityRepository.findOneBy({ id });
     if (!product) return null;
     return this.findProduct(product);
@@ -55,9 +72,12 @@ export class ProductRepository implements IProductRepository {
   async updateProductCategory(product: any) {
     await this.productEntityRepository.save(product);
   }
-  async deleteById(id: string): Promise<number> {
-    const del = await this.productEntityRepository.delete({ id });
-    return del.affected;
+  async deleteById(id: string): Promise<ProductModel> {
+    const product = await this.findById(id);
+    if (product) {
+      await this.productEntityRepository.delete({ id });
+    }
+    return product;
   }
 
   private findProduct(product: ProductModel): ProductModel {

@@ -7,8 +7,8 @@ export class ResponseDTO {
   })
   readonly status: number;
   @ApiProperty({
-    example: 'Request successful',
-    description: 'message',
+    example: 'message describing the action performed',
+    description: 'message describing the action performed',
   })
   readonly message: string;
 }
@@ -32,8 +32,8 @@ export class ResponseErrorDTO {
 
 export class SWGMessage extends ResponseDTO {
   @ApiProperty({
-    example: 'message describing the action performed',
-    description: 'message describing the action performed',
+    example: 'data describing the action performed',
+    description: 'data describing the action performed',
   })
   data: string;
 }

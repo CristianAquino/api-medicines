@@ -43,7 +43,7 @@ describe('Test add order details usecase', () => {
 
     await expect(
       addOrderDetailsUseCase.execute(details, payment, customer),
-    ).resolves.toBeUndefined();
+    ).resolves.toBeDefined();
     expect(logger.log).toHaveBeenCalledWith(
       'AddOrderDetailsUseCase',
       'Orders Details have been added',

@@ -1,3 +1,4 @@
+import { ProductModel } from '@common/entities/models';
 import {
   AllProductsData,
   FindAllProductsDTO,
@@ -9,8 +10,8 @@ export interface IProductRepository {
   findAllProducts(
     findAllProductsDTO: FindAllProductsDTO,
   ): Promise<AllProductsData>;
-  findById(id: string): Promise<any>;
+  findById(id: string): Promise<ProductModel>;
   updateProduct(data: UpdateProductDTO): Promise<void>;
   updateProductCategory(product: any): Promise<any>;
-  deleteById(id: string): Promise<number>;
+  deleteById(id: string): Promise<ProductModel>;
 }

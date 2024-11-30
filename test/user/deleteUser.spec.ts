@@ -43,16 +43,17 @@ describe('Test delete user usecase', () => {
 
   it('should return a success message if the id exist', async () => {
     const id = '1';
+    const user = { username: 'XXXXXXXX' };
     (userRepository.deleteById as jest.Mock).mockResolvedValue(
-      Promise.resolve(1),
+      Promise.resolve(user),
     );
 
     await expect(deleteUserUseCase.execute(id)).resolves.toBe(
-      `User ${id} have been deleted`,
+      `User ${user.username} have been deleted`,
     );
     expect(logger.log).toHaveBeenCalledWith(
       'DeleteUserUseCase',
-      `User ${id} have been deleted`,
+      `User ${user.username} have been deleted`,
     );
   });
 });

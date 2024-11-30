@@ -13,7 +13,7 @@ export class AddOrderUseCase {
   async execute(orders: OrderDTO[]): Promise<any> {
     const verify: any = [];
     const details: any = [];
-    // esta parte en un guard
+
     if (orders.length == 0) {
       this.logger.warn('AddOrderUseCase', 'Datos is empty');
       throw new Error('Datos is empty');
@@ -35,19 +35,19 @@ export class AddOrderUseCase {
       if (order.quantity > productResponse.stock) {
         this.logger.error(
           'AddOrderUseCase',
-          `The quantity of product ${productResponse.name} in ${order.quantity} is greater than the stock ${productResponse.stock}`,
+          `The requested quantity of the ${productResponse.name} product is greater than the amount stored`,
         );
         throw new Error(
-          `The quantity of product ${productResponse.name} in ${order.quantity} is greater than the stock ${productResponse.stock}`,
+          `The requested quantity of the ${productResponse.name} product is greater than the amount stored`,
         );
       }
       if (order.total != order.quantity * productResponse.unit_price) {
         this.logger.error(
           'AddOrderUseCase',
-          `The total of product ${productResponse.name} is incorrect`,
+          `The total cost for the ${productResponse.name} product is incorrect`,
         );
         throw new Error(
-          `The total of product ${productResponse.name} is incorrect`,
+          `The total cost for the ${productResponse.name} product is incorrect`,
         );
       }
       verify.push({
@@ -56,8 +56,7 @@ export class AddOrderUseCase {
         product: productResponse,
       });
     }
-    // esta parte se puede quedar
-    // y verify vendria desde el guard
+
     for (const order of verify) {
       const { id, ...content } = order;
       await this.productRepository.updateProduct({

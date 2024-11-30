@@ -9,7 +9,7 @@ export class GetOrderDetailsByIdUseCase {
   ) {}
 
   async execute(id: number): Promise<any> {
-    const orderDetails = await this.orderDetailsRepository.getOrderDetailsById(
+    const orderDetails = await this.orderDetailsRepository.findOrderDetailsById(
       id,
     );
     if (!orderDetails) {

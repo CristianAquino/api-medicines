@@ -101,13 +101,13 @@ describe('Test Add Order usecase', () => {
     });
 
     await expect(addOrderUseCase.execute(orders)).rejects.toThrow(
-      `The quantity of product ${response.name} in ${orders[0].quantity} is greater than the stock ${response.stock}`,
+      `The requested quantity of the ${response.name} product is greater than the amount stored`,
     );
     expect(logger.warn).not.toBeCalled();
     expect(productRepository.findById).toBeCalled();
     expect(logger.error).toBeCalledWith(
       'AddOrderUseCase',
-      `The quantity of product ${response.name} in ${orders[0].quantity} is greater than the stock ${response.stock}`,
+      `The requested quantity of the ${response.name} product is greater than the amount stored`,
     );
     expect(productRepository.updateProduct).not.toBeCalled();
     expect(orderRepository.createOrder).not.toBeCalled();
@@ -121,12 +121,14 @@ describe('Test Add Order usecase', () => {
 
     await expect(
       addOrderUseCase.execute([{ id: 1, quantity: 5 }]),
-    ).rejects.toThrow(`The total of product ${response.name} is incorrect`);
+    ).rejects.toThrow(
+      `The total cost for the ${response.name} product is incorrect`,
+    );
     expect(logger.warn).not.toBeCalled();
     expect(productRepository.findById).toBeCalled();
     expect(logger.error).toBeCalledWith(
       'AddOrderUseCase',
-      `The total of product ${response.name} is incorrect`,
+      `The total cost for the ${response.name} product is incorrect`,
     );
     expect(productRepository.updateProduct).not.toBeCalled();
     expect(orderRepository.createOrder).not.toBeCalled();

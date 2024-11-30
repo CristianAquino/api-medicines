@@ -52,3 +52,11 @@ export class SWGUserData extends ResponseDTO {
   })
   data: UserData;
 }
+
+export class SWGUserGenerateKey extends ResponseDTO {
+  @ApiProperty({
+    example: { key: 'http://...' },
+    description: 'URL generated to complete the password change process',
+  })
+  data: { url: string };
+}

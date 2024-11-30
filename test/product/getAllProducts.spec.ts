@@ -51,12 +51,12 @@ describe('Test get all products usecase', () => {
     );
 
     await expect(getAllProductsUseCase.execute(pagination)).rejects.toThrow(
-      'Products not found',
+      'No products with that name or category have been registered yet.',
     );
     expect(productRepository.findAllProducts).toHaveBeenCalledWith(pagination);
     expect(logger.log).toHaveBeenCalledWith(
       'GetAllProductsUseCase',
-      'Products not found',
+      'No products with that name or category have been registered yet.',
     );
   });
 

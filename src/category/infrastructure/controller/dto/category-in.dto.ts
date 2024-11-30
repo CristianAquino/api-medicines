@@ -1,19 +1,16 @@
+import { Trim } from '@common/decorators';
+import { NumberIdDTO } from '@common/dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import {
-  IsNotEmpty,
-  IsOptional,
-  IsPositive,
-  IsString,
-  MinLength,
-} from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class CategoryDTO {
   @ApiProperty({
     required: true,
-    example: 'toys',
+    example: 'tablets',
     description: 'category name',
   })
+  @Trim()
   @IsString()
   @IsNotEmpty()
   @MinLength(3)
@@ -25,31 +22,23 @@ export class CategoryQueryDTO {
     required: false,
     description: 'category name',
   })
+  @Trim()
   @IsString()
   @IsOptional()
   @MinLength(3)
   @Transform(({ value }) => value.toLowerCase())
   readonly category?: string;
 }
-export class CategoryIdDTO {
+export class CategoryUpdateDTO extends NumberIdDTO {
   @ApiProperty({
     required: true,
-    example: 1,
-    description: 'category id',
-  })
-  @IsPositive()
-  @IsNotEmpty()
-  readonly id: number;
-}
-export class CategoryUpdateDTO extends CategoryIdDTO {
-  @ApiProperty({
-    required: false,
-    example: 'toys',
+    example: 'tablets',
     description: 'category name',
   })
+  @Trim()
   @IsString()
   @IsNotEmpty()
   @MinLength(3)
   @Transform(({ value }) => value.toLowerCase())
-  readonly category?: string;
+  readonly category: string;
 }

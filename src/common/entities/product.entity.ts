@@ -20,7 +20,7 @@ export class Product {
   id: string;
   @Column({ type: 'varchar', length: 64, unique: true })
   name: string;
-  @Column({ type: 'varchar', default: '00000000' })
+  @Column({ type: 'varchar', unique: true })
   sku: string;
   @Column({ type: 'int' })
   stock: number;
@@ -30,7 +30,7 @@ export class Product {
   unit_price: number;
   @Column({ type: 'date' })
   expiration_date: Date;
-  @Column({ type: 'varchar', length: 64 })
+  @Column({ type: 'varchar', length: 128 })
   description: string;
   //   date
   @CreateDateColumn()

@@ -24,7 +24,7 @@ export class PutUpdateDataProductUseCase {
       );
     }
     if (category) {
-      const findCategory = await this.categoryRepository.findCategoryByName(
+      const findCategory = await this.categoryRepository.findCategoryById(
         category,
       );
       if (!findCategory) {
@@ -36,8 +36,10 @@ export class PutUpdateDataProductUseCase {
           'Category not found, please check the information',
         );
       }
-      product.category = findCategory;
-      await this.productRepository.updateProductCategory(product);
+      await this.productRepository.updateProductCategory({
+        ...product,
+        category: findCategory,
+      });
     }
     if (product.stock - updated.stock < 0) {
       this.logger.warn(
@@ -53,8 +55,8 @@ export class PutUpdateDataProductUseCase {
     });
     this.logger.log(
       'PutUpdateDataProductUseCase',
-      'Product updated successfully',
+      `Product ${product.name} updated successfully`,
     );
-    return 'Product updated successfully';
+    return `Product ${product.name} updated successfully`;
   }
 }

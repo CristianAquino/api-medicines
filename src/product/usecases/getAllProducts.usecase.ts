@@ -19,8 +19,13 @@ export class GetAllProductsUseCase {
       findAllProductsDTO,
     );
     if (allProducts.meta.total == 0) {
-      this.logger.log('GetAllProductsUseCase', 'Products not found');
-      throw new NotFoundException('Products not found');
+      this.logger.log(
+        'GetAllProductsUseCase',
+        'No products with that name or category have been registered yet.',
+      );
+      throw new NotFoundException(
+        'No products with that name or category have been registered yet.',
+      );
     }
     this.logger.log('GetAllProductsUseCase', 'Return all products');
     return allProducts;

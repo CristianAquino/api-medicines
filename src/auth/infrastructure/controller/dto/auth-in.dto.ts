@@ -1,3 +1,4 @@
+import { Trim } from '@common/decorators';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 
@@ -7,6 +8,7 @@ export class LoginDTO {
     example: 'lorem',
     description: 'username',
   })
+  @Trim()
   @IsString()
   @IsNotEmpty()
   @MinLength(3)
@@ -16,6 +18,7 @@ export class LoginDTO {
     example: 'lorem1234',
     description: 'password',
   })
+  @Trim()
   @IsString()
   @IsNotEmpty()
   @MinLength(8)

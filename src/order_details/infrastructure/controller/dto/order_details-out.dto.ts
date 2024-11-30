@@ -1,4 +1,4 @@
-import { ResponseDTO } from '@common/dto';
+import { MetaPaginationData, ResponseDTO } from '@common/dto';
 import {
   CustomerModel,
   OrderModel,
@@ -8,10 +8,10 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class OrderDetailsData {
   @ApiProperty({
-    example: '1',
+    example: 1,
     description: 'order details id',
   })
-  id: string;
+  id: number;
   @ApiProperty({
     example: 120,
     description: 'total_amount',
@@ -45,4 +45,25 @@ export class SWGOrderDetailsData extends ResponseDTO {
     description: 'data',
   })
   data: OrderDetailsData;
+}
+
+export class AllOrderDetailsData {
+  @ApiProperty({
+    type: [OrderDetailsData],
+    description: 'data',
+  })
+  data: OrderDetailsData[];
+  @ApiProperty({
+    type: MetaPaginationData,
+    description: 'meta',
+  })
+  meta: MetaPaginationData;
+}
+
+export class SWGAllOrderDetailsData extends ResponseDTO {
+  @ApiProperty({
+    type: AllOrderDetailsData,
+    description: 'data',
+  })
+  data: AllOrderDetailsData;
 }

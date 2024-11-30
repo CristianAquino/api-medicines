@@ -8,8 +8,8 @@ export class DeleteCategoryUseCase {
     private readonly categoryRepository: ICategoryRepository,
   ) {}
   async execute(id: number) {
-    const del = await this.categoryRepository.deleteById(id);
-    if (del == 0) {
+    const { category } = await this.categoryRepository.deleteById(id);
+    if (!category) {
       this.logger.warn(
         'DeleteCategoryUseCase',
         'Category not found, please check the information',
@@ -20,8 +20,8 @@ export class DeleteCategoryUseCase {
     }
     this.logger.log(
       'DeleteCategoryUseCase',
-      `Category ${id} have been deleted`,
+      `Category ${category} have been deleted`,
     );
-    return `Category ${id} have been deleted`;
+    return `Category ${category} have been deleted`;
   }
 }

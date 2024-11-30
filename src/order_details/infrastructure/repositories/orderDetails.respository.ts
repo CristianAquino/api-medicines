@@ -9,6 +9,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { IOrderDetailsRepository } from '@order_details/domain/repositories/orderDetailsRepository.interface';
 import { Repository } from 'typeorm';
+import { AllOrderDetailsData, FindAllOrderDetailsDTO } from '../controller/dto';
 
 export class OrderDetailsRepository implements IOrderDetailsRepository {
   constructor(
@@ -21,24 +22,17 @@ export class OrderDetailsRepository implements IOrderDetailsRepository {
     payment: any,
     customer: any,
     total: any,
-  ): Promise<void> {
+  ): Promise<number> {
     const od = new OrderDetailsModel();
     od.total_amount = total.total_amount;
     od.sub_total = total.sub_total;
     od.orders = details;
     od.payment = payment;
     od.customer = customer;
-    await this.orderDetailEntityRepository.save(od);
+    const newOD = await this.orderDetailEntityRepository.save(od);
+    return newOD.id;
   }
-  async getOrderDetailsById(id: number): Promise<any> {
-    // const details = await this.orderDetailEntityRepository
-    //   .createQueryBuilder('order_details')
-    //   .innerJoinAndSelect('order_details.orders', 'orders')
-    //   .innerJoinAndSelect('orders.product', 'product')
-    //   .innerJoinAndSelect('order_details.payment', 'payment')
-    //   .innerJoinAndSelect('order_details.customer', 'customer')
-    //   .where('order_details.id = :id', { id })
-    //   .getOne();
+  async findOrderDetailsById(id: number): Promise<any> {
     const details = await this.orderDetailEntityRepository.findOne({
       where: { id: id },
       relations: ['orders', 'orders.product', 'payment', 'customer'],
@@ -46,12 +40,60 @@ export class OrderDetailsRepository implements IOrderDetailsRepository {
     if (!details) return null;
     return this.findOrderDetails(details);
   }
+  async findAllOrderDetails(
+    findAllOrderDetails: FindAllOrderDetailsDTO,
+  ): Promise<AllOrderDetailsData> {
+    const { limit, page, date } = findAllOrderDetails;
+    const query = this.orderDetailEntityRepository
+      .createQueryBuilder('order_details')
+      .innerJoinAndSelect('order_details.orders', 'orders')
+      .innerJoinAndSelect('orders.product', 'product')
+      .innerJoinAndSelect('order_details.payment', 'payment')
+      .innerJoinAndSelect('order_details.customer', 'customer');
+
+    if (date) {
+      const startDate = new Date(date);
+      startDate.setHours(0, 0, 0, 0);
+      const endDate = new Date(date);
+      endDate.setHours(23, 59, 59, 999);
+      query.andWhere(
+        'order_details.createdAt BETWEEN :startDate AND :endDate',
+        {
+          startDate,
+          endDate,
+        },
+      );
+    }
+    const [orders, total_orders] = await query
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    const last_page = Math.ceil(total_orders / limit);
+
+    return {
+      data: orders.map((ele) => this.findAllOrdersDetails(ele)),
+      meta: {
+        total: total_orders,
+        page,
+        last_page,
+      },
+    };
+  }
 
   private findOrderDetails(data: OrderDetailsModel) {
     const od = new OrderDetailsModel();
     od.id = data.id;
     od.total_amount = data.total_amount;
     od.sub_total = data.sub_total;
+    od.createdAt = data.createdAt;
+    od.orders = data.orders.map((order) => this.findOrder(order));
+    od.customer = this.findCustomer(data.customer);
+    od.payment = this.findPayment(data.payment);
+    return od;
+  }
+  private findAllOrdersDetails(data: OrderDetailsModel) {
+    const od = this.findOrderDetails(data) as OrderDetailsModel;
     od.orders = data.orders.map((order) => this.findOrder(order));
     od.customer = this.findCustomer(data.customer);
     od.payment = this.findPayment(data.payment);

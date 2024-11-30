@@ -18,7 +18,10 @@ export class PutUpdateDataUserUseCase {
         'User not found, please check the information',
       );
     }
-    this.logger.log('PutUpdateDataUserUseCase', 'User updated successfully');
-    return 'User updated successfully';
+    this.logger.log(
+      'PutUpdateDataUserUseCase',
+      'Your username has been updated successfully',
+    );
+    return 'Your username has been updated successfully';
   }
 }

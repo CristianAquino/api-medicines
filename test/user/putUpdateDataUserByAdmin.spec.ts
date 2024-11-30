@@ -10,6 +10,7 @@ describe('Test put update data user by admin', () => {
   const updated = {
     id: 1,
     username: 'test',
+    role: 'admin',
   };
 
   beforeAll(() => {
@@ -71,21 +72,25 @@ describe('Test put update data user by admin', () => {
   });
 
   it('should return a success message if user updated', async () => {
-    (userRepository.findById as jest.Mock).mockResolvedValue({
+    const user = {
       username: 'lorem',
-    });
+      role: 'admin',
+    };
+    (userRepository.findById as jest.Mock).mockResolvedValue(user);
     (userRepository.updateContentToAdmin as jest.Mock).mockResolvedValue(1);
 
     await expect(
       putUpdateDataUserByAdminUseCase.execute(updated),
-    ).resolves.toBe('User lorem has updated successfully');
+    ).resolves.toBe(
+      `The role for user ${user.username} has been successfully updated to ${user.role}`,
+    );
 
     expect(userRepository.findById).toHaveBeenCalledWith(updated.id);
     expect(userRepository.updateContentToAdmin).toHaveBeenCalledWith(updated);
     expect(logger.warn).not.toHaveBeenCalled();
     expect(logger.log).toHaveBeenCalledWith(
       'PutUpdateDataUserByAdminUseCase',
-      'User lorem has updated successfully',
+      `The role for user ${user.username} has been successfully updated to ${user.role}`,
     );
   });
 });

@@ -42,6 +42,7 @@ import {
   CreateUserDTO,
   FindAllUsersDTO,
   SWGAllUsersData,
+  SWGUserGenerateKey,
   UpdateDataByUserDTO,
   UpdateDataUserByAdminDTO,
 } from './dto';
@@ -88,7 +89,7 @@ export class UserController {
     const response = await this.createUserUsecaseProxy
       .getInstance()
       .execute(addUser);
-    return response;
+    return { message: response };
   }
   @Get('all')
   @Roles(Role.ADMIN)
@@ -115,7 +116,7 @@ export class UserController {
     const response = await this.putUpdateDataUserUsecaseProxy
       .getInstance()
       .execute({ ...updateDataByUserDTO, id: user.id });
-    return response;
+    return { message: response };
   }
   @Put('update-admin')
   @Roles(Role.ADMIN)
@@ -129,11 +130,11 @@ export class UserController {
     const response = await this.putUpdateDataUserByAdminUsecaseProxy
       .getInstance()
       .execute(updateDataUserByAdminDTO);
-    return response;
+    return { message: response };
   }
   @Post('generate-key')
   @ApiOperation({ summary: 'generate key for update password user' })
-  @ApiResponse({ status: HttpStatus.CREATED, type: SWGMessage })
+  @ApiResponse({ status: HttpStatus.CREATED, type: SWGUserGenerateKey })
   @HttpCode(HttpStatus.CREATED)
   async generateKey(@Req() request: Request) {
     const user = request.user as UserModel;
@@ -144,7 +145,7 @@ export class UserController {
         role: user.role,
         available: user.available,
       });
-    return response;
+    return { message: 'Key generated successfully', url: response };
   }
   @Delete('delete/:id')
   @Roles(Role.ADMIN)
@@ -155,6 +156,6 @@ export class UserController {
     const response = await this.deleteUserUsecaseProxy
       .getInstance()
       .execute(id);
-    return response;
+    return { message: response };
   }
 }

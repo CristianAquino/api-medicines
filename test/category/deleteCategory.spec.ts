@@ -48,17 +48,18 @@ describe('Test delete category usecase', () => {
   });
 
   it('should return a success message if the category is deleted', async () => {
+    const category = { category: 'XXXXX' };
     (categoryRepository.deleteById as jest.Mock).mockReturnValueOnce(
-      Promise.resolve(1),
+      Promise.resolve(category),
     );
     await expect(deleteCategoryUseCase.execute(categoryId)).resolves.toBe(
-      `Category ${categoryId} have been deleted`,
+      `Category ${category.category} have been deleted`,
     );
 
     expect(categoryRepository.deleteById).toHaveBeenCalledWith(categoryId);
     expect(logger.log).toHaveBeenCalledWith(
       'DeleteCategoryUseCase',
-      `Category ${categoryId} have been deleted`,
+      `Category ${category.category} have been deleted`,
     );
     expect(logger.warn).not.toHaveBeenCalled();
   });

@@ -73,7 +73,7 @@ describe('Test add user usecase', () => {
     );
 
     await expect(createUserUseCase.execute(createUserDTO)).resolves.toBe(
-      `New user ${createUserDTO.username} have been inserted, your password is ${createUserDTO.username}1234`,
+      `New user ${createUserDTO.username} have been created successfully, his password is ${createUserDTO.username}1234`,
     );
 
     expect(userRepository.findOneByName).toHaveBeenCalledWith(
@@ -88,7 +88,7 @@ describe('Test add user usecase', () => {
     });
     expect(logger.log).toHaveBeenCalledWith(
       'CreateUserUseCase',
-      `New user ${createUserDTO.username} have been inserted, your password is ${createUserDTO.username}1234`,
+      `New user ${createUserDTO.username} have been created successfully, his password is ${createUserDTO.username}1234`,
     );
   });
 });

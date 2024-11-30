@@ -87,9 +87,12 @@ export class UserRepository implements IUserRepository {
     );
     return updated.affected;
   }
-  async deleteById(id: string): Promise<number> {
-    const del = await this.userEntityRepository.delete({ id });
-    return del.affected;
+  async deleteById(id: string): Promise<UserData> {
+    const user = await this.findById(id);
+    if (user) {
+      await this.userEntityRepository.delete({ id });
+    }
+    return user;
   }
 
   private userAdapter(user: UserModel): UserData {

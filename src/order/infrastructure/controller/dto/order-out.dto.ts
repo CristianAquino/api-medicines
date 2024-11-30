@@ -72,3 +72,11 @@ export class SWGAllOrderData extends ResponseDTO {
   })
   data: AllOrdersData;
 }
+
+export class SWGCreateOrderData extends ResponseDTO {
+  @ApiProperty({
+    example: { id: 1 },
+    description: 'order id',
+  })
+  data: { id: number };
+}

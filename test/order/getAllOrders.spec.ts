@@ -45,12 +45,12 @@ describe('Test get all orders usecase', () => {
     (orderRepository.findAllOrders as jest.Mock).mockResolvedValue(allOrderss);
 
     await expect(getAllOrdersUseCase.execute(pagination)).rejects.toThrow(
-      'Orders not found',
+      'No orders have been placed yet',
     );
     expect(orderRepository.findAllOrders).toHaveBeenCalledWith(pagination);
     expect(logger.log).toHaveBeenCalledWith(
       'GetAllOrdersUseCase',
-      'Orders not found',
+      'No orders have been placed yet',
     );
   });
 
